@@ -1,154 +1,144 @@
-#include <math.h>
-#include <stdexcept>
 #include "Vec2.h"
+#include <cmath>
+#include <stdexcept>
 
-Vec2::Vec2() : x(0.0), y(0.0) {}
+namespace Aerolite {
+     Vec2::Vec2(float x, float y) noexcept : x(x), y(y) {}
 
-Vec2::Vec2(float x, float y): x(x), y(y) {}
+     constexpr void Vec2::Add(const Vec2& v) noexcept
+    {
+        x += v.x;
+        y += v.y;
+    }
 
-void Vec2::Add(const Vec2& v)
-{
-	x += v.x;
-	y += v.y;
-}
+     constexpr void Vec2::Sub(const Vec2& v) noexcept
+    {
+        x -= v.x;
+        y -= v.y;
+    }
 
-void Vec2::Sub(const Vec2& v)
-{
-	x -= v.x;
-	y -= v.y;
-}
+     constexpr void Vec2::Scale(const float n) noexcept
+    {
+        x *= n;
+        y *= n;
+    }
 
-void Vec2::Scale(const float n)
-{
-	x *= n;
-	y *= n;
-}
+     Vec2 Vec2::Rotate(const float angle) const noexcept
+    {
+        return Vec2(x * cosf(angle) - y * sinf(angle), x * sinf(angle) + y * cosf(angle));
+    }
 
-Vec2 Vec2::Rotate(const float angle) const
-{
-	Vec2 result;
-	result.x = x * cos(angle) - y * sin(angle);
-	result.y = x * sin(angle) + y * cos(angle);
-	return result;
-}
+     float Vec2::Magnitude() const noexcept
+    {
+        return std::hypot(x, y);
+    }
 
-float Vec2::Magnitude() const
-{
-	return sqrt(x * x + y * y);
-}
+     constexpr float Vec2::MagnitudeSquared() const noexcept
+    {
+        return x * x + y * y;
+    }
 
-float Vec2::MagnitudeSquared() const
-{
-	return x * x + y * y;
-}
+     Vec2& Vec2::Normalize() noexcept
+    {
+        float length = Magnitude();
+        if (length != 0.0f)
+        {
+            x /= length;
+            y /= length;
+        }
 
-Vec2& Vec2::Normalize()
-{
-	float length = Magnitude();
-	if (length != 0.0f)
-	{
-		x /= length;
-		y /= length;
-	}
+        return *this;
+    }
 
-	return *this;
-}
+     Vec2 Vec2::UnitVector() const noexcept
+    {
+        Vec2 result = *this;
+        return result.Normalize();
+    }
 
-Vec2 Vec2::UnitVector() const
-{
-	Vec2 result = Vec2{ 0, 0 };
-	float length = Magnitude();
-	if (length != 0.0f)
-	{
-		result.x /= length;
-		result.y /= length;
-	}
-	return result;
-}
+     Vec2 Vec2::Normal() const noexcept
+    {
+        return Vec2(y, -x).Normalize();
+    }
 
-Vec2 Vec2::Normal() const
-{
-	return Vec2(y, -x).Normalize();
-}
+     constexpr float Vec2::Dot(const Vec2& v) const noexcept
+    {
+        return x * v.x + y * v.y;
+    }
 
-float Vec2::Dot(const Vec2& v) const
-{
-	return x * v.x + y * v.y;
-}
+     constexpr float Vec2::Cross(const Vec2& v) const noexcept
+    {
+        return (x * v.y) - (y * v.x);
+    }
 
-float Vec2::Cross(const Vec2& v) const
-{
-	return (x * v.y) - (y * v.x);
-}
+     Vec2& Vec2::operator=(const Vec2& v) noexcept
+    {
+        x = v.x;
+        y = v.y;
+        return *this;
+    }
 
-Vec2& Vec2::operator=(const Vec2& v)
-{
-	x = v.x;
-	y = v.y;
-	return *this;
-}
+     bool Vec2::operator==(const Vec2& v) const noexcept
+    {
+        return x == v.x && y == v.y;
+    }
 
-bool Vec2::operator==(const Vec2& v) const
-{
-	return v.x == x && v.y == y;
-}
+     bool Vec2::operator!=(const Vec2& v) const noexcept
+    {
+        return x != v.x || y != v.y;
+    }
 
-bool Vec2::operator!=(const Vec2& v) const
-{
-	return v.x != x || v.y != y;
-}
+     Vec2 Vec2::operator+(const Vec2& v) const noexcept
+    {
+        return Vec2(x + v.x, y + v.y);
+    }
 
-Vec2 Vec2::operator+(const Vec2& v) const
-{
-	return Vec2(x + v.x, y + v.y);
-}
+     Vec2 Vec2::operator-(const Vec2& v) const noexcept
+    {
+        return Vec2(x - v.x, y - v.y);
+    }
 
-Vec2 Vec2::operator-(const Vec2& v) const
-{
-	return Vec2(x - v.x, y - v.y);
-}
+     Vec2 Vec2::operator*(const float n) const noexcept
+    {
+        return Vec2(x * n, y * n);
+    }
 
-Vec2 Vec2::operator*(const float n) const
-{
-	return Vec2(x * n, y * n);
-}
+     Vec2 Vec2::operator/(const float n) const
+    {
+        if (n == 0) throw std::runtime_error("Division by zero error in Vec2 operator /");
 
-Vec2 Vec2::operator/(const float n) const
-{
-	if (n == 0) throw std::runtime_error("Division by zero error in Vec2 operator /");
+        return Vec2(x / n, y / n);
+    }
 
-	return Vec2(x / n, y / n);
-}
+     Vec2 Vec2::operator-() const noexcept
+    {
+        return Vec2(-x, -y);
+    }
 
-Vec2 Vec2::operator-()
-{
-	return Vec2(-x, -y);
-}
+     Vec2& Vec2::operator+=(const Vec2& v) noexcept
+    {
+        Add(v);
+        return *this;
+    }
 
-Vec2& Vec2::operator+=(const Vec2& v)
-{
-	x += v.x;
-	y += v.y;
-	return *this;
-}
+     Vec2& Vec2::operator-=(const Vec2& v) noexcept
+    {
+        Sub(v);
+        return *this;
+    }
 
-Vec2& Vec2::operator-=(const Vec2& v)
-{
-	x -= v.x;
-	y -= v.y;
-	return *this;
-}
+     Vec2& Vec2::operator*=(const float n) noexcept
+    {
+        Scale(n);
+        return *this;
+    }
 
-Vec2& Vec2::operator*=(const float n)
-{
-	x *= n;
-	y *= n;
-	return *this;
-}
+     Vec2& Vec2::operator/=(const float n)
+    {
+        if (n == 0) throw std::runtime_error("Division by zero error in Vec2 operator /=");
 
-Vec2& Vec2::operator/=(const float n)
-{
-	x /= n;
-	y /= n;
-	return *this;
+        x /= n;
+        y /= n;
+        return *this;
+    }
 }

@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{8bc4e130-f20f-4609-889d-4cac0d39d10e}</ProjectGuid>
-    <RootNamespace>AeroliteEngineTestTool</RootNamespace>
+    <ProjectGuid>{273c3bc5-a37b-4e0b-a628-460abcc4f05a}</ProjectGuid>
+    <RootNamespace>AeroliteEngineVisualizer</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -70,6 +70,15 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LibraryPath>C:\Users\brand\Code\cpp\Aerolite\AeroliteEngine\AeroliteEngine\x64\Debug;$(LibraryPath)</LibraryPath>
+    <ExternalIncludePath>C:\Users\brand\Code\cpp\Aerolite\AeroliteEngine\AeroliteEngine\src\Physics;$(ExternalIncludePath)</ExternalIncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LibraryPath>C:\Users\brand\Code\cpp\Aerolite\AeroliteEngine\AeroliteEngine\x64\Debug;$(LibraryPath)</LibraryPath>
+    <ExternalIncludePath>C:\Users\brand\Code\cpp\Aerolite\AeroliteEngine\AeroliteEngine\src\Physics;$(ExternalIncludePath)</ExternalIncludePath>
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -108,7 +117,12 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
+    <ProjectReference>
+      <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -124,16 +138,14 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
+    <ProjectReference>
+      <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AeroliteEngine\AeroliteEngine.vcxproj">
-      <Project>{f7355210-4019-4b95-8787-56a599c4562a}</Project>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="assets\._basketball.png" />
-    <Image Include="assets\._crate.png" />
     <Image Include="assets\basketball.png" />
     <Image Include="assets\bowlingball.png" />
     <Image Include="assets\crate.png" />
@@ -147,6 +159,20 @@
   <ItemGroup>
     <ClInclude Include="src\Application.h" />
     <ClInclude Include="src\Graphics.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="libavif-16.dll" />
+    <None Include="libtiff-5.dll" />
+    <None Include="libwebp-7.dll" />
+    <None Include="libwebpdemux-2.dll" />
+    <None Include="SDL2.dll" />
+    <None Include="SDL2_gfx.dll" />
+    <None Include="SDL2_image.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AeroliteEngine\AeroliteEngine.vcxproj">
+      <Project>{f7355210-4019-4b95-8787-56a599c4562a}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

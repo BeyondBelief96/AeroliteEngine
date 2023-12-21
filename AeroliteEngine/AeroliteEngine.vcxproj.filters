@@ -18,9 +18,24 @@
     <ClInclude Include="src\Physics\Vec2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Physics\Vec3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Physics\Particle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Physics\Constants.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Physics\Vec2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Physics\Vec3.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Physics\Particle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

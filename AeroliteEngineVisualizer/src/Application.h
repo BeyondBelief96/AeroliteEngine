@@ -1,11 +1,14 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
-#include "./Graphics.h"
+#include <Particle.h>
+#include "Graphics.h"
 
 class Application {
     private:
         bool running = false;
+        int timePreviousFrame;
+        Particle* particle;
 
     public:
         Application() = default;

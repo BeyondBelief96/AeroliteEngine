@@ -1,10 +1,13 @@
 #ifndef GRAPHICS_H
 #define GRAPHICS_H
 
+#define SDL_MAIN_HANDLED
 #include <SDL2/SDL.h>
 #include <SDL2/SDL2_gfxPrimitives.h>
-#include "Physics/Vec2.h"
+#include <Vec2.h>
 #include <vector>
+
+using Vec2 = Aerolite::Vec2;
 
 struct Graphics {
     static int windowWidth;

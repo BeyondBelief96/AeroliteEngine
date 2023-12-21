@@ -15,12 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="assets\._basketball.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="assets\._crate.png">
-      <Filter>Resource Files</Filter>
-    </Image>
     <Image Include="assets\basketball.png">
       <Filter>Resource Files</Filter>
     </Image>
@@ -52,5 +46,14 @@
     <ClInclude Include="src\Graphics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="SDL2_image.dll" />
+    <None Include="SDL2_gfx.dll" />
+    <None Include="SDL2.dll" />
+    <None Include="libwebp-7.dll" />
+    <None Include="libwebpdemux-2.dll" />
+    <None Include="libavif-16.dll" />
+    <None Include="libtiff-5.dll" />
   </ItemGroup>
 </Project>
