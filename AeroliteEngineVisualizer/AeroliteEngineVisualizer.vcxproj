@@ -173,6 +173,7 @@
     <ClCompile Include="src\scenes\GravityDragScene.cpp" />
     <ClCompile Include="src\Graphics.cpp" />
     <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\scenes\SpringScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\scenes\Scene.h" />

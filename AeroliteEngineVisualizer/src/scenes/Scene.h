@@ -83,4 +83,26 @@ public:
     void Destroy()override;
 };
 
+class SpringScene : public Scene
+{
+private:
+    std::vector<std::shared_ptr<Particle>> particles;
+    ParticleForceRegistry pfg;
+    Vec2 pushForce;
+    Vec2 mouseCursor;
+    bool leftMouseButtonDown;
+
+    Vec2 anchor = Vec2(0, 0);
+    float k = 40.0f;
+    float restLength = 200.0f;
+
+public:
+    void Setup() override;
+    void Input() override;
+    void Update() override;
+    void Render() override;
+    void Destroy()override;
+
+};
+
 #endif

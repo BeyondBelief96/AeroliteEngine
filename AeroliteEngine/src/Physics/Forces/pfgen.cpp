@@ -125,3 +125,27 @@ void Aerolite::ParticleGAttraction::UpdateForce(std::shared_ptr<Particle> partic
     // Apply the gravitational force to the particle.
     particle->ApplyForce(attractionForce);
 }
+
+Aerolite::ParticleSpringAnchored::ParticleSpringAnchored(const Vec2 anchor, float restLength, float springConstant)
+{
+    this->anchor = anchor;
+    this->restLength = restLength;
+    this->k = springConstant;
+}
+
+void Aerolite::ParticleSpringAnchored::UpdateForce(std::shared_ptr<Particle> particle, float dt)
+{
+    // Calculate the distance between the anchor and the particle.
+    Vec2 d = particle->position - anchor;
+
+    // Find the spring displacement considering the rest length;
+    float displacement = d.Magnitude() - restLength;
+
+    // Calculate the direction & magnitude of the spring force.
+    Vec2 springDirection = d.UnitVector();
+    float springMagnitude = -k * displacement;
+
+    // Calculate the final resulting spring force vector.
+    Vec2 springForce = springDirection * springMagnitude;
+    particle->ApplyForce(springForce);
+}

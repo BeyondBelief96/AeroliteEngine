@@ -2,7 +2,7 @@
 
 
 int main(int argc, char *args[]) {
-    SolarSystemScene scene;
+    SpringScene scene;
 
     scene.Setup();
 

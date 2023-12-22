@@ -104,7 +104,7 @@ namespace Aerolite {
         // In a particle system, it's commonly used to simulate resistance against the motion of the particle.
     };
 
-    // The ParticleGravitationalForceGenerator class is a specialized force generator that simulates
+    // The ParticleGAttraction class is a specialized force generator that simulates
     // the gravitational force between two particles. It inherits from ParticleForceGenerator, 
     // providing a specific implementation for gravitational attraction.
     class ParticleGAttraction : public ParticleForceGenerator {
@@ -160,6 +160,35 @@ namespace Aerolite {
         float maxDistance;   // The maximum distance beyond which the gravitational force is not considered.
         // This can be used to optimize calculations by ignoring negligible forces at large distances.
         // It helps in managing computational efficiency, especially in simulations with many particles.
+    };
+
+    // ParticleSpring: A class derived from ParticleForceGenerator. 
+    // It models a spring force acting on a particle. This force depends on the distance 
+    // between the particle and a fixed anchor point in space.
+    class ParticleSpringAnchored : public ParticleForceGenerator
+    {
+    public:
+        // Constructor for the ParticleSpring class.
+        // Initializes a new ParticleSpring with a target particle, an anchor point, 
+        // the rest length of the spring, and the spring constant.
+        // 
+        // @param anchor: The Vec2 object representing the fixed anchor point in space.
+        // @param restLength: The natural length of the spring at which no force is exerted.
+        // @param springConstant: The stiffness of the spring, determining how much force is applied 
+        //                        for a given extension or compression.
+        ParticleSpringAnchored(const Vec2 anchor, float restLength, float springConstant);
+
+        // UpdateForce: Override the virtual function from ParticleForceGenerator.
+        // This method calculates and applies the spring force to the attached particle.
+        // 
+        // @param particle: The shared pointer to the Particle object on which the force is to be applied.
+        // @param dt: The time interval over which the force acts.
+        virtual void UpdateForce(std::shared_ptr<Particle> particle, float dt) override;
+
+    private:
+        Vec2 anchor;     // The fixed anchor point in space to which the spring is attached.
+        float restLength; // The natural length of the spring (length at rest).
+        float k;         // The spring constant, representing the stiffness of the spring.
     };
 
 }
