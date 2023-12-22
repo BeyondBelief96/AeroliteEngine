@@ -1,17 +1,51 @@
 #include "Particle.h"
 #include <iostream>
+using namespace Aerolite;
 
-Particle::Particle(float x, float y, float mass)
+Particle::Particle(float x, float y, float mass) : position(x, y), mass(mass)
 {
-	this->radius = 4.0;
-	this->position = Vec2{ x, y };
-	this->velocity = Vec2{ 0.0f, 0.0f };
-	this->acceleration = Vec2{ 0.0f, 0.0f };
-	this->mass = mass;
+	radius = 4.0;
+	velocity = Vec2(0.0, 0.0);
+	acceleration = Vec2(0.0, 0.0);
+	netForces = Vec2(0.0, 0.0);
+	if (mass != 0.0)
+		invMass = 1.0 / mass;
+	else
+		invMass = 0.0;
+
 	std::cout << "Particle constructor called" << std::endl;
 }
 
 Particle::~Particle()
 {
 	std::cout << "Particle destructor called" << std::endl;
+}
+
+void Particle::ApplyForce(const Vec2& force)
+{
+	netForces += force;
+}
+
+void Particle::ClearForces()
+{
+	netForces = Vec2(0.0f, 0.0f);
+}
+
+bool Aerolite::Particle::HasFiniteMass(void)
+{
+	return invMass != 0.0f;
+}
+
+void Particle::Integrate(const float dt)
+{
+	// Find the acceleration based on forces being applied.
+	acceleration = netForces * invMass;
+
+	// Integrate acceleration to find velocity;
+	velocity += acceleration * dt;
+
+	// Integrate velocity to find position.
+	position += velocity * dt + (acceleration * dt * dt) / 2.0f;
+
+	ClearForces();
 }

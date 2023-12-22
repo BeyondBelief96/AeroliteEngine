@@ -21,8 +21,8 @@ bool Graphics::OpenWindow() {
     }
     SDL_DisplayMode display_mode;
     SDL_GetCurrentDisplayMode(0, &display_mode);
-    windowWidth = 800;
-    windowHeight = 600;
+    windowWidth = 1920;
+    windowHeight = 1080;
     window = SDL_CreateWindow(NULL, display_mode.w /2 - windowWidth /2, display_mode.h /2 - windowHeight/2, windowWidth, windowHeight, SDL_WINDOW_RESIZABLE);
     if (!window) {
         std::cerr << "Error creating SDL window" << std::endl;

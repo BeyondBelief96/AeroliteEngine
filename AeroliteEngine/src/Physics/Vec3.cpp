@@ -31,11 +31,6 @@ namespace Aerolite {
         return sqrtf(x * x + y * y + z * z);
     }
 
-    // constexpr for compile-time calculations
-    constexpr float Vec3::MagnitudeSquared() const noexcept {
-        return x * x + y * y + z * z;
-    }
-
     Vec3& Vec3::Normalize() noexcept {
         float mag = Magnitude();
         if (mag > 0) {
@@ -60,10 +55,6 @@ namespace Aerolite {
         *b = c->Cross(*a);
     }
 
-    constexpr float Vec3::Dot(const Vec3& v) const noexcept {
-        return x * v.x + y * v.y + z * v.z;
-    }
-
     Vec3 Vec3::Cross(const Vec3& v) const noexcept {
         return Vec3(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x);
     }
@@ -73,14 +64,6 @@ namespace Aerolite {
         y = v.y;
         z = v.z;
         return *this;
-    }
-
-    constexpr bool Vec3::operator==(const Vec3& v) const noexcept {
-        return x == v.x && y == v.y && z == v.z;
-    }
-
-    constexpr bool Vec3::operator!=(const Vec3& v) const noexcept {
-        return !(*this == v);
     }
 
     Vec3 Vec3::operator+(const Vec3& v) const noexcept {

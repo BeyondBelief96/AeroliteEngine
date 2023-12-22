@@ -40,7 +40,10 @@ namespace Aerolite {
 
         // Returns the squared magnitude of the vector, which is more efficient
         // than Magnitude() as it avoids the square root operation.
-         constexpr float MagnitudeSquared() const noexcept;
+         constexpr float MagnitudeSquared() const noexcept
+         {
+             return x * x + y * y + z * z;
+         };
 
         // Normalizes the vector (makes its length 1) and returns a reference to it.
          Vec3& Normalize() noexcept;
@@ -49,7 +52,10 @@ namespace Aerolite {
          Vec3 UnitVector() const noexcept;
 
         // Computes the dot product of this vector with another Vec3.
-         constexpr float Dot(const Vec3& v) const noexcept;
+         constexpr float Dot(const Vec3& v) const noexcept
+         {
+             return x * v.x + y * v.y + z * v.z;
+         };
 
         // Computes the cross product of this vector with another Vec3 and returns the resulting Vec3.
          Vec3 Cross(const Vec3& v) const noexcept;
@@ -61,10 +67,16 @@ namespace Aerolite {
          Vec3& operator=(const Vec3& v) noexcept;
 
         // Equality comparison operator. Returns true if this Vec3 is equal to the given Vec3.
-         constexpr bool operator==(const Vec3& v) const noexcept;
+         constexpr bool operator==(const Vec3& v) const noexcept
+         {
+             return x == v.x && y == v.y && z == v.z;
+         };
 
         // Inequality comparison operator. Returns true if this Vec3 is not equal to the given Vec3.
-         constexpr bool operator!=(const Vec3& v) const noexcept;
+         constexpr bool operator!=(const Vec3& v) const noexcept
+         {
+             return !(*this == v);
+         };
 
         // Addition operator. Returns a new Vec3 that is the sum of this Vec3 and the given Vec3.
          Vec3 operator+(const Vec3& v) const noexcept;

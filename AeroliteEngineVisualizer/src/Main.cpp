@@ -1,18 +1,18 @@
-#include "Application.h"
+#include "scenes/Scene.h"
 
 
 int main(int argc, char *args[]) {
-    Application app;
+    SolarSystemScene scene;
 
-    app.Setup();
+    scene.Setup();
 
-    while (app.IsRunning()) {
-        app.Input();
-        app.Update();
-        app.Render();
+    while (scene.IsRunning()) {
+        scene.Input();
+        scene.Update();
+        scene.Render();
     }
 
-    app.Destroy();
+    scene.Destroy();
 
     return 0;
 }
