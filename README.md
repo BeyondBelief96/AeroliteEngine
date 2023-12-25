@@ -1,4 +1,4 @@
-# PhysicsEngine
+# Aerolite Engine
 
 PhysicsEngine is a lightweight 2D and 3D physics simulation library written in C++. It can be used to add physical behaviors like collisions, rigid body dynamics, and particle systems to games and other graphical applications. 
 
