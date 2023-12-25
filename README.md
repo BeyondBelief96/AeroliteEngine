@@ -52,7 +52,7 @@ See the scenes/ folder for sample code snippets showing how to:
 - Apply forces like gravity and springs 
 - Perform collision detection
 - Integrate physics over time
-- Render physics objects using OpenGL
+- Render physics objects using SDL2
 
 ## Contributing
 
