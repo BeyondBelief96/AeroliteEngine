@@ -4,7 +4,7 @@ Aerolite Engine is a lightweight 2D and 3D physics simulation library written in
 
 ## About
 
-Key features of PhysicsEngine:
+Key features of Aerolite:
 
 - Uses a particle-based system to simulate physical objects
 - Supports basic rigid bodies, joints, particle systems, and aggregate bodies
@@ -17,7 +17,7 @@ The goal of this project is to provide a simple yet powerful physics engine that
 
 ## Installation
 
-PhysicsEngine depends on a few libraries:
+The demo scenes project depends on a few libraries:
 
 ### Windows
 
