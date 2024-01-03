@@ -72,8 +72,8 @@ void CollisionProjectionResolutionScene::Update() {
 
     // Create body - Force Registration Pairs.
     for(auto& body : bodies) {
-        // Vec2 weight = Vec2(0, 9.8 * PIXELS_PER_METER);
-        // body->AddForce(weight);
+         Vec2 weight = Vec2(0, 9.8 * PIXELS_PER_METER);
+         body->AddForce(weight);
     }
 
     for(auto& body : bodies) {

@@ -11,12 +11,14 @@ namespace Aerolite {
     {
         this->shape = shape;
         this->position = Vec2(x, y);
-        this->velocity = Vec2(0, 0);
-        this->acceleration = Vec2(0, 0);
+        this->velocity = Vec2(0.0f, 0.0f);
+        this->acceleration = Vec2(0.0f, 0.0f);
         this->mass = mass;
-        this->rotation = 0.0;
-        this->angularVelocity = 0.0;
-        this->angularAcceleration = 0.0;
+        this->rotation = 0.0f;
+        this->angularVelocity = 0.0f;
+        this->angularAcceleration = 0.0f;
+        this->sumForces = Vec2(0.0f, 0.0f);
+        this->sumTorque = 0.0f;
 
         if(mass != 0.0) {
             this-> invMass = 1.0 / mass;
