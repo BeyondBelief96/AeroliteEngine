@@ -11,8 +11,8 @@ namespace Aerolite {
     // magnitude, normalization, and vector products.
     
     struct Vec2 {
-        float x;  // The x-coordinate of the vector
-        float y;  // The y-coordinate of the vector
+        float x = 0.0f;  // The x-coordinate of the vector
+        float y = 0.0f;  // The y-coordinate of the vector
 
         // Default constructor. Initializes a new Vec2 with default values.
          Vec2() noexcept = default;
@@ -58,8 +58,8 @@ namespace Aerolite {
             return x * x + y * y;
         }
 
-        // Normalizes the vector (makes its length 1) and returns a reference to it.
-        Vec2& Normalize() noexcept;
+        // Normalizes the vector (makes its length 1);
+        void Normalize() noexcept;
 
         // Returns a new Vec2 representing the unit vector (vector of length 1) of this vector.
         Vec2 UnitVector() const noexcept;

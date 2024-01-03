@@ -71,16 +71,16 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\Users\brand\Code\cpp\Aerolite\AeroliteEngine\AeroliteEngine\src\Physics;$(IncludePath)</IncludePath>
+    <IncludePath>$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>C:\Users\brand\Code\cpp\Aerolite\AeroliteEngine\AeroliteEngine\src\Physics;$(IncludePath)</IncludePath>
+    <IncludePath>$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\Users\brand\Code\cpp\Aerolite\AeroliteEngine\AeroliteEngine\src\Physics;$(IncludePath)</IncludePath>
+    <IncludePath>$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>C:\Users\brand\Code\cpp\Aerolite\AeroliteEngine\AeroliteEngine\src\Physics;$(IncludePath)</IncludePath>
+    <IncludePath>$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -143,15 +143,29 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Physics\Body2D.h" />
+    <ClInclude Include="src\Physics\Collision2D.h" />
     <ClInclude Include="src\Physics\Constants.h" />
+    <ClInclude Include="src\Physics\Contact2D.h" />
     <ClInclude Include="src\Physics\Forces\pfgen.h" />
+    <ClInclude Include="src\Physics\Matrix3x3.h" />
+    <ClInclude Include="src\Physics\Matrix3x4.h" />
     <ClInclude Include="src\Physics\Particle.h" />
+    <ClInclude Include="src\Physics\pfgen.h" />
+    <ClInclude Include="src\Physics\Precision.h" />
+    <ClInclude Include="src\Physics\Shape.h" />
     <ClInclude Include="src\Physics\Vec2.h" />
     <ClInclude Include="src\Physics\Vec3.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Physics\Forces\pfgen.cpp" />
+    <ClCompile Include="src\Physics\Body2D.cpp" />
+    <ClCompile Include="src\Physics\Collision2D.cpp" />
+    <ClCompile Include="src\Physics\Contact2D.cpp" />
+    <ClCompile Include="src\Physics\Matrix3x3.cpp" />
+    <ClCompile Include="src\Physics\Matrix3x4.cpp" />
     <ClCompile Include="src\Physics\Particle.cpp" />
+    <ClCompile Include="src\Physics\pfgen.cpp" />
+    <ClCompile Include="src\Physics\Shape.cpp" />
     <ClCompile Include="src\Physics\Vec2.cpp" />
     <ClCompile Include="src\Physics\Vec3.cpp" />
   </ItemGroup>

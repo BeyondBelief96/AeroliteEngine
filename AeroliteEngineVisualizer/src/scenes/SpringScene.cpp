@@ -1,25 +1,36 @@
-#include <Constants.h>
 #include <random>
-#include <pfgen.h>
+#include <iostream>
+#include "pfgen.h"
+#include "Constants.h"
 #include "Scene.h"
 
-// GLOBAL VARIABLES
-std::shared_ptr<ParticleSpringAnchored> springForceGenerator;
-std::shared_ptr<ParticleGravity> weightForceGenerator;
-std::shared_ptr<ParticleDrag> dragForceGeneratorSpring;
+void GenerateParticlesInLine(std::vector<std::shared_ptr<Particle>>& particles,
+        int numParticles, float verticalSeparation, const Vec2& anchor,
+        float width, float mass) 
+    {
+        for (int i = 0; i < numParticles; i++) {
+            float xPosition = width / 2.0;
+
+            std::cout << anchor.y;
+            std::cout << verticalSeparation;
+            std::cout << i+1 * verticalSeparation;
+            float yPosition = anchor.y + ((i+1) * verticalSeparation);
+            auto particle = std::make_shared<Particle>(xPosition, yPosition, mass);
+            particles.push_back(particle);
+        }
+    };
+
+
+auto dragGenerator = std::make_shared<ParticleDrag>(0.001, 0.005);
 
 ///////////////////////////////////////////////////////////////////////////////
 // Setup function (executed once in the beginning of the simulation)
 ///////////////////////////////////////////////////////////////////////////////
 void SpringScene::Setup() {
     running = Graphics::OpenWindow();
-    anchor = Vec2(Graphics::Width() / 2.0f, 100);
-
-    auto particle = std::make_shared<Particle>(Graphics::Width() / 2.0, anchor.y + restLength, 3.0);
-    particles.push_back(particle);
-    springForceGenerator = std::make_shared<ParticleSpringAnchored>(anchor, restLength, k);
-    weightForceGenerator = std::make_shared<ParticleGravity>(Vec2(0.0, particle->mass * 9.8 * PIXELS_PER_METER));
-    dragForceGeneratorSpring = std::make_shared<ParticleDrag>(0, 0.005);
+    particles = std::vector<std::shared_ptr<Particle>>();
+    anchor = Vec2(Graphics::Width() / 2, 30);
+    GenerateParticlesInLine(particles, NUM_PARTICLES, restLength, anchor, Graphics::Width(), PARTICLE_MASS);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -72,9 +83,9 @@ void SpringScene::Input() {
         case SDL_MOUSEBUTTONUP:
             if (leftMouseButtonDown && event.button.button == SDL_BUTTON_LEFT) {
                 leftMouseButtonDown = false;
-                Vec2 impulseDirection = (particles[0]->position - mouseCursor).UnitVector();
-                float impulseMagnitude = (particles[0]->position - mouseCursor).Magnitude() * 2.0;
-                particles[0]->velocity = impulseDirection * impulseMagnitude;
+                Vec2 impulseDirection = (particles[particles.size() - 1]->position - mouseCursor).UnitVector();
+                float impulseMagnitude = (particles[particles.size() - 1]->position - mouseCursor).Magnitude() * 6.0;
+                particles[particles.size() - 1]->velocity = impulseDirection * impulseMagnitude;
             }
             break;
         }
@@ -101,15 +112,33 @@ void SpringScene::Update() {
     // Set the time of the current frame to be used in the next one.
     timePreviousFrame = SDL_GetTicks();
 
-    // Create Particle - Force Registration Pairs.
-    for (auto particle : particles)
+    //Create Particle - Force Registration Pairs.
+    for(int i = 0; i < particles.size(); i++)
     {
-        particle->ApplyForce(pushForce);
-        pfg.Add(particle, springForceGenerator);
-        pfg.Add(particle, dragForceGeneratorSpring);
-        pfg.Add(particle, weightForceGenerator);
+        // Applying weight force.
+        auto weightForceGenerator = std::make_shared<ParticleGravity>(Vec2(0, 9.8 * particles[i]->mass * PIXELS_PER_METER));
+        pfg.Add(particles[i], weightForceGenerator);
+        
+        // Apply drag force to each particle.
+        particles[i]->ApplyForce(pushForce);
+        pfg.Add(particles[i], dragGenerator);
+
+        // Apply spring forces.
+        if(i == 0)
+        {
+            auto anchorForceGenerator = std::make_shared<ParticleSpringAnchored>(anchor, restLength, k);
+            pfg.Add(particles[i], anchorForceGenerator);
+        }
+        else
+        {
+            auto springForceGenerator = std::make_shared<ParticleSpring>(particles[i], particles[i - 1], restLength, k);
+            auto invSpringForceGenerator = std::make_shared<ParticleSpring>(particles[i - 1], particles[i], restLength, k);
+            pfg.Add(particles[i], springForceGenerator);
+            pfg.Add(particles[i - 1], invSpringForceGenerator);
+        }
     }
 
+    
     // Update Forces From Particle Force Registry
     pfg.UpdateForces(deltaTime);
 
@@ -150,15 +179,25 @@ void SpringScene::Render() {
     Graphics::ClearScreen(0xFF060224);
 
     if (leftMouseButtonDown)
-        Graphics::DrawLine(particles[0]->position.x, particles[0]->position.y, mouseCursor.x, mouseCursor.y, 0xFFFFFFFF);
+        Graphics::DrawLine(particles[particles.size() - 1]->position.x, particles[particles.size() - 1]->position.y, mouseCursor.x, mouseCursor.y, 0xFFFFFFFF);
 
     // Draw anchor
     Graphics::DrawFillCircle(anchor.x, anchor.y, 10, 0xFFFFFFFF);
 
-    for (auto particle : particles)
+    for(int i = 0; i < particles.size(); i++)
     {
-        Graphics::DrawLine(anchor.x, anchor.y, particle->position.x, particle->position.y, 0xFFFFFFFF);
-        Graphics::DrawFillCircle(particle->position.x, particle->position.y, particle->radius, 0xFFFFFFFF);
+        if(i == 0)
+        {
+            // Draw line from anchor to first particle
+            Graphics::DrawLine(anchor.x, anchor.y, particles[i]->position.x, particles[i]->position.y, 0xFFFFFFFF);
+            Graphics::DrawFillCircle(particles[i]->position.x, particles[i]->position.y, particles[i]->radius, 0xFFFFFFFF);
+        }
+        else
+        {
+            // Draw line from current particle to previous particle.
+            Graphics::DrawLine(particles[i]->position.x, particles[i]->position.y, particles[i-1]->position.x, particles[i-1]->position.y, 0xFFFFFFFF);
+            Graphics::DrawFillCircle(particles[i]->position.x, particles[i]->position.y, particles[i]->radius, 0xFFFFFFFF);
+        }
     }
         
     Graphics::RenderFrame();

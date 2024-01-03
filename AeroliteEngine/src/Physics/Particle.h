@@ -2,6 +2,7 @@
 #define PARTICLE_H
 
 #include "Vec2.h"
+#include "Precision.h"
 
 using namespace Aerolite;
 
@@ -18,14 +19,14 @@ namespace Aerolite {
         Vec2 netForces;      // The current sum of all forces acting on this particle. Influences the acceleration of the particle.
         // Useful for applying multiple forces and calculating the resulting acceleration.
 
-        float mass;          // The mass of the particle. This can be used to influence the motion in a physical simulation (e.g., under gravity).
-        float invMass;       // The inverse mass of the particle. Useful for optimizing calculations involving mass,
+        real mass;          // The mass of the particle. This can be used to influence the motion in a physical simulation (e.g., under gravity).
+        real invMass;       // The inverse mass of the particle. Useful for optimizing calculations involving mass,
         // such as force application. It is particularly handy in physics engines where 
         // division by mass is common, as multiplying by the inverse mass is more efficient.
 
         // Constructor for the Particle. Initializes the particle with a position (x, y), and mass.
         // The velocity and acceleration are initialized to zero by default.
-        Particle(float x, float y, float mass);
+        Particle(real x, real y, real mass);
 
         // Destructor for the Particle. Currently, it does not need to perform any specific actions
         // as the struct does not manage any resources directly.
@@ -47,7 +48,7 @@ namespace Aerolite {
         // Integrate function updates the physics state of the particle. This includes updating 
         // the position based on velocity and acceleration over a given time step (dt).
         // This is often called in the update loop of a simulation or game to simulate motion.
-        void Integrate(const float dt);
+        void Integrate(const real dt);
     };
 }
 

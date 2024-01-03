@@ -15,27 +15,28 @@ namespace Aerolite {
         return std::hypot(x, y);
     }
 
-    Vec2& Vec2::Normalize() noexcept
+    void Vec2::Normalize() noexcept
     {
         float length = Magnitude();
         if (length != 0.0f)
         {
-            x /= length;
-            y /= length;
+            this->x /= length;
+            this->y /= length;
         }
-
-        return *this;
     }
 
     Vec2 Vec2::UnitVector() const noexcept
     {
-        Vec2 result = *this;
-        return result.Normalize();
+        Vec2 result = Vec2(*this);
+        result.Normalize();
+        return result;
     }
 
     Vec2 Vec2::Normal() const noexcept
     {
-        return Vec2(y, -x).Normalize();
+        Vec2 result = Vec2(-y, x);
+        result.Normalize();
+        return result;
     }
 
     Vec2& Vec2::operator=(const Vec2& v) noexcept

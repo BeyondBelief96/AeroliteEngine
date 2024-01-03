@@ -5,7 +5,7 @@
 
 namespace Aerolite {
     // Default member initializers
-    Vec3::Vec3(float x, float y, float z) noexcept : x(x), y(y), z(z) {}
+    Vec3::Vec3(real x, real y, real z) noexcept : x(x), y(y), z(z) {}
 
     // Inline simple methods for performance
     inline void Vec3::Add(const Vec3& v) noexcept {
@@ -20,19 +20,19 @@ namespace Aerolite {
         z -= v.z;
     }
 
-    inline void Vec3::Scale(const float n) noexcept {
+    inline void Vec3::Scale(const real n) noexcept {
         x *= n;
         y *= n;
         z *= n;
     }
 
     // Use std::hypot for better numerical stability
-    inline float Vec3::Magnitude() const noexcept {
+    inline real Vec3::Magnitude() const noexcept {
         return sqrtf(x * x + y * y + z * z);
     }
 
     Vec3& Vec3::Normalize() noexcept {
-        float mag = Magnitude();
+        real mag = Magnitude();
         if (mag > 0) {
             x /= mag;
             y /= mag;
@@ -74,11 +74,11 @@ namespace Aerolite {
         return Vec3(x - v.x, y - v.y, z - v.z);
     }
 
-    Vec3 Vec3::operator*(const float n) const noexcept {
+    Vec3 Vec3::operator*(const real n) const noexcept {
         return Vec3(x * n, y * n, z * n);
     }
 
-    Vec3 Vec3::operator/(const float n) const {
+    Vec3 Vec3::operator/(const real n) const {
         assert(n != 0); // Assert in debug mode
         if (n == 0) {
             throw std::runtime_error("Division by zero error in Vec3::operator/.");
@@ -100,12 +100,12 @@ namespace Aerolite {
         return *this;
     }
 
-    Vec3& Vec3::operator*=(const float n) noexcept {
+    Vec3& Vec3::operator*=(const real n) noexcept {
         Scale(n);
         return *this;
     }
 
-    Vec3& Vec3::operator/=(const float n) {
+    Vec3& Vec3::operator/=(const real n) {
         assert(n != 0); // Assert in debug mode
         if (n == 0) {
             throw std::runtime_error("Division by zero error in Vec3::operator/=.");

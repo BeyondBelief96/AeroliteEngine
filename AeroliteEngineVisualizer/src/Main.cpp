@@ -2,7 +2,7 @@
 
 
 int main(int argc, char *args[]) {
-    SpringScene scene;
+    CollisionProjectionResolutionScene scene;
 
     scene.Setup();
 

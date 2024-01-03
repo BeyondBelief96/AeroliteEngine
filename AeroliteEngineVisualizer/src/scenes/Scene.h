@@ -1,8 +1,9 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
-#include <Particle.h>
-#include <pfgen.h>
+#include "Particle.h"
+#include "Body2D.h"
+#include "pfgen.h"
 #include <vector>
 #include <memory>
 #include "../Graphics.h"
@@ -62,6 +63,7 @@ class SolarSystemScene : public Scene
 {
 private:
     std::vector<std::shared_ptr<Particle>> planets;
+    std::vector<float> planetRadii;
     ParticleForceRegistry pfg;
     Vec2 mouseCursor;
     bool leftMouseButtonDown;
@@ -93,8 +95,10 @@ private:
     bool leftMouseButtonDown;
 
     Vec2 anchor = Vec2(0, 0);
-    float k = 40.0f;
-    float restLength = 200.0f;
+    float k = 150;
+    float restLength = 15;
+    int NUM_PARTICLES = 15;
+    float PARTICLE_MASS = 1.0;
 
 public:
     void Setup() override;
@@ -103,6 +107,39 @@ public:
     void Render() override;
     void Destroy()override;
 
+};
+
+class Collision2DScene : public Scene
+{
+private:
+    std::vector<std::unique_ptr<Body2D>> bodies;
+    Vec2 pushForce;
+    Vec2 mouseCursor;
+    bool leftMouseButtonDown;
+
+public:
+    void Setup() override;
+    void Input() override;
+    void Update() override;
+    void Render() override;
+    void Destroy()override;
+
+};
+
+class CollisionProjectionResolutionScene : public Scene
+{
+    private:
+        std::vector<std::unique_ptr<Body2D>> bodies;
+        Vec2 pushForce;
+        Vec2 mouseCursor;
+        bool leftMouseButtonDown;
+
+    public:
+        void Setup() override;
+        void Input() override;
+        void Update() override;
+        void Render() override;
+        void Destroy()override;
 };
 
 #endif

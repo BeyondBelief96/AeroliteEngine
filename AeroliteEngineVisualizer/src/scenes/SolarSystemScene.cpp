@@ -1,9 +1,10 @@
-#include <Constants.h>
+#include "Constants.h"
 #include <random>
+#include <stdio.h>
 #include <sstream>
 #include <algorithm>
 #include <iomanip>
-#include <pfgen.h>
+#include "pfgen.h"
 #include "Scene.h"
 
 // Generates a solar system layout with planets in orbit around a central sun.
@@ -29,9 +30,10 @@ void SolarSystemScene::GenerateSolarSystem(std::vector<std::shared_ptr<Particle>
         float x = radius * cosf(angle);
         float y = radius * sinf(angle);
 
+        planetRadii.push_back(radius);
         // Calculate velocity for a circular orbit. 
         // The velocity direction should be perpendicular to the radial vector (x, y).
-        float velocityMagnitude = sqrtf(gravitationalConstant * sunMass / radius) * 30;
+        double velocityMagnitude = sqrtf(gravitationalConstant * sunMass / radius);
         // Velocity direction is perpendicular to radial direction
         Vec2 velocity(-y, x); // Rotate position vector by 90 degrees to get tangent direction
         velocity = velocity.UnitVector() * velocityMagnitude; // Normalize and scale by magnitude
@@ -42,14 +44,14 @@ void SolarSystemScene::GenerateSolarSystem(std::vector<std::shared_ptr<Particle>
         planets.push_back(planet);
 
         // Create gravitational attraction force generators.
-        auto gravAttractionToSun = std::make_shared<ParticleGAttraction>(planet, sun, gravitationalConstant, 5, 100);
+        auto gravAttractionToSun = std::make_shared<ParticleGAttraction>(planet, sun, gravitationalConstant, 0, 1e15);
         gravAttractionForces.push_back(gravAttractionToSun);
     }
 }
 
 // GLOBAL VARIABLES
 auto gravAttractionForces = std::vector<std::shared_ptr<ParticleGAttraction>>();
-auto sun = std::make_shared<Particle>(0, 0, 50);
+auto sun = std::make_shared<Particle>(0, 0, MASS_OF_SUN);
 auto planetColors = std::vector<unsigned int>();
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -60,8 +62,8 @@ void SolarSystemScene::Setup() {
     sun->radius = 30;
     sun->position.x = Graphics::Width() / 2;
     sun->position.y = Graphics::Height() / 2;
-    GenerateSolarSystem(planets, gravAttractionForces, sun, 5000,
-        100, 50, 300, sun->mass);
+    GenerateSolarSystem(planets, gravAttractionForces, sun, 50,
+        GRAV_CONSTANT, 50, 500, sun->mass);
 
     for (auto planet : planets) {
         // Create a random device and generator for color generation
@@ -194,6 +196,8 @@ void SolarSystemScene::Render() {
     // Draw planets
     for (auto planet : planets) {
 
+        // Drawing velocity vector of each planet.
+        Graphics::DrawCircle(sun->position.x, sun->position.y, planetRadii[i], M_PI, planetColors[i]);
         // Draw the planet with the generated random color
         Graphics::DrawFillCircle(planet->position.x, planet->position.y, planet->radius, planetColors[i++]);
     }
