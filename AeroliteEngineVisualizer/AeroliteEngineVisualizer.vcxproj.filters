@@ -50,6 +50,9 @@
     <ClCompile Include="src\scenes\ProjectionResolutionScene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\scenes\Collision2DScene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\scenes\Scene.h">

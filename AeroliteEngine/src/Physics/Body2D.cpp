@@ -19,6 +19,7 @@ namespace Aerolite {
         this->angularAcceleration = 0.0f;
         this->sumForces = Vec2(0.0f, 0.0f);
         this->sumTorque = 0.0f;
+        this->restitution = 0.99;
 
         if(mass != 0.0) {
             this-> invMass = 1.0 / mass;
@@ -73,6 +74,13 @@ namespace Aerolite {
         sumTorque += torque;
     }
 
+    void Body2D::ApplyImpulse(const Vec2& j)
+    {
+        if (IsStatic()) return;
+
+        velocity += j * invMass;
+    }
+
     // Method to clear all forces acting on the body.
     void Body2D::ClearForces(void)
     {
@@ -97,7 +105,7 @@ namespace Aerolite {
         velocity += acceleration * dt;
 
         // Integrate velocity to find position.
-        position += velocity * dt + (acceleration * dt * dt) / 2.0f;
+        position += velocity * dt;
     }
 
     // Method to integrate the body's angular position and angular velocity over time (dt).

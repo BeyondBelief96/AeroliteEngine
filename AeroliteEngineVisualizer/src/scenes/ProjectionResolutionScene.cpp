@@ -52,8 +52,6 @@ void CollisionProjectionResolutionScene::Input() {
 ///////////////////////////////////////////////////////////////////////////////
 void CollisionProjectionResolutionScene::Update() {
 
-    //TEMPORARY FOR DEBUGGIN PURPOSES. PUT BACK IN RENDER FUNCTION EVENTUALLY.
-    Graphics::ClearScreen(0xFF000000);
     // Check if we are too fast, and if so, waste some milliseconds until we reach
     // MILLISECONDS_PER_FRAME.
     int timeToWait = MILLISECS_PER_FRAME - (SDL_GetTicks() - timePreviousFrame);
@@ -72,14 +70,22 @@ void CollisionProjectionResolutionScene::Update() {
 
     // Create body - Force Registration Pairs.
     for(auto& body : bodies) {
-         Vec2 weight = Vec2(0, 9.8 * PIXELS_PER_METER);
+         Vec2 weight = Vec2(0, body->mass * 9.8 * PIXELS_PER_METER);
          body->AddForce(weight);
+
+         /*Vec2 wind = Vec2(2.0 * PIXELS_PER_METER, 0.0);
+         body->AddForce(wind);*/
     }
 
     for(auto& body : bodies) {
         body->Update(deltaTime);
+    }
+
+    for (auto& body : bodies) {
+        body->Update(deltaTime);
         body->isColliding = false; // Temporary until we have collision detection engine setup.
     }
+   
 
     // Check all rigid bodies for collision
     for(int i = 0; i < bodies.size() - 1; i++)
@@ -89,10 +95,7 @@ void CollisionProjectionResolutionScene::Update() {
             Aerolite::Contact2D contact;
             if(CollisionDetection2D::IsColliding(bodies[i].get(), bodies[j].get(), contact))
             {
-                contact.ResolvePenetration();
-                Graphics::DrawFillCircle(contact.start.x, contact.start.y, 3, 0xFFFF00FF);
-                Graphics::DrawFillCircle(contact.end.x, contact.end.y, 3, 0xFFFF00FF);
-                Graphics::DrawLine(contact.start.x, contact.start.y, contact.start.x + contact.normal.x * 15, contact.start.y + contact.normal.y * 15, 0xFFFF00FF);
+                contact.ResolveCollision();
                 bodies[i]->isColliding = true;
                 bodies[j]->isColliding = true;
             }
@@ -125,12 +128,13 @@ void CollisionProjectionResolutionScene::Update() {
 // Render function (called several times per second to draw objects)
 ///////////////////////////////////////////////////////////////////////////////
 void CollisionProjectionResolutionScene::Render() {
+    Graphics::ClearScreen(0xFF000000);
     for(auto& body : bodies) {
 
         uint32_t color = body->isColliding ? 0xFF0000FF : 0xFFFFFFFF;
         if(body->shape->GetType() == Circle) {
             auto circleShape = std::dynamic_pointer_cast<CircleShape>(body->shape);
-            Graphics::DrawCircle(body->position.x, body->position.y, circleShape->radius, body->rotation, color);
+            Graphics::DrawFillCircle(body->position.x, body->position.y, circleShape->radius, color);
         }
         else  if(body->shape->GetType() == Box) {
             auto boxShape = std::dynamic_pointer_cast<BoxShape>(body->shape);

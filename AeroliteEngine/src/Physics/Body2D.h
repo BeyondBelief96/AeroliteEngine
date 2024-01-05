@@ -34,7 +34,9 @@ namespace Aerolite {
         real invMass = 0.0f; // Inverse mass of the body. Useful for physics calculations.
         real I; // Moment of inertia of the rigid body. This is based on the body's shape.
         real invI; // Inverse of the moment of inertia of the rigid body. Inverse moment of inertia is 
-                    // more efficient and has better numerical stability.
+                   // more efficient and has better numerical stability.
+
+        real restitution; //Coefficient of restitution for the body.
         
         std::shared_ptr<Shape> shape; // Shared pointer to a Shape object. Initialized to nullptr.
 
@@ -56,6 +58,12 @@ namespace Aerolite {
 
         // Method to add a torque to the body.
         void AddTorque(const real torque);
+           
+        /// <summary>
+        /// Applys an impulse to the body generally generated from a collision.
+        /// </summary>
+        /// <param name="j">The impulse vector to apply.</param>
+        void ApplyImpulse(const Vec2& j);
 
         // Method to clear all forces acting on the body.
         void ClearForces(void);

@@ -2,7 +2,7 @@
 #include <iostream>
 using namespace Aerolite;
 
-Particle::Particle(float x, float y, float mass) : position(x, y), mass(mass)
+Particle::Particle(real x, real y, real mass) : position(x, y), mass(mass)
 {
 	radius = 4.0;
 	velocity = Vec2(0.0, 0.0);
@@ -36,7 +36,7 @@ bool Aerolite::Particle::HasFiniteMass(void)
 	return invMass != 0.0f;
 }
 
-void Particle::Integrate(const float dt)
+void Particle::Integrate(const real dt)
 {
 	// Find the acceleration based on forces being applied.
 	acceleration = netForces * invMass;

@@ -39,9 +39,13 @@ namespace Aerolite {
         // No custom destructor needed as raw pointers 'a' and 'b' do not own the bodies.
         ~Contact2D() = default;
 
-        // Resolves the penetration between the two bodies.
+        // Resolves the penetration between the two Body2Ds.
         // This function adjusts the positions and/or velocities of the bodies to resolve the collision.
         void ResolvePenetration();
+
+        // This function resolves a collision between two objects in a 2D environment.
+        // It applies both positional correction and an impulse based on the objects' properties.
+        void ResolveCollision();
 
         // Copy assignment operator.
         Contact2D& operator=(const Contact2D& other) {

@@ -25,8 +25,9 @@ namespace Aerolite
 
         const Vec2 distanceBetweenCenters = b->position - a->position;
         const Aerolite::real sumRadius = aCircleShape->radius + bCircleShape->radius;
-
-        bool isColliding = distanceBetweenCenters.MagnitudeSquared() <= (sumRadius * sumRadius);
+        auto magSquared = distanceBetweenCenters.MagnitudeSquared();
+        auto radSquared = sumRadius * sumRadius;
+        bool isColliding = magSquared <= radSquared;
         
         if(!isColliding) {
             return false;
