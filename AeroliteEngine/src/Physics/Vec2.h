@@ -5,11 +5,11 @@
 #include <stdexcept>
 
 namespace Aerolite {
+
     // The Vec2 struct represents a 2-dimensional vector.
     // It's designed for operations common in 2D physics and graphics, such as addition,
     // subtraction, scaling, and rotation. It also includes methods for calculating
     // magnitude, normalization, and vector products.
-    
     struct Vec2 {
         float x = 0.0f;  // The x-coordinate of the vector
         float y = 0.0f;  // The y-coordinate of the vector

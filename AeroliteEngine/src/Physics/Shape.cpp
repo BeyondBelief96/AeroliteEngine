@@ -49,6 +49,13 @@ Aerolite::real Aerolite::PolygonShape::GetMomentOfInertia() const
     return 0.0f;
 }
 
+Aerolite::Vec2 Aerolite::PolygonShape::EdgeAt(int index) const
+{
+    int curVertex = index;
+    int nextVertex = (index + 1) % worldVertices.size();
+    return (worldVertices[nextVertex] - worldVertices[curVertex]);
+}
+
 void Aerolite::PolygonShape::UpdateVertices(const real angle, const Vec2 &position)
 {   
     // Rotate first, then translate.

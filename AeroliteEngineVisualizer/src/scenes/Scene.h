@@ -142,4 +142,20 @@ class CollisionProjectionResolutionScene : public Scene
         void Destroy()override;
 };
 
+class SATCollisionScene : public Scene
+{
+private:
+    std::vector<std::unique_ptr<Body2D>> bodies;
+    Vec2 pushForce;
+    Vec2 mouseCursor;
+    bool leftMouseButtonDown;
+
+public:
+    void Setup() override;
+    void Input() override;
+    void Update() override;
+    void Render() override;
+    void Destroy()override;
+};
+
 #endif

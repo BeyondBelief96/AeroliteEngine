@@ -171,6 +171,7 @@
     <ClCompile Include="src\scenes\BilliardsScene.cpp" />
     <ClCompile Include="src\scenes\Collision2DScene.cpp" />
     <ClCompile Include="src\scenes\ProjectionResolutionScene.cpp" />
+    <ClCompile Include="src\scenes\SATCollisionScene.cpp" />
     <ClCompile Include="src\scenes\SolarSystemScene.cpp" />
     <ClCompile Include="src\scenes\GravityDragScene.cpp" />
     <ClCompile Include="src\Graphics.cpp" />

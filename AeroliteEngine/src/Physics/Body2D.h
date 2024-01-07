@@ -38,11 +38,11 @@ namespace Aerolite {
 
         real restitution; //Coefficient of restitution for the body.
         
-        std::shared_ptr<Shape> shape; // Shared pointer to a Shape object. Initialized to nullptr.
+        Shape* shape; // Shared pointer to a Shape object. Initialized to nullptr.
 
         // Constructor for Body2D.
         // Takes a shared pointer to Shape, position coordinates (x, y), and mass.
-        Body2D(const std::shared_ptr<Shape> shape, const real x, const real y, const real mass);
+        Body2D(Shape* shape, const real x, const real y, const real mass);
 
         void Update(const real dt); 
 

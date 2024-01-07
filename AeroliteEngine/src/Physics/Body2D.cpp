@@ -6,8 +6,8 @@
 namespace Aerolite {
 
     // Constructor for Body2D.
-    // Takes a shared pointer to Shape, position coordinates (x, y), and mass.
-    Body2D::Body2D(const std::shared_ptr<Shape> shape, const Aerolite::real x, const Aerolite::real y, const Aerolite::real mass)
+    // Takes a pointer to a Shape, position coordinates (x, y), and mass.
+    Body2D::Body2D(Shape* shape, const Aerolite::real x, const Aerolite::real y, const Aerolite::real mass)
     {
         this->shape = shape;
         this->position = Vec2(x, y);
@@ -46,7 +46,7 @@ namespace Aerolite {
         bool isPolygon = shape->GetType() == Polygon || shape->GetType() == Box;
 
         if(isPolygon) {
-            auto polygonShape = std::dynamic_pointer_cast<PolygonShape>(shape);
+            auto polygonShape = (PolygonShape*) shape;
             polygonShape->UpdateVertices(rotation, position);
         }
     }
@@ -54,6 +54,8 @@ namespace Aerolite {
     // Destructor for Body2D.
     Body2D::~Body2D()
     {
+        delete(shape);
+        shape = nullptr;
         std::cout << "Destroying Body2D!" << std::endl;
     }
 
@@ -105,7 +107,10 @@ namespace Aerolite {
         velocity += acceleration * dt;
 
         // Integrate velocity to find position.
-        position += velocity * dt;
+        position += velocity * dt + (acceleration * dt * dt) / 2.0f;
+
+        // Clear all the forces on the body before next frame.
+        ClearForces();
     }
 
     // Method to integrate the body's angular position and angular velocity over time (dt).

@@ -14,9 +14,7 @@
 void CollisionProjectionResolutionScene::Setup() {
     running = Graphics::OpenWindow();
 
-    std::shared_ptr<Shape> bigBallShape = std::make_shared<CircleShape>(100);
-    
-    auto bigBall = std::make_unique<Body2D>(bigBallShape, Graphics::Width() / 2.0, Graphics::Height() / 2.0, 0.0);
+    auto bigBall = std::make_unique<Body2D>(new CircleShape(100), Graphics::Width() / 2.0, Graphics::Height() / 2.0, 0.0);
 
     bodies.push_back(std::move(bigBall));
 }
@@ -38,8 +36,7 @@ void CollisionProjectionResolutionScene::Input() {
             if(event.button.button == SDL_BUTTON_LEFT) {
                 int x, y;
                 SDL_GetMouseState(&x, &y);
-                std::shared_ptr<Shape> smallBallShape = std::make_shared<CircleShape>(50);
-                auto ball = std::make_unique<Body2D>(smallBallShape, x, y, 1.0);
+                auto ball = std::make_unique<Body2D>(new CircleShape(50), x, y, 1.0);
                 bodies.push_back(std::move(ball));
             }
             break;
@@ -73,8 +70,8 @@ void CollisionProjectionResolutionScene::Update() {
          Vec2 weight = Vec2(0, body->mass * 9.8 * PIXELS_PER_METER);
          body->AddForce(weight);
 
-         /*Vec2 wind = Vec2(2.0 * PIXELS_PER_METER, 0.0);
-         body->AddForce(wind);*/
+         Vec2 wind = Vec2(2.0 * PIXELS_PER_METER, 0.0);
+         body->AddForce(wind);
     }
 
     for(auto& body : bodies) {
@@ -105,7 +102,7 @@ void CollisionProjectionResolutionScene::Update() {
     // Check the boundaries of the window applying a hardcoded bounce flip in velocity
     for (auto& body : bodies) {
         if (body->shape->GetType() == Aerolite::ShapeType::Circle) {
-            auto circleShape = std::dynamic_pointer_cast<CircleShape>(body->shape);
+            auto circleShape = dynamic_cast<CircleShape*>(body->shape);
             if (body->position.x - circleShape->radius <= 0) {
                 body->position.x = circleShape->radius;
                 body->velocity.x *= -0.9;
@@ -133,11 +130,11 @@ void CollisionProjectionResolutionScene::Render() {
 
         uint32_t color = body->isColliding ? 0xFF0000FF : 0xFFFFFFFF;
         if(body->shape->GetType() == Circle) {
-            auto circleShape = std::dynamic_pointer_cast<CircleShape>(body->shape);
+            auto circleShape = dynamic_cast<CircleShape*>(body->shape);
             Graphics::DrawFillCircle(body->position.x, body->position.y, circleShape->radius, color);
         }
         else  if(body->shape->GetType() == Box) {
-            auto boxShape = std::dynamic_pointer_cast<BoxShape>(body->shape);
+            auto boxShape = dynamic_cast<BoxShape*>(body->shape);
             Graphics::DrawPolygon(body->position.x, body->position.y, boxShape->worldVertices, 0xFFFFFFFF);  
         }
     }

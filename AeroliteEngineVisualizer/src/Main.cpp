@@ -2,7 +2,7 @@
 
 
 int main(int argc, char *args[]) {
-    CollisionProjectionResolutionScene scene;
+    SATCollisionScene scene;
 
     scene.Setup();
 

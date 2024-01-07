@@ -46,6 +46,8 @@ namespace Aerolite {
             virtual ~PolygonShape(); // Destructor.
             virtual ShapeType GetType() const override; // Override to return ShapeType::Polygon.
             virtual real GetMomentOfInertia() const override; // Override to calculate moment of inertia for a polygon.
+            Aerolite::Vec2 EdgeAt(int index) const; // Given a vertex index, finds a Vec2 representing an edge of the polygon 
+                                                   // from the given vertex index to index + 1.
 
             // Updates the polygons vertices with the given rotation and translation.
             // Transforms the polygon from model space to world space.
