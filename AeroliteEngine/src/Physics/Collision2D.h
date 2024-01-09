@@ -36,6 +36,15 @@ namespace Aerolite {
         static bool IsCollidingPolygonPolygon(Aerolite::Body2D* a, Aerolite::Body2D* b, Aerolite::Contact2D& contact);
 
         /// <summary>
+        /// Uses a naive SAT algorithm approach to determine if two polygons are colliding.
+        /// </summary>
+        /// <param name="a">The first polygon for collision detection.</param>
+        /// <param name="b">The second polygon for collision detection.</param>
+        /// <param name="contact">A reference parameter to store collision and contact information.</param>
+        /// <returns></returns>
+        static bool IsCollidingSATBruteForce(Aerolite::Body2D* a, Aerolite::Body2D* b, Aerolite::Contact2D& contact);
+
+        /// <summary>
         /// Projects the given vertices onto the given axis and find the minimum and maximum projections
         /// of the vertics onto the axis. Stores the min/max in the pass by reference values.
         /// </summary>

@@ -79,10 +79,14 @@ namespace Aerolite
     //              If a separating axis is found (no overlap on an axis), the polygons are not colliding.
     bool CollisionDetection2D::IsCollidingPolygonPolygon(Aerolite::Body2D* a, Aerolite::Body2D* b, Aerolite::Contact2D& contact)
     {
+        return IsCollidingSATBruteForce(a, b, contact);
+    }
+
+    bool CollisionDetection2D::IsCollidingSATBruteForce(Aerolite::Body2D* a, Aerolite::Body2D* b, Aerolite::Contact2D& contact)
+    {
         // Casting the shape of each body to a PolygonShape to access polygon-specific properties.
         auto aPolygonShape = dynamic_cast<PolygonShape*>(a->shape);
         auto bPolygonShape = dynamic_cast<PolygonShape*>(b->shape);
-
         auto contactDepth = std::numeric_limits<Aerolite::real>::max();
         auto contactNormal = Aerolite::Vec2();
 
