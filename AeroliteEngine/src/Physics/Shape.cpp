@@ -56,6 +56,22 @@ Aerolite::Vec2 Aerolite::PolygonShape::EdgeAt(int index) const
     return (worldVertices[nextVertex] - worldVertices[curVertex]);
 }
 
+Aerolite::Vec2 Aerolite::PolygonShape::GeometricCenter(void) const
+{
+    Aerolite::real sumX = 0.0f;
+    Aerolite::real sumY = 0.0f;
+
+    for (int i = 0; i < worldVertices.size(); i++)
+    {
+        Aerolite::Vec2 v = worldVertices[i];
+        sumX += v.x;
+        sumY += v.y;
+    }
+
+    return Aerolite::Vec2(sumX / (Aerolite::real) worldVertices.size(),
+        sumY / (Aerolite::real) worldVertices.size());
+}
+
 void Aerolite::PolygonShape::UpdateVertices(const real angle, const Vec2 &position)
 {   
     // Rotate first, then translate.

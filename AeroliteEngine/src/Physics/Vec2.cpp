@@ -1,23 +1,25 @@
-#include "Vec2.h"
 #include <cmath>
 #include <stdexcept>
+#include "Vec2.h"
+#include "Precision.h"
+
 
 namespace Aerolite {
-     Vec2::Vec2(float x, float y) noexcept : x(x), y(y) {}
+     Vec2::Vec2(Aerolite::real x, Aerolite::real y) noexcept : x(x), y(y) {}
 
-    Vec2 Vec2::Rotate(const float angle) const noexcept
+    Vec2 Vec2::Rotate(const Aerolite::real angle) const noexcept
     {
         return Vec2(x * cosf(angle) - y * sinf(angle), x * sinf(angle) + y * cosf(angle));
     }
 
-    float Vec2::Magnitude() const noexcept
+    Aerolite::real Vec2::Magnitude() const noexcept
     {
         return std::hypot(x, y);
     }
 
     void Vec2::Normalize() noexcept
     {
-        float length = Magnitude();
+        Aerolite::real length = Magnitude();
         if (length != 0.0f)
         {
             this->x /= length;
@@ -66,12 +68,12 @@ namespace Aerolite {
         return Vec2(x - v.x, y - v.y);
     }
 
-    Vec2 Vec2::operator*(const float n) const noexcept
+    Vec2 Vec2::operator*(const Aerolite::real n) const noexcept
     {
         return Vec2(x * n, y * n);
     }
 
-    Vec2 Vec2::operator/(const float n) const
+    Vec2 Vec2::operator/(const Aerolite::real n) const
     {
         if (n == 0) throw std::runtime_error("Division by zero error in Vec2 operator /");
 
@@ -95,13 +97,13 @@ namespace Aerolite {
         return *this;
     }
 
-    Vec2& Vec2::operator*=(const float n) noexcept
+    Vec2& Vec2::operator*=(const Aerolite::real n) noexcept
     {
         Scale(n);
         return *this;
     }
 
-    Vec2& Vec2::operator/=(const float n)
+    Vec2& Vec2::operator/=(const Aerolite::real n)
     {
         if (n == 0) throw std::runtime_error("Division by zero error in Vec2 operator /=");
 

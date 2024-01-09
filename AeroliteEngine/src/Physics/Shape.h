@@ -48,6 +48,8 @@ namespace Aerolite {
             virtual real GetMomentOfInertia() const override; // Override to calculate moment of inertia for a polygon.
             Aerolite::Vec2 EdgeAt(int index) const; // Given a vertex index, finds a Vec2 representing an edge of the polygon 
                                                    // from the given vertex index to index + 1.
+            Aerolite::Vec2 GeometricCenter(void) const; // Returns a Vec2 that is the geometric center of the polygon using
+                                                        // an arithmetic mean method.
 
             // Updates the polygons vertices with the given rotation and translation.
             // Transforms the polygon from model space to world space.

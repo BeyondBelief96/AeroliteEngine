@@ -83,11 +83,14 @@ namespace Aerolite
         auto aPolygonShape = dynamic_cast<PolygonShape*>(a->shape);
         auto bPolygonShape = dynamic_cast<PolygonShape*>(b->shape);
 
+        auto contactDepth = std::numeric_limits<Aerolite::real>::max();
+        auto contactNormal = Aerolite::Vec2();
+
         // Checking for overlap along all axes formed by the edges of polygon a.
         for (int i = 0; i < aPolygonShape->worldVertices.size(); i++)
         {
             // Compute the normal to the edge.
-            Aerolite::Vec2 normal = aPolygonShape->EdgeAt(i).Normal();
+            Aerolite::Vec2 normal = aPolygonShape->EdgeAt(i).Normal().UnitVector();
 
             // Initialize min and max projection values.
             auto minA = std::numeric_limits<Aerolite::real>::max();
@@ -101,12 +104,20 @@ namespace Aerolite
 
             // If projections do not overlap, there is a separating axis, so no collision.
             if (minA >= maxB || minB >= maxA) return false;
+
+            auto axisDepth = std::min(maxB - minA, maxA - minB);
+
+            if (axisDepth < contactDepth)
+            {
+                contactDepth = axisDepth;
+                contactNormal = normal;
+            }
         }
 
         // Repeat the process for all axes formed by the edges of polygon b.
         for (int i = 0; i < bPolygonShape->worldVertices.size(); i++)
         {
-            Aerolite::Vec2 normal = bPolygonShape->EdgeAt(i).Normal();
+            Aerolite::Vec2 normal = bPolygonShape->EdgeAt(i).Normal().UnitVector();
 
             auto minA = std::numeric_limits<Aerolite::real>::max();
             auto maxA = std::numeric_limits<Aerolite::real>::min();
@@ -117,10 +128,83 @@ namespace Aerolite
             FindMinMaxProjections(bPolygonShape->worldVertices, normal, minB, maxB);
 
             if (minA >= maxB || minB >= maxA) return false;
+
+            auto axisDepth = std::min(maxB - minA, maxA - minB);
+
+            if (axisDepth < contactDepth)
+            {
+                contactDepth = axisDepth;
+                contactNormal = normal;
+            }
         }
+
+        // Ensuring that the normal of the contact points from body A to body B.
+        Aerolite::Vec2 centerA = aPolygonShape->GeometricCenter();
+        Aerolite::Vec2 centerB = bPolygonShape->GeometricCenter();
+
+        Aerolite::Vec2 direction = centerB - centerA;
+        if (direction.Dot(contactNormal) < 0.0f)
+            contactNormal *= -1;
+
+        contactDepth /= contactNormal.Magnitude();
+        contactNormal = contactNormal;
+
+        contact.a = a;
+        contact.b = b;
+        contact.depth = contactDepth;
+        contact.normal = contactNormal;
 
         // If no separating axis is found, the polygons are colliding.
         return true;
+    }
+
+    void CollisionDetection2D::FindContactPoint(PolygonShape* shapeA, PolygonShape* shapeB, Aerolite::Vec2& contactPoint)
+    {
+        Aerolite::real minDist = std::numeric_limits<Aerolite::real>::max();
+
+        for (int i = 0; i < shapeA->worldVertices.size(); i++)
+        {
+            Aerolite::Vec2 va = shapeA->worldVertices[i];
+            for (int j = 0; j < shapeB->worldVertices.size(); j++)
+            {
+                Aerolite::Vec2 edge1 = shapeB->worldVertices[j];
+                Aerolite::Vec2 edge2 = shapeB->worldVertices[(j + 1) % shapeB->worldVertices.size()];
+                Aerolite::Vec2 closestPoint = Vec2();
+                Aerolite::real distance = 0.0f;
+                PointLineSegmentDistance(va, edge1, edge2, distance, closestPoint);
+
+                if (distance == minDist)
+                {
+
+                }
+                else if (distance < minDist)
+                {
+                    minDist = distance;
+                    contactPoint = closestPoint;
+                }
+            }
+        }
+    }
+
+    void CollisionDetection2D::PointLineSegmentDistance(Aerolite::Vec2 p, Aerolite::Vec2 linePointA, Aerolite::Vec2 linePointB, Aerolite::real& distance, Aerolite::Vec2& closestPoint)
+    {
+        Aerolite::Vec2 ab = linePointB - linePointA;
+        Aerolite::Vec2 ap = p - linePointA;
+
+        auto proj = ap.Dot(ab);
+        auto abMagSquared = ab.MagnitudeSquared();
+        auto d = proj / abMagSquared;
+
+        if (d <= 0)
+            closestPoint = linePointA;
+        else if (d >= 1)
+            closestPoint = linePointB;
+        else
+        {
+            closestPoint = linePointA + ab * d;
+        }
+
+        distance = p.DistanceTo(closestPoint);
     }
 
     // Function: FindMinMaxProjections
@@ -131,7 +215,8 @@ namespace Aerolite
     //   - min, max: References to store the minimum and maximum projections.
     // Description: This function is a helper for the Separating Axis Theorem. It projects each vertex onto the axis
     //              and keeps track of the minimum and maximum values of these projections.
-    void CollisionDetection2D::FindMinMaxProjections(std::vector<Aerolite::Vec2> vertices, Aerolite::Vec2 axis, Aerolite::real& min, Aerolite::real& max)
+    void CollisionDetection2D::FindMinMaxProjections(std::vector<Aerolite::Vec2> vertices, Aerolite::Vec2 axis,
+        Aerolite::real& min, Aerolite::real& max)
     {
         for (int j = 0; j < vertices.size(); j++)
         {
@@ -140,10 +225,13 @@ namespace Aerolite
             auto projection = currentVertex.Dot(axis);
 
             // Updating the min and max values based on the projection.
-            if (projection < min)
+            if (projection < min) {
                 min = projection;
-            if (projection > max)
+            }
+            if (projection > max) {
                 max = projection;
+            }
+                
         }
     }
 }

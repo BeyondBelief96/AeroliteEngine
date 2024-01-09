@@ -44,6 +44,25 @@ namespace Aerolite {
         /// <param name="min">The value to store the minimum projection value in.</param>
         /// <param name="max">The value to store the maximum projection value in.</param>
         static void FindMinMaxProjections(std::vector<Aerolite::Vec2> vertices, Aerolite::Vec2 axis, Aerolite::real& min, Aerolite::real& max);
+
+        /// <summary>
+        /// Finds the distance between a point p and the closest point on a line defined
+        /// by the points linePointA and linePointB.
+        /// </summary>
+        /// <param name="p">The point to compute the distance from.</param>
+        /// <param name="linePointA">The first endpoint of the line segment.</param>
+        /// <param name="linePointB">The second endpoing of the line segment.</param>
+        /// <param name="distance">Output parameter for the distance from p to the cloesestPoint.</param>
+        /// <param name="closestPoint">The closest point on the line segment from the point p.</param>
+        static void PointLineSegmentDistance(Aerolite::Vec2 p, Aerolite::Vec2 linePointA, Aerolite::Vec2 linePointB, Aerolite::real& distance, Aerolite::Vec2& closestPoint);
+
+        /// <summary>
+        /// Finds a contact point if one exists between two polygons. Only finds one contact point assuming B is intersecting A.
+        /// </summary>
+        /// <param name="shapeA">The first polygon.</param>
+        /// <param name="shapeB">The second polygon.</param>
+        /// <param name="contact"></param>
+        static void FindContactPoint(PolygonShape* shapeA, PolygonShape* shapeB, Aerolite::Vec2& contactPoint);
     };
 }
 

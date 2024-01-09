@@ -20,8 +20,8 @@ void SATCollisionScene::Setup() {
     auto boxB = std::make_unique<Aerolite::Body2D>(new BoxShape(200, 200),
         Graphics::Width() / 2.0, Graphics::Height() / 2.0, 1.0);
 
-    boxA->angularVelocity = 0.4;
-    boxB->angularVelocity = 0.3;
+    //boxA->angularVelocity = 0.4;
+    //boxB->angularVelocity = 0.3;
 
     bodies.push_back(std::move(boxA));
     bodies.push_back(std::move(boxB));
@@ -64,7 +64,7 @@ void SATCollisionScene::Input() {
 // Update function (called several times per second to update objects)
 ///////////////////////////////////////////////////////////////////////////////
 void SATCollisionScene::Update() {
-
+    Graphics::ClearScreen(0xFF000000);
     // Check if we are too fast, and if so, waste some milliseconds until we reach
     // MILLISECONDS_PER_FRAME.
     int timeToWait = MILLISECS_PER_FRAME - (SDL_GetTicks() - timePreviousFrame);
@@ -105,6 +105,9 @@ void SATCollisionScene::Update() {
             Aerolite::Contact2D contact;
             if (CollisionDetection2D::IsColliding(bodies[i].get(), bodies[j].get(), contact))
             {
+                Graphics::DrawFillCircle(contact.start.x, contact.start.y, 3, 0xFFFF00FF);
+                Graphics::DrawFillCircle(contact.end.x, contact.end.y, 3, 0xFFFF00FF);
+                Graphics::DrawLine(contact.start.x, contact.start.y, contact.start.x + contact.normal.x * 15, contact.start.y + contact.normal.y * 15, 0xFFFFFFFF);
                 /*contact.ResolveCollision();*/
                 bodies[i]->isColliding = true;
                 bodies[j]->isColliding = true;
@@ -140,7 +143,7 @@ void SATCollisionScene::Update() {
 // Render function (called several times per second to draw objects)
 ///////////////////////////////////////////////////////////////////////////////
 void SATCollisionScene::Render() {
-    Graphics::ClearScreen(0xFF000000);
+    /*Graphics::ClearScreen(0xFF000000);*/
     for (auto& body : bodies) {
 
         uint32_t color = body->isColliding ? 0xFF0000FF : 0xFFFFFFFF;
