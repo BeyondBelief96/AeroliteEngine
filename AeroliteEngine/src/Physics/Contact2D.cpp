@@ -20,6 +20,12 @@ namespace Aerolite {
         // This is usually done to prevent objects from sinking into each other due to floating point inaccuracies.
         ResolvePenetration();
 
+        // Resolve and apply the calculated impulse to each body.
+        ResolveImpulse();
+    }
+
+    void Contact2D::ResolveImpulse()
+    {
         // Calculate the coefficient of restitution, 'e', which is a measure of how bouncy the collision is.
         // This is determined by taking the minimum of the restitution coefficients of the two colliding objects.
         // A higher restitution value results in a bouncier collision.
@@ -27,7 +33,10 @@ namespace Aerolite {
 
         // Compute the relative velocity vector of the two objects.
         // This is used to determine the direction and magnitude of the impulse to be applied.
-        const Vec2 vrel = (a->velocity - b->velocity);
+
+        //Vec2 ra = 
+        //Vec2 rb = 
+        const Vec2 vrel = a->velocity - b->velocity;
 
         // Calculate the dot product of the relative velocity and the collision normal.
         // This value is used in calculating the impulse magnitude.
@@ -44,7 +53,5 @@ namespace Aerolite {
         // This changes their velocities according to their mass and the impulse magnitude and direction.
         a->ApplyImpulse(j);
         b->ApplyImpulse(-j);
-
     }
-
 }

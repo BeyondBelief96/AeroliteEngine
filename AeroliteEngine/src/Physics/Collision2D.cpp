@@ -1,6 +1,7 @@
 #include <iostream>
 #include <limits>
 #include "Collision2D.h"
+#include "Precision.h"
 #include "Shape.h"
 
 namespace Aerolite
@@ -63,10 +64,10 @@ namespace Aerolite
         contact.a = a;
         contact.b = b;
         contact.normal = distanceBetweenCenters.UnitVector();
-        contact.start = b->position - (contact.normal * bCircleShape->radius);
-        contact.end = a->position + (contact.normal * aCircleShape->radius);
-        contact.depth = (contact.end - contact.start).Magnitude();
+        contact.depth = sumRadius - distanceBetweenCenters.Magnitude();
 
+        // Determine all contact points and store in the contact object.
+        FindContactPointsCircles(aCircleShape, bCircleShape, contact);
         return true;
     }
 
@@ -158,57 +159,10 @@ namespace Aerolite
         contact.depth = contactDepth;
         contact.normal = contactNormal;
 
+        FindContactPointsPolygons(aPolygonShape, bPolygonShape, contact);
+
         // If no separating axis is found, the polygons are colliding.
         return true;
-    }
-
-    void CollisionDetection2D::FindContactPoint(PolygonShape* shapeA, PolygonShape* shapeB, Aerolite::Vec2& contactPoint)
-    {
-        Aerolite::real minDist = std::numeric_limits<Aerolite::real>::max();
-
-        for (int i = 0; i < shapeA->worldVertices.size(); i++)
-        {
-            Aerolite::Vec2 va = shapeA->worldVertices[i];
-            for (int j = 0; j < shapeB->worldVertices.size(); j++)
-            {
-                Aerolite::Vec2 edge1 = shapeB->worldVertices[j];
-                Aerolite::Vec2 edge2 = shapeB->worldVertices[(j + 1) % shapeB->worldVertices.size()];
-                Aerolite::Vec2 closestPoint = Vec2();
-                Aerolite::real distance = 0.0f;
-                PointLineSegmentDistance(va, edge1, edge2, distance, closestPoint);
-
-                if (distance == minDist)
-                {
-
-                }
-                else if (distance < minDist)
-                {
-                    minDist = distance;
-                    contactPoint = closestPoint;
-                }
-            }
-        }
-    }
-
-    void CollisionDetection2D::PointLineSegmentDistance(Aerolite::Vec2 p, Aerolite::Vec2 linePointA, Aerolite::Vec2 linePointB, Aerolite::real& distance, Aerolite::Vec2& closestPoint)
-    {
-        Aerolite::Vec2 ab = linePointB - linePointA;
-        Aerolite::Vec2 ap = p - linePointA;
-
-        auto proj = ap.Dot(ab);
-        auto abMagSquared = ab.MagnitudeSquared();
-        auto d = proj / abMagSquared;
-
-        if (d <= 0)
-            closestPoint = linePointA;
-        else if (d >= 1)
-            closestPoint = linePointB;
-        else
-        {
-            closestPoint = linePointA + ab * d;
-        }
-
-        distance = p.DistanceTo(closestPoint);
     }
 
     // Function: FindMinMaxProjections
@@ -235,7 +189,106 @@ namespace Aerolite
             if (projection > max) {
                 max = projection;
             }
-                
+
         }
+    }
+
+    void CollisionDetection2D::FindContactPointsCircles(CircleShape* shapeA, CircleShape* shapeB, Aerolite::Contact2D& contact)
+    {
+        // Only a single contact point can exist between two circles.
+        contact.contact1 = contact.a->position + (contact.normal * shapeA->radius);
+        contact.contactCount = 1;
+    }
+
+    void CollisionDetection2D::FindContactPointsPolygons(PolygonShape* shapeA, PolygonShape* shapeB, Aerolite::Contact2D& contact)
+    {
+        Aerolite::Vec2 c1;
+        Aerolite::Vec2 c2;
+        int contactCount = 0;
+
+        Aerolite::real minDistance = std::numeric_limits<Aerolite::real>::max();
+
+        for (int i = 0; i < shapeA->worldVertices.size(); i++)
+        {
+            Aerolite::Vec2 p = shapeA->worldVertices[i];
+
+            for (int j = 0; j < shapeB->worldVertices.size(); j++)
+            {
+                Aerolite::Vec2 edgePoint1 = shapeB->worldVertices[j];
+                Aerolite::Vec2 edgePoint2 = shapeB->worldVertices[(j + 1) % shapeB->worldVertices.size()];
+
+                Aerolite::Vec2 closestPoint;
+                Aerolite::real distance;
+
+                PointLineSegmentDistance(p, edgePoint1, edgePoint2, distance, closestPoint);
+
+                if (Aerolite::AreEqual(distance, minDistance, Aerolite::epsilon))
+                {
+                    if (closestPoint != contact.contact1)
+                    {
+                        contact.contact2 = closestPoint;
+                        contact.contactCount = 2;
+                    }
+                }
+                else if (distance < minDistance)
+                {
+                    minDistance = distance;
+                    contact.contactCount = 1;
+                    contact.contact1 = closestPoint;
+                }      
+            }
+        }
+
+        for (int i = 0; i < shapeB->worldVertices.size(); i++)
+        {
+            Aerolite::Vec2 p = shapeB->worldVertices[i];
+
+            for (int j = 0; j < shapeA->worldVertices.size(); j++)
+            {
+                Aerolite::Vec2 edgePoint1 = shapeA->worldVertices[j];
+                Aerolite::Vec2 edgePoint2 = shapeA->worldVertices[(j + 1) % shapeA->worldVertices.size()];
+
+                Aerolite::Vec2 closestPoint;
+                Aerolite::real distance;
+
+                PointLineSegmentDistance(p, edgePoint1, edgePoint2, distance, closestPoint);
+
+                if (Aerolite::AreEqual(distance, minDistance, Aerolite::epsilon))
+                {
+                    if (closestPoint != contact.contact1)
+                    {
+                        contact.contact2 = closestPoint;
+                        contact.contactCount = 2;
+                    }
+                }
+                else if (distance < minDistance)
+                {
+                    minDistance = distance;
+                    contact.contactCount = 1;
+                    contact.contact1 = closestPoint;
+                }
+            }
+        }
+    }
+
+    void CollisionDetection2D::PointLineSegmentDistance(Aerolite::Vec2 p, Aerolite::Vec2 linePointA, Aerolite::Vec2 linePointB, Aerolite::real& distance, Aerolite::Vec2& closestPoint)
+    {
+        Aerolite::Vec2 ab = linePointB - linePointA;
+        Aerolite::Vec2 ap = p - linePointA;
+
+        auto proj = ap.Dot(ab);
+        auto abMagSquared = ab.MagnitudeSquared();
+        auto d = proj / abMagSquared;
+
+        if (d <= 0)
+            closestPoint = linePointA;
+        else if (d >= 1)
+            closestPoint = linePointB;
+        else
+        {
+            closestPoint = linePointA + ab * d;
+        }
+
+        distance = p.DistanceTo(closestPoint);
     }
 }

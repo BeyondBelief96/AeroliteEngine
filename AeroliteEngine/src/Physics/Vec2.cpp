@@ -50,12 +50,14 @@ namespace Aerolite {
 
     bool Vec2::operator==(const Vec2& v) const noexcept
     {
-        return x == v.x && y == v.y;
+        return (Aerolite::AreEqual(x, v.x, Aerolite::epsilon) &&
+            Aerolite::AreEqual(y, v.y, Aerolite::epsilon));
     }
 
     bool Vec2::operator!=(const Vec2& v) const noexcept
     {
-        return x != v.x || y != v.y;
+        return (!Aerolite::AreEqual(x, v.x, Aerolite::epsilon) ||
+            !Aerolite::AreEqual(y, v.y, Aerolite::epsilon));
     }
 
     Vec2 Vec2::operator+(const Vec2& v) const noexcept

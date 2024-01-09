@@ -9,11 +9,14 @@ namespace Aerolite {
     ///precision is provided.
     typedef float real;
 
-    const float epsilon = 0.005f;
+    const real epsilon = 0.005f;
 
-    inline bool AreFloatsEqual(float a, float b, float epsilon) 
+    inline bool AreEqual(Aerolite::real a, Aerolite::real b, Aerolite::real epsilon)
     {
-        return std::fabs(a - b) < epsilon;
+        if (std::is_same<Aerolite::real, float>::value)
+            return std::fabs(a - b) < epsilon;
+        else if (std::is_same<Aerolite::real, double>::value)
+            return std::abs(a - b) < epsilon;
     }
 
     

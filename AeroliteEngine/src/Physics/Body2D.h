@@ -6,6 +6,7 @@
 #include "Vec2.h" 
 #include "Shape.h"
 #include "Precision.h"
+#include "AABB2D.h"
 
 // Using the Aerolite namespace throughout this file.
 // Note: Using a whole namespace in a header can sometimes lead to conflicts in large projects.
@@ -40,9 +41,16 @@ namespace Aerolite {
         
         Shape* shape; // Shared pointer to a Shape object. Initialized to nullptr.
 
+
         // Constructor for Body2D.
         // Takes a shared pointer to Shape, position coordinates (x, y), and mass.
         Body2D(Shape* shape, const real x, const real y, const real mass);
+
+        /// <summary>
+        /// Returns an AABB surrounding the rigid body for broad phase collision detection.
+        /// </summary>
+        /// <returns>The AABB for collision detection.</returns>
+        AABB2D GetAABB(void);
 
         void Update(const real dt); 
 

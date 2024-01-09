@@ -143,6 +143,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Physics\AABB2D.h" />
     <ClInclude Include="src\Physics\Body2D.h" />
     <ClInclude Include="src\Physics\Collision2D.h" />
     <ClInclude Include="src\Physics\Constants.h" />

@@ -38,6 +38,35 @@ namespace Aerolite {
         std::cout << "Body constructor called!" << std::endl;
     }
 
+    AABB2D Body2D::GetAABB(void)
+    {
+        AABB2D aabb;
+        if (shape->GetType() == ShapeType::Circle)
+        {
+            CircleShape* circleShape = dynamic_cast<CircleShape*>(shape);
+            Aerolite::real radius = circleShape->radius;
+            aabb.min = position - Vec2(radius, radius);
+            aabb.max = position + Vec2(radius, radius);
+
+        }
+        else if (shape->GetType() == ShapeType::Box || shape->GetType() == ShapeType::Polygon)
+        {
+            PolygonShape* polygon = dynamic_cast<PolygonShape*>(shape);
+            aabb.min = Vec2(std::numeric_limits<Aerolite::real>::max(), std::numeric_limits<Aerolite::real>::max());
+            aabb.max = Vec2(std::numeric_limits<Aerolite::real>::lowest(), std::numeric_limits<Aerolite::real>::lowest());
+
+            for (const auto& vertex : polygon->worldVertices)
+            {
+                aabb.min.x = std::min(aabb.min.x, vertex.x);
+                aabb.min.y = std::min(aabb.min.y, vertex.y);
+                aabb.max.x = std::max(aabb.max.x, vertex.x);
+                aabb.max.y = std::max(aabb.max.y, vertex.y);
+            }
+        }
+
+        return aabb;
+    }
+
     // Method to update the body's state over time (dt).
     void Body2D::Update(const Aerolite::real dt)
     {
@@ -61,7 +90,7 @@ namespace Aerolite {
 
     bool Body2D::IsStatic(void) const
     {
-        return Aerolite::AreFloatsEqual(mass, 0.0, Aerolite::epsilon);
+        return Aerolite::AreEqual(mass, 0.0, Aerolite::epsilon);
     }
 
     // Method to add a force vector to the body.

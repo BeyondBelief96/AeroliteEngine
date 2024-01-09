@@ -4,6 +4,7 @@
 #include "Particle.h"
 #include "Body2D.h"
 #include "pfgen.h"
+#include "Contact2D.h"
 #include <vector>
 #include <memory>
 #include "../Graphics.h"
@@ -146,6 +147,7 @@ class SATCollisionScene : public Scene
 {
 private:
     std::vector<std::unique_ptr<Body2D>> bodies;
+    std::vector<Aerolite::Contact2D> contactList;
     Vec2 pushForce;
     Vec2 mouseCursor;
     bool leftMouseButtonDown;

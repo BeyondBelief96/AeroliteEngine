@@ -85,9 +85,9 @@ void Collision2DScene::Update() {
             if(CollisionDetection2D::IsColliding(bodies[i].get(), bodies[j].get(), contact))
             {
                 // Here we have the contact information inside the contact object.
-                Graphics::DrawFillCircle(contact.start.x, contact.start.y, 3, 0xFFFF00FF);
-                Graphics::DrawFillCircle(contact.end.x, contact.end.y, 3, 0xFFFF00FF);
-                Graphics::DrawLine(contact.start.x, contact.start.y, contact.start.x + contact.normal.x * 15, contact.start.y + contact.normal.y * 15, 0xFFFF00FF);
+                Graphics::DrawFillCircle(contact.contact1.x, contact.contact1.y, 3, 0xFFFF00FF);
+                Graphics::DrawFillCircle(contact.contact2.x, contact.contact2.y, 3, 0xFFFF00FF);
+                Graphics::DrawLine(contact.contact1.x, contact.contact1.y, contact.contact1.x + contact.normal.x * 15, contact.contact1.y + contact.normal.y * 15, 0xFFFF00FF);
                 bodies[i]->isColliding = true;
                 bodies[j]->isColliding = true;
             }

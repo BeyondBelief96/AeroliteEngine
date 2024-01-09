@@ -8,7 +8,7 @@
 #include "Vec2.h"
 
 namespace Aerolite {
-    /// @brief A static class with a set of utility functions for detecting 2-D Collisions between two Body2D's.
+    /// @brief A static class with a set of utility functions for detecting 2D Collisions between two Body2D's.
     static class CollisionDetection2D {
 
     public:
@@ -66,12 +66,20 @@ namespace Aerolite {
         static void PointLineSegmentDistance(Aerolite::Vec2 p, Aerolite::Vec2 linePointA, Aerolite::Vec2 linePointB, Aerolite::real& distance, Aerolite::Vec2& closestPoint);
 
         /// <summary>
-        /// Finds a contact point if one exists between two polygons. Only finds one contact point assuming B is intersecting A.
+        /// Finds all contact points if any exist between two circle shapes.
+        /// </summary>
+        /// <param name="shapeA">The first circle.</param>
+        /// <param name="shapeB">The second circle.</param>
+        /// <param name="contact">The contact structure to store collision information in.</param>
+        static void FindContactPointsCircles(CircleShape* shapeA, CircleShape* shapeB, Aerolite::Contact2D& contact);
+
+        /// <summary>
+        /// Finds all contact points if any exist between two polygons.
         /// </summary>
         /// <param name="shapeA">The first polygon.</param>
         /// <param name="shapeB">The second polygon.</param>
-        /// <param name="contact"></param>
-        static void FindContactPoint(PolygonShape* shapeA, PolygonShape* shapeB, Aerolite::Vec2& contactPoint);
+        /// <param name="contact">The contact structure to store collision information in.</param>
+        static void FindContactPointsPolygons(PolygonShape* shapeA, PolygonShape* shapeB, Aerolite::Contact2D& contact);
     };
 }
 
