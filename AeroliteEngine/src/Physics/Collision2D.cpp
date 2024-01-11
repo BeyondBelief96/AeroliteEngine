@@ -180,7 +180,7 @@ namespace Aerolite
         const std::vector<Vec2>& polygonVertices = polygonShape->worldVertices;
         
         
-        return true;
+        return false;
     }
 
     void CollisionDetection2D::FindMinMaxProjectionCircle(const Aerolite::Vec2 center, Aerolite::real radius, Aerolite::Vec2 axis, Aerolite::real& min, Aerolite::real& max)

@@ -14,6 +14,8 @@
 void SATCollisionScene::Setup() {
     running = Graphics::OpenWindow();
 
+    auto movableBall = std::make_unique<Aerolite::Body2D>(new CircleShape(100), 0, 0, 1.0);
+
     auto bar1 = std::make_unique<Aerolite::Body2D>(new BoxShape(500, 50),
         Graphics::Width() / 2.0 - 600, Graphics::Height() - 500, 0.0);
     bar1->restitution = 0.0;
@@ -28,16 +30,17 @@ void SATCollisionScene::Setup() {
         Graphics::Width() / 2.0, Graphics::Height() - 50, 0.0);
     floor->restitution = 0.0;
 
-    auto bigBall = std::make_unique<Aerolite::Body2D>(new BoxShape(200, 200), Graphics::Width() / 2.0,
+    auto bigBox = std::make_unique<Aerolite::Body2D>(new BoxShape(200, 200), Graphics::Width() / 2.0,
         Graphics::Height() / 2.0, 0.0);
-    bigBall->restitution = 0.5;
+    bigBox->restitution = 0.5;
 
     auto ball = std::make_unique<Aerolite::Body2D>(new CircleShape(200), 0, 0, 1.0);
 
-    bodies.push_back(std::move(floor));
-    bodies.push_back(std::move(bigBall));
-    bodies.push_back(std::move(bar1));
-    bodies.push_back(std::move(bar2));
+    //bodies.push_back(std::move(floor));
+    bodies.push_back(std::move(bigBox));
+    //bodies.push_back(std::move(bar1));
+    //bodies.push_back(std::move(bar2));
+    bodies.push_back(std::move(movableBall));
     /*bodies.push_back(std::move(ball))*/;
 }
 
@@ -73,6 +76,11 @@ void SATCollisionScene::Input() {
                 bodies.push_back(std::move(circle));
             }
             break;
+        case SDL_MOUSEMOTION:
+            int x, y;
+            SDL_GetMouseState(&x, &y);
+            bodies[1]->position.x = x;
+            bodies[1]->position.y = y;
         }
     }
 }
@@ -100,8 +108,8 @@ void SATCollisionScene::Update() {
    contactList.clear();
 
     for (auto& body : bodies) {
-        Vec2 weight = Vec2(0, body->mass * 9.8 * PIXELS_PER_METER);
-        body->AddForce(weight);
+        //Vec2 weight = Vec2(0, body->mass * 9.8 * PIXELS_PER_METER);
+        //body->AddForce(weight);
     }
 
     for (auto& body : bodies) {
