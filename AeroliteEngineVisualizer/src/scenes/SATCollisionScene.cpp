@@ -14,17 +14,31 @@
 void SATCollisionScene::Setup() {
     running = Graphics::OpenWindow();
 
+    auto bar1 = std::make_unique<Aerolite::Body2D>(new BoxShape(500, 50),
+        Graphics::Width() / 2.0 - 600, Graphics::Height() - 500, 0.0);
+    bar1->restitution = 0.0;
+    bar1->rotation = 0.5;
+
+    auto bar2 = std::make_unique<Aerolite::Body2D>(new BoxShape(500, 50),
+        Graphics::Width() / 2.0 + 600, Graphics::Height() - 500, 0.0);
+    bar2->restitution = 0.0;
+    bar2->rotation = -0.5;
+
     auto floor = std::make_unique<Aerolite::Body2D>(new BoxShape(Graphics::Width() - 50, 50),
         Graphics::Width() / 2.0, Graphics::Height() - 50, 0.0);
-    floor->restitution = 0.2;
+    floor->restitution = 0.0;
 
-    auto bigBox = std::make_unique<Aerolite::Body2D>(new BoxShape(200, 200), Graphics::Width() / 2.0,
+    auto bigBall = std::make_unique<Aerolite::Body2D>(new BoxShape(200, 200), Graphics::Width() / 2.0,
         Graphics::Height() / 2.0, 0.0);
-    bigBox->restitution = 0.5;
-    bigBox->rotation = 1.4;
+    bigBall->restitution = 0.5;
+
+    auto ball = std::make_unique<Aerolite::Body2D>(new CircleShape(200), 0, 0, 1.0);
 
     bodies.push_back(std::move(floor));
-    bodies.push_back(std::move(bigBox));
+    bodies.push_back(std::move(bigBall));
+    bodies.push_back(std::move(bar1));
+    bodies.push_back(std::move(bar2));
+    /*bodies.push_back(std::move(ball))*/;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -32,6 +46,8 @@ void SATCollisionScene::Setup() {
 ///////////////////////////////////////////////////////////////////////////////
 void SATCollisionScene::Input() {
     SDL_Event event;
+    //static std::default_random_engine engine(std::random_device{}()); // Random number engine
+    //static std::uniform_int_distribution<int> distribution(0, 1);    // Distribution to generate either 0 or 1
     while (SDL_PollEvent(&event)) {
         switch (event.type) {
         case SDL_QUIT:
@@ -45,8 +61,16 @@ void SATCollisionScene::Input() {
             if (event.button.button == SDL_BUTTON_LEFT) {
                 int x, y;
                 SDL_GetMouseState(&x, &y);
-                auto box = std::make_unique<Body2D>(new BoxShape(50, 50), x, y, 1.0);
+                // Create and add a new BoxShape at the mouse location
+                auto box = std::make_unique<Body2D>(new BoxShape(50, 50), x, y, 50);
                 bodies.push_back(std::move(box));
+            }
+            else if (event.button.button == SDL_BUTTON_RIGHT) {
+                int x, y;
+                SDL_GetMouseState(&x, &y);
+                // Create and add a new CircleShape at the mouse location
+                auto circle = std::make_unique<Body2D>(new CircleShape(25), x, y, 1.0); // Assuming radius 25 for the circle
+                bodies.push_back(std::move(circle));
             }
             break;
         }
@@ -73,16 +97,11 @@ void SATCollisionScene::Update() {
     // Set the time of the current frame to be used in the next one.
     timePreviousFrame = SDL_GetTicks();
 
-        contactList.clear();
+   contactList.clear();
 
-    // Create body - Force Registration Pairs.
     for (auto& body : bodies) {
         Vec2 weight = Vec2(0, body->mass * 9.8 * PIXELS_PER_METER);
         body->AddForce(weight);
-    }
-
-    for (auto& body : bodies) {
-        body->Update(deltaTime);
     }
 
     for (auto& body : bodies) {
@@ -98,7 +117,7 @@ void SATCollisionScene::Update() {
             Aerolite::Contact2D contact;
             if (CollisionDetection2D::IsColliding(bodies[i].get(), bodies[j].get(), contact))
             {
-                contactList.push_back(contact);
+                contactList.emplace_back(contact);
                 bodies[i]->isColliding = true;
                 bodies[j]->isColliding = true;
             }
@@ -108,11 +127,12 @@ void SATCollisionScene::Update() {
     // Collision Resolution
     for (auto& contact : contactList)
     {
-        contact.ResolveCollision();
+        /*contact.ResolveCollision();*/
     }
 
     // Check the boundaries of the window applying a hardcoded bounce flip in velocity
-    for (auto& body : bodies) {
+    for (int i = 0; i < bodies.size(); i++) {
+        auto& body = bodies.at(i);
         if (body->shape->GetType() == Aerolite::ShapeType::Circle) {
             auto circleShape = dynamic_cast<CircleShape*>(body->shape);
             if (body->position.x - circleShape->radius <= 0) {
@@ -132,6 +152,12 @@ void SATCollisionScene::Update() {
                 body->velocity.y *= -0.9;
             }
         }
+        auto aabb = body->GetAABB();
+        if (aabb.min.y >= Graphics::Height() || aabb.max.x <= 0 || aabb.min.x >= Graphics::Width())
+        {
+            body->~Body2D();
+            bodies.erase(bodies.begin() + i);
+        }
     }
 }
 
@@ -145,7 +171,7 @@ void SATCollisionScene::Render() {
         uint32_t color = body->isColliding ? 0xFF0000FF : 0xFFFFFFFF;
         if (body->shape->GetType() == Circle) {
             auto circleShape = dynamic_cast<CircleShape*>(body->shape);
-            Graphics::DrawFillCircle(body->position.x, body->position.y, circleShape->radius, color);
+            Graphics::DrawCircle(body->position.x, body->position.y, circleShape->radius, body->rotation, color);
         }
         else  if (body->shape->GetType() == Box) {
             auto boxShape = dynamic_cast<BoxShape*>(body->shape);

@@ -16,6 +16,7 @@ namespace Aerolite
     //              on the shape types.
     bool CollisionDetection2D::IsColliding(Aerolite::Body2D* a, Aerolite::Body2D* b, Aerolite::Contact2D& contact)
     {
+        if (a->IsStatic() && b->IsStatic()) return false;
         // Checking if each body is a circle.
         bool aIsCircle = a->shape->GetType() == Aerolite::ShapeType::Circle;
         bool bIsCircle = b->shape->GetType() == Aerolite::ShapeType::Circle;
@@ -30,8 +31,15 @@ namespace Aerolite
         {
             return IsCollidingPolygonPolygon(a, b, contact);
         }
+        else if (aIsCircle && !bIsCircle)
+        {
+            return IsCollidingCirclePolygon(a, b, contact);
+        }
+        else if (!aIsCircle && bIsCircle)
+        {
+            return IsCollidingCirclePolygon(b, a, contact);
+        }
 
-        // If one body is a circle and the other is a polygon, no collision detection is implemented.
         return false;
     }
 
@@ -163,6 +171,51 @@ namespace Aerolite
 
         // If no separating axis is found, the polygons are colliding.
         return true;
+    }
+
+    bool CollisionDetection2D::IsCollidingCirclePolygon(Aerolite::Body2D* a, Aerolite::Body2D* b, Aerolite::Contact2D& contact)
+    {
+        const PolygonShape* polygonShape = (PolygonShape*)b->shape;
+        const CircleShape* circleShape = (CircleShape*)a->shape;
+        const std::vector<Vec2>& polygonVertices = polygonShape->worldVertices;
+        
+        
+        return true;
+    }
+
+    void CollisionDetection2D::FindMinMaxProjectionCircle(const Aerolite::Vec2 center, Aerolite::real radius, Aerolite::Vec2 axis, Aerolite::real& min, Aerolite::real& max)
+    {
+        Vec2 direction = axis.UnitVector();
+        Vec2 radiusAlongNormal = direction * radius;
+
+        Vec2 p1 = center + radiusAlongNormal;
+        Vec2 p2 = center - radiusAlongNormal;
+
+        min = p1.Dot(direction);
+        max = p2.Dot(direction);
+
+        if (min > max)
+            Aerolite::Swap(min, max);
+    }
+
+    Aerolite::Vec2 CollisionDetection2D::FindClosestPointOnPolygonFromCircle(Aerolite::Vec2 circleCenter, const Aerolite::PolygonShape* polygonShape)
+    {
+        int result = -1;
+        Aerolite::real minDistance = std::numeric_limits<Aerolite::real>::max();
+
+        for (int i = 0; i < polygonShape->worldVertices.size(); i++)
+        {
+            Vec2 v = polygonShape->worldVertices[i];
+            Aerolite::real distance = v.DistanceTo(circleCenter);
+
+            if (distance < minDistance)
+            {
+                minDistance = distance;
+                result = i;
+            }
+        }
+
+        return polygonShape->worldVertices[result];
     }
 
     // Function: FindMinMaxProjections

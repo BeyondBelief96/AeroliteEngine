@@ -5,9 +5,9 @@
 
 namespace Aerolite {
 
-    ///Defines a real number precision. Aerolite engine can be compiled in single or double-precision versions. By default, single
-    ///precision is provided.
-    typedef float real;
+    //Defines a real number precision. Aerolite engine can be compiled in single or double-precision versions. By default, single
+    //precision is provided.
+    typedef double real;
 
     const real epsilon = 0.005f;
 
@@ -19,7 +19,17 @@ namespace Aerolite {
             return std::abs(a - b) < epsilon;
     }
 
-    
+    /// <summary>
+    /// Swaps the values a and b.
+    /// </summary>
+    /// <param name="a">The value to take on the value of b.</param>
+    /// <param name="b">The value to take on the value of a.</param>
+    inline void Swap(real a, real b)
+    {
+        real t = a;
+        a = b;
+        b = t;
+    }
 }
 
 #endif

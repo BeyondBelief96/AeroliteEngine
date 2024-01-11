@@ -37,7 +37,8 @@ namespace Aerolite {
         real invI; // Inverse of the moment of inertia of the rigid body. Inverse moment of inertia is 
                    // more efficient and has better numerical stability.
 
-        real restitution; //Coefficient of restitution for the body.
+        real restitution; // Coefficient of restitution for the body.
+        real friction;    // Coefficient of friction of the body. Used in tangent impulse calculations.
         
         Shape* shape; // Shared pointer to a Shape object. Initialized to nullptr.
 
@@ -68,10 +69,17 @@ namespace Aerolite {
         void AddTorque(const real torque);
            
         /// <summary>
-        /// Applys an impulse to the body generally generated from a collision.
+        /// Applies an impulse to the body at the center of mass generated from a collision.
         /// </summary>
         /// <param name="j">The impulse vector to apply.</param>
         void ApplyImpulse(const Vec2& j);
+
+        /// <summary>
+        /// Applies an impulse j to the body at the point r generated from a collision.
+        /// </summary>
+        /// <param name="j">The impulse vector to apply.</param>
+        /// <param name="r">The point on the body to apply the impulse.</param>
+        void ApplyImpulse(const Vec2& j, const Vec2& r);
 
         // Method to clear all forces acting on the body.
         void ClearForces(void);

@@ -20,6 +20,7 @@ namespace Aerolite {
         this->sumForces = Vec2(0.0f, 0.0f);
         this->sumTorque = 0.0f;
         this->restitution = 0.99;
+        this->friction = 0.7;
 
         if(mass != 0.0) {
             this-> invMass = 1.0 / mass;
@@ -110,6 +111,14 @@ namespace Aerolite {
         if (IsStatic()) return;
 
         velocity += j * invMass;
+    }
+
+    void Body2D::ApplyImpulse(const Vec2& j, const Vec2& r)
+    {
+        if (IsStatic()) return;
+
+        velocity += j * invMass;
+        angularVelocity += r.Cross(j) * invI;
     }
 
     // Method to clear all forces acting on the body.

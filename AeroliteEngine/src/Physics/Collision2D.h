@@ -36,6 +36,15 @@ namespace Aerolite {
         static bool IsCollidingPolygonPolygon(Aerolite::Body2D* a, Aerolite::Body2D* b, Aerolite::Contact2D& contact);
 
         /// <summary>
+        /// Detects if a circle and polygon are colliding.
+        /// </summary>
+        /// <param name="a">The circle body for detection.</param>
+        /// <param name="b">The polygon body for detection.</param>
+        /// <param name="contact">A reference parameter to store collision and contact information.</param>
+        /// <returns>Returns true if the polygon and circle are colliding, false if not.</returns>
+        static bool IsCollidingCirclePolygon(Aerolite::Body2D* a, Aerolite::Body2D* b, Aerolite::Contact2D& contact);
+
+        /// <summary>
         /// Uses a naive SAT algorithm approach to determine if two polygons are colliding.
         /// </summary>
         /// <param name="a">The first polygon for collision detection.</param>
@@ -53,6 +62,13 @@ namespace Aerolite {
         /// <param name="min">The value to store the minimum projection value in.</param>
         /// <param name="max">The value to store the maximum projection value in.</param>
         static void FindMinMaxProjections(std::vector<Aerolite::Vec2> vertices, Aerolite::Vec2 axis, Aerolite::real& min, Aerolite::real& max);
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        static void FindMinMaxProjectionCircle(Aerolite::Vec2 center, Aerolite::real radius, Aerolite::Vec2 axis, Aerolite::real& min, Aerolite::real& max);
+
+        static Aerolite::Vec2 FindClosestPointOnPolygonFromCircle(const Aerolite::Vec2 circleCenter, const Aerolite::PolygonShape* polygonShape);
 
         /// <summary>
         /// Finds the distance between a point p and the closest point on a line defined
