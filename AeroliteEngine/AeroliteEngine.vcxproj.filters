@@ -15,84 +15,90 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Physics\Vec2.h">
+    <ClInclude Include="include\Vec2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Physics\Vec3.h">
+    <ClInclude Include="include\Vec3.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Physics\Particle.h">
+    <ClInclude Include="include\Particle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Physics\Constants.h">
+    <ClInclude Include="include\Constants.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Physics\Forces\pfgen.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Physics\Body2D.h">
+    <ClInclude Include="include\Body2D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Physics\Collision2D.h">
+    <ClInclude Include="include\Collision2D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Physics\Contact2D.h">
+    <ClInclude Include="include\Contact2D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Physics\Matrix3x3.h">
+    <ClInclude Include="include\Matrix3x3.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Physics\Matrix3x4.h">
+    <ClInclude Include="include\Matrix3x4.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Physics\pfgen.h">
+    <ClInclude Include="include\pfgen.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Physics\Precision.h">
+    <ClInclude Include="include\Precision.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Physics\Shape.h">
+    <ClInclude Include="include\Shape.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Physics\AABB2D.h">
+    <ClInclude Include="include\AABB2D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Physics\AeroWorld2D.h">
+    <ClInclude Include="include\AeroWorld2D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Constraint2D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\VecN.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Physics\Vec2.cpp">
+    <ClCompile Include="src\Vec2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Physics\Vec3.cpp">
+    <ClCompile Include="src\Vec3.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Physics\Particle.cpp">
+    <ClCompile Include="src\Particle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Physics\Body2D.cpp">
+    <ClCompile Include="src\Body2D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Physics\Collision2D.cpp">
+    <ClCompile Include="src\Collision2D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Physics\Contact2D.cpp">
+    <ClCompile Include="src\Contact2D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Physics\Matrix3x3.cpp">
+    <ClCompile Include="src\Matrix3x3.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Physics\Matrix3x4.cpp">
+    <ClCompile Include="src\Matrix3x4.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Physics\pfgen.cpp">
+    <ClCompile Include="src\pfgen.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Physics\Shape.cpp">
+    <ClCompile Include="src\Shape.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Physics\AeroWorld2D.cpp">
+    <ClCompile Include="src\AeroWorld2D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

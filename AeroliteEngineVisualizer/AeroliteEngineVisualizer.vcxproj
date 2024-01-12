@@ -74,7 +74,7 @@
     <LibraryPath>C:\Users\brand\Code\cpp\Aerolite\AeroliteEngine\AeroliteEngine\x64\Debug;$(LibraryPath)</LibraryPath>
     <ExternalIncludePath>
     </ExternalIncludePath>
-    <IncludePath>$(SolutionDir)AeroliteEngine\src\Physics;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)AeroliteEngine\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LibraryPath>C:\Users\brand\Code\cpp\Aerolite\AeroliteEngine\AeroliteEngine\x64\Debug;$(LibraryPath)</LibraryPath>

@@ -29,8 +29,7 @@ protected:
 class GravityDragScene : public Scene
 {
 private:
-    std::vector<std::unique_ptr<Particle>> particles;
-    ParticleForceRegistry pfg;
+    AeroWorld2D world;
     SDL_Rect liquid;
     SDL_Rect floor;
     Vec2 pushForce;

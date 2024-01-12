@@ -43,9 +43,15 @@ namespace Aerolite {
     void AeroWorld2D::AddParticle(std::unique_ptr<Aerolite::Particle> particle)
     {
         if (particle != nullptr) {
-            pfr.Add(*particle, particleGravityGenerator);
+            pfr.Add(particle.get(), &particleGravityGenerator);
             particles.push_back(std::move(particle));
         }
+    }
+
+    void AeroWorld2D::AddParticleWithForce(Aerolite::ParticleForceGenerator& forceGenerator, std::unique_ptr<Aerolite::Particle> particle)
+    {
+        pfr.Add(particle.get(), &forceGenerator);
+        particles.push_back(std::move(particle));
     }
 
     void AeroWorld2D::RemoveBody2D(int index)
@@ -76,12 +82,6 @@ namespace Aerolite {
         bodyTorques.push_back(torque);
     }
 
-    void AeroWorld2D::AddParticleWithForce(Aerolite::ParticleForceGenerator& forceGenerator, std::unique_ptr<Aerolite::Particle> particle)
-    {
-        pfr.Add(*particle, forceGenerator);
-        particles.push_back(std::move(particle));
-    }
-
     void AeroWorld2D::Update(Aerolite::real dt) {
         contacts.clear();
         // Update bodies
@@ -107,9 +107,7 @@ namespace Aerolite {
         //    pfr.UpdateForces(dt);
         //}
 
-        for (int n = 0; n < 10; n++) {
-            CheckCollisions();
-        }
+        CheckCollisions();
     }
 
     void AeroWorld2D::CheckCollisions() {

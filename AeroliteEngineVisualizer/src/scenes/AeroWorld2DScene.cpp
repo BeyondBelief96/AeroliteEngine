@@ -75,7 +75,7 @@ void AeroWorld2DScene::Input() {
                 int x, y;
                 SDL_GetMouseState(&x, &y);
                 // Create and add a new BoxShape at the mouse location
-                auto polygon = std::make_unique<Body2D>(new BoxShape(100, 100), x, y, 2.0);
+                auto polygon = std::make_unique<Body2D>(new BoxShape(50, 50), x, y, 2.0);
                 polygon->restitution = 0.1;
                 polygon->friction = 0.4;
                 world->AddBody2D(std::move(polygon));
@@ -84,7 +84,7 @@ void AeroWorld2DScene::Input() {
                 int x, y;
                 SDL_GetMouseState(&x, &y);
                 // Create and add a new CircleShape at the mouse location
-                auto circle = std::make_unique<Body2D>(new CircleShape(25), x, y, 1.0); // Assuming radius 25 for the circle
+                auto circle = std::make_unique<Body2D>(PolygonShape::CreateRegularPolygon(8, 50), x, y, 1.0); // Assuming radius 25 for the circle
                 circle->restitution = 0.5;
                 circle->friction = 0.4;
                 world->AddBody2D(std::move(circle));

@@ -77,7 +77,7 @@
     <IncludePath>$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>$(IncludePath)</IncludePath>
@@ -143,34 +143,36 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\Physics\AABB2D.h" />
-    <ClInclude Include="src\Physics\AeroWorld2D.h" />
-    <ClInclude Include="src\Physics\Body2D.h" />
-    <ClInclude Include="src\Physics\Collision2D.h" />
-    <ClInclude Include="src\Physics\Constants.h" />
-    <ClInclude Include="src\Physics\Contact2D.h" />
+    <ClInclude Include="include\AABB2D.h" />
+    <ClInclude Include="include\AeroWorld2D.h" />
+    <ClInclude Include="include\Body2D.h" />
+    <ClInclude Include="include\Collision2D.h" />
+    <ClInclude Include="include\Constants.h" />
+    <ClInclude Include="include\Constraint2D.h" />
+    <ClInclude Include="include\Contact2D.h" />
+    <ClInclude Include="include\VecN.h" />
     <ClInclude Include="src\Physics\Forces\pfgen.h" />
-    <ClInclude Include="src\Physics\Matrix3x3.h" />
-    <ClInclude Include="src\Physics\Matrix3x4.h" />
-    <ClInclude Include="src\Physics\Particle.h" />
-    <ClInclude Include="src\Physics\pfgen.h" />
-    <ClInclude Include="src\Physics\Precision.h" />
-    <ClInclude Include="src\Physics\Shape.h" />
-    <ClInclude Include="src\Physics\Vec2.h" />
-    <ClInclude Include="src\Physics\Vec3.h" />
+    <ClInclude Include="include\Matrix3x3.h" />
+    <ClInclude Include="include\Matrix3x4.h" />
+    <ClInclude Include="include\Particle.h" />
+    <ClInclude Include="include\pfgen.h" />
+    <ClInclude Include="include\Precision.h" />
+    <ClInclude Include="include\Shape.h" />
+    <ClInclude Include="include\Vec2.h" />
+    <ClInclude Include="include\Vec3.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Physics\AeroWorld2D.cpp" />
-    <ClCompile Include="src\Physics\Body2D.cpp" />
-    <ClCompile Include="src\Physics\Collision2D.cpp" />
-    <ClCompile Include="src\Physics\Contact2D.cpp" />
-    <ClCompile Include="src\Physics\Matrix3x3.cpp" />
-    <ClCompile Include="src\Physics\Matrix3x4.cpp" />
-    <ClCompile Include="src\Physics\Particle.cpp" />
-    <ClCompile Include="src\Physics\pfgen.cpp" />
-    <ClCompile Include="src\Physics\Shape.cpp" />
-    <ClCompile Include="src\Physics\Vec2.cpp" />
-    <ClCompile Include="src\Physics\Vec3.cpp" />
+    <ClCompile Include="src\AeroWorld2D.cpp" />
+    <ClCompile Include="src\Body2D.cpp" />
+    <ClCompile Include="src\Collision2D.cpp" />
+    <ClCompile Include="src\Contact2D.cpp" />
+    <ClCompile Include="src\Matrix3x3.cpp" />
+    <ClCompile Include="src\Matrix3x4.cpp" />
+    <ClCompile Include="src\Particle.cpp" />
+    <ClCompile Include="src\pfgen.cpp" />
+    <ClCompile Include="src\Shape.cpp" />
+    <ClCompile Include="src\Vec2.cpp" />
+    <ClCompile Include="src\Vec3.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

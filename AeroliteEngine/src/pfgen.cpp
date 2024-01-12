@@ -4,7 +4,7 @@
 using namespace Aerolite;
 
 // Add a particle and its associated force generator to the registry.
-void Aerolite::ParticleForceRegistry::Add(Aerolite::Particle& particle, ParticleForceGenerator& fg) {
+void Aerolite::ParticleForceRegistry::Add(Aerolite::Particle* particle, ParticleForceGenerator* fg) {
     // Emplace_back efficiently constructs a ParticleForceRegistration in place,
     // thereby avoiding unnecessary copy or move operations.
     registrations.push_back(ParticleForceRegistration(particle, fg));
@@ -23,7 +23,7 @@ void ParticleForceRegistry::UpdateForces(const real dt) {
     for (Registry::iterator i = registrations.begin(); i != registrations.end(); i++) {
         // Invoke UpdateForce on the force generator, passing the associated particle and the time step dt.
         // This updates the force on each particle based on the specific logic of the force generator.
-        i->fg.UpdateForce(i->particle, dt);
+        i->fg->UpdateForce(*(i->particle), dt);
     }
 
     // Clear the registry after updating forces to reset and prepare for the next update cycle.

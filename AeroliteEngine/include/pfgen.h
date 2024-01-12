@@ -25,8 +25,8 @@ namespace Aerolite {
     protected:
         // Nested struct to associate a Particle with a ForceGenerator.
         struct ParticleForceRegistration {
-            Aerolite::Particle& particle;             // Pointer to the particle
-            Aerolite::ParticleForceGenerator& fg;     // Pointer to the force generator affecting the particle
+            Aerolite::Particle* particle;             // Pointer to the particle
+            Aerolite::ParticleForceGenerator* fg;     // Pointer to the force generator affecting the particle
         };
 
         // Typedef for a vector of ParticleForceRegistration, representing the registry.
@@ -35,7 +35,7 @@ namespace Aerolite {
 
     public:
         // Adds a particle and its associated force generator to the registry.
-        void Add(Aerolite::Particle& particle, Aerolite::ParticleForceGenerator& fg);
+        void Add(Aerolite::Particle* particle, Aerolite::ParticleForceGenerator* fg);
 
         // Clears all registrations from the registry.
         void Clear(void);
