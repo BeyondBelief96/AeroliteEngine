@@ -18,12 +18,11 @@ namespace Aerolite {
         Aerolite::Body2D* a = nullptr;
         Aerolite::Body2D* b = nullptr;
 
-        // The first point of the contact in world coordinates.
-        Aerolite::Vec2 contact1;
+        // The start point of the contact in world coordinates.
+        Aerolite::Vec2 start;
 
-        // The 2nd point of the contact in world coordinates. 
-        // In 2D collisions two points of contact are possible.
-        Aerolite::Vec2 contact2;
+        // The end point of the contact in world coordinates. 
+        Aerolite::Vec2 end;
 
         // A normalized vector representing the collision normal.
         // This vector points in the direction of the collision and is typically used to resolve the collision.
@@ -32,8 +31,6 @@ namespace Aerolite {
         // The depth of penetration between the two bodies.
         // A positive value typically indicates the amount by which the bodies are overlapping.
         Aerolite::real depth = 0;
-
-        int contactCount = 0;
 
         // Default constructor.
         Contact2D() = default;
@@ -51,11 +48,10 @@ namespace Aerolite {
         {
             a = other.a;
             b = other.b;
-            contact1 = other.contact1;
-            contact2 = other.contact2;
+            start = other.start;
+            end = other.end;
             normal = other.normal;
             depth = other.depth;
-            contactCount = other.contactCount;
         }
 
         // Copy assignment operator.
@@ -63,19 +59,18 @@ namespace Aerolite {
             if (this != &other) {
                 a = other.a;
                 b = other.b;
-                contact1 = other.contact1;
-                contact2 = other.contact2;
+                start = other.start;
+                end = other.end;
                 normal = other.normal;
                 depth = other.depth;
-                contactCount = other.contactCount;
             }
             return *this;
         }
 
         // Move constructor.
         Contact2D(Contact2D&& other) noexcept
-            : a(other.a), b(other.b), contact1(std::move(other.contact1)), contact2(std::move(other.contact2)),
-            normal(std::move(other.normal)), depth(other.depth), contactCount(other.contactCount) {
+            : a(other.a), b(other.b), start(std::move(other.start)), end(std::move(other.end)),
+            normal(std::move(other.normal)), depth(other.depth) {
             other.a = nullptr;
             other.b = nullptr;
         }
@@ -85,11 +80,10 @@ namespace Aerolite {
             if (this != &other) {
                 a = other.a;
                 b = other.b;
-                contact1 = std::move(other.contact1);
-                contact2 = std::move(other.contact2);
+                start = std::move(other.start);
+                end = std::move(other.end);
                 normal = std::move(other.normal);
                 depth = other.depth;
-                contactCount = other.contactCount;
 
                 other.a = nullptr;
                 other.b = nullptr;

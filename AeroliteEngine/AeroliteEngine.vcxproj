@@ -144,6 +144,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\Physics\AABB2D.h" />
+    <ClInclude Include="src\Physics\AeroWorld2D.h" />
     <ClInclude Include="src\Physics\Body2D.h" />
     <ClInclude Include="src\Physics\Collision2D.h" />
     <ClInclude Include="src\Physics\Constants.h" />
@@ -159,6 +160,7 @@
     <ClInclude Include="src\Physics\Vec3.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Physics\AeroWorld2D.cpp" />
     <ClCompile Include="src\Physics\Body2D.cpp" />
     <ClCompile Include="src\Physics\Collision2D.cpp" />
     <ClCompile Include="src\Physics\Contact2D.cpp" />

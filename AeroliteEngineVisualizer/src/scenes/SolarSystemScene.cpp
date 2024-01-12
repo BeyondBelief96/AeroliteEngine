@@ -8,9 +8,9 @@
 #include "Scene.h"
 
 // Generates a solar system layout with planets in orbit around a central sun.
-void SolarSystemScene::GenerateSolarSystem(std::vector<std::shared_ptr<Particle>>& planets,
-    std::vector<std::shared_ptr<ParticleGAttraction>>& gravAttractionForces,
-    std::shared_ptr<Particle> sun,
+void SolarSystemScene::GenerateSolarSystem(std::vector<std::unique_ptr<Particle>>& planets,
+    std::vector<std::unique_ptr<ParticleGAttraction>>& gravAttractionForces,
+    std::unique_ptr<Particle>& sun,
     int numPlanets,
     float gravitationalConstant,
     float minOrbitRadius,
@@ -39,19 +39,19 @@ void SolarSystemScene::GenerateSolarSystem(std::vector<std::shared_ptr<Particle>
         velocity = velocity.UnitVector() * velocityMagnitude; // Normalize and scale by magnitude
 
         // Create the planet particle.
-        auto planet = std::make_shared<Particle>(sun->position.x + x, sun->position.y + y, 1.0); // Assuming a unit mass for simplicity.
+        auto planet = std::make_unique<Particle>(sun->position.x + x, sun->position.y + y, 1.0); // Assuming a unit mass for simplicity.
         planet->velocity = velocity;
-        planets.push_back(planet);
 
         // Create gravitational attraction force generators.
-        auto gravAttractionToSun = std::make_shared<ParticleGAttraction>(planet, sun, gravitationalConstant, 0, 1e15);
-        gravAttractionForces.push_back(gravAttractionToSun);
+        auto gravAttractionToSun = std::make_unique<ParticleGAttraction>(*planet, *sun, gravitationalConstant, 0, 1e15);
+        planets.push_back(std::move(planet));
+        gravAttractionForces.push_back(std::move(gravAttractionToSun));
     }
 }
 
 // GLOBAL VARIABLES
-auto gravAttractionForces = std::vector<std::shared_ptr<ParticleGAttraction>>();
-auto sun = std::make_shared<Particle>(0, 0, MASS_OF_SUN);
+auto gravAttractionForces = std::vector<std::unique_ptr<ParticleGAttraction>>();
+auto sun = std::make_unique<Particle>(0, 0, MASS_OF_SUN);
 auto planetColors = std::vector<unsigned int>();
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -65,7 +65,7 @@ void SolarSystemScene::Setup() {
     GenerateSolarSystem(planets, gravAttractionForces, sun, 50,
         GRAV_CONSTANT, 50, 500, sun->mass);
 
-    for (auto planet : planets) {
+    for (auto& planet : planets) {
         // Create a random device and generator for color generation
         std::random_device rd;
         std::mt19937 gen(rd());
@@ -144,21 +144,21 @@ void SolarSystemScene::Update() {
 
     for (int i = 0; i < planets.size(); i++)
     {
-        pfg.Add(planets[i], gravAttractionForces[i]);
+        pfg.Add(*planets[i], *gravAttractionForces[i]);
     }
 
     // Update Forces From Particle Force Registry
     pfg.UpdateForces(deltaTime);
 
     // Preform integration for each particle.
-    for (auto particle : planets)
+    for (auto& particle : planets)
     {
         // Integrate the accleration and velocity to find the new position.
         particle->Integrate(deltaTime);
     }
 
     // Check boundaries and keep particle inside window.
-    for (auto particle : planets)
+    for (auto& particle : planets)
     {
         // Nasty hardcoded flip in velocity if it touches the limits of the screen
         if (particle->position.x - particle->radius <= 0) {
@@ -194,7 +194,7 @@ void SolarSystemScene::Render() {
 
     int i = 0;
     // Draw planets
-    for (auto planet : planets) {
+    for (auto& planet : planets) {
 
         // Drawing velocity vector of each planet.
         Graphics::DrawCircle(sun->position.x, sun->position.y, planetRadii[i], M_PI, planetColors[i]);

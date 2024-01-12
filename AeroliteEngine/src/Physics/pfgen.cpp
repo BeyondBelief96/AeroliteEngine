@@ -4,10 +4,10 @@
 using namespace Aerolite;
 
 // Add a particle and its associated force generator to the registry.
-void Aerolite::ParticleForceRegistry::Add(std::shared_ptr<Particle> particle, std::shared_ptr<ParticleForceGenerator> fg) {
+void Aerolite::ParticleForceRegistry::Add(Aerolite::Particle& particle, ParticleForceGenerator& fg) {
     // Emplace_back efficiently constructs a ParticleForceRegistration in place,
     // thereby avoiding unnecessary copy or move operations.
-    registrations.emplace_back(ParticleForceRegistration{ particle, fg });
+    registrations.push_back(ParticleForceRegistration(particle, fg));
 }
 
 // Clear all force generator registrations from the registry.
@@ -23,7 +23,7 @@ void ParticleForceRegistry::UpdateForces(const real dt) {
     for (Registry::iterator i = registrations.begin(); i != registrations.end(); i++) {
         // Invoke UpdateForce on the force generator, passing the associated particle and the time step dt.
         // This updates the force on each particle based on the specific logic of the force generator.
-        i->fg->UpdateForce(i->particle, dt);
+        i->fg.UpdateForce(i->particle, dt);
     }
 
     // Clear the registry after updating forces to reset and prepare for the next update cycle.
@@ -37,13 +37,13 @@ Aerolite::ParticleGravity::ParticleGravity(const Vec2& gravity) {
 }
 
 // Apply gravitational force to a particle.
-void Aerolite::ParticleGravity::UpdateForce(std::shared_ptr<Particle> particle, real dt) {
+void Aerolite::ParticleGravity::UpdateForce(Aerolite::Particle& particle, real dt) {
     // Check if the particle has finite mass. Skip force application if mass is infinite (immovable object).
-    if (!particle->HasFiniteMass()) return;
+    if (!particle.HasFiniteMass()) return;
 
     // Apply a gravitational force that is proportional to the particle's mass.
     // The force is in the direction of the gravity vector.
-    particle->ApplyForce(gravity * particle->mass);
+    particle.ApplyForce(gravity * particle.mass);
 }
 
 // Constructor to initialize the drag coefficients.
@@ -54,20 +54,20 @@ Aerolite::ParticleDrag::ParticleDrag(real linVelDragCoef, real velSqDragCoeff) {
 }
 
 // Apply drag force to a particle.
-void Aerolite::ParticleDrag::UpdateForce(std::shared_ptr<Particle> particle, real dt) {
+void Aerolite::ParticleDrag::UpdateForce(Aerolite::Particle& particle, real dt) {
     // Only apply drag if the particle is moving (velocity magnitude is greater than zero).
-    if (particle->velocity.MagnitudeSquared() > 0) {
+    if (particle.velocity.MagnitudeSquared() > 0) {
         // Calculate the drag force direction, opposite to the particle's velocity.
-        Vec2 dragForce = particle->velocity.UnitVector() * -1.0;
+        Vec2 dragForce = particle.velocity.UnitVector() * -1.0;
 
         // Compute the magnitude of drag using the drag equation, which includes linear and quadratic components.
-        real dragMagnitude = particle->velocity.Magnitude() * k1 + particle->velocity.MagnitudeSquared() * k2;
+        real dragMagnitude = particle.velocity.Magnitude() * k1 + particle.velocity.MagnitudeSquared() * k2;
 
         // Scale the drag force by its magnitude.
         dragForce *= dragMagnitude;
 
         // Apply the drag force to the particle.
-        particle->ApplyForce(dragForce);
+        particle.ApplyForce(dragForce);
     }
 }
 
@@ -78,9 +78,9 @@ Aerolite::ParticleFriction::ParticleFriction(real frictionCoeff) {
 }
 
 // Apply friction force to a particle.
-void Aerolite::ParticleFriction::UpdateForce(std::shared_ptr<Particle> particle, real dt) {
+void Aerolite::ParticleFriction::UpdateForce(Aerolite::Particle& particle, real dt) {
     // Calculate the direction of friction force, which is opposite to the particle's velocity direction.
-    Vec2 frictionDirection = particle->velocity.UnitVector() * -1.0;
+    Vec2 frictionDirection = particle.velocity.UnitVector() * -1.0;
 
     // The magnitude of the friction force is determined by the friction coefficient.
     real frictionMagnitude = frictionCoeff;
@@ -89,26 +89,30 @@ void Aerolite::ParticleFriction::UpdateForce(std::shared_ptr<Particle> particle,
     Vec2 frictionForce = frictionDirection * frictionMagnitude;
 
     // Apply the friction force to the particle.
-    particle->ApplyForce(frictionForce);
+    particle.ApplyForce(frictionForce);
 }
 
 // Constructor to initialize particles involved in gravitational attraction and the gravitational constant.
-Aerolite::ParticleGAttraction::ParticleGAttraction(std::shared_ptr<Particle> particleA, std::shared_ptr<Particle> particleB,
-    real gravitationalConstant, double minDistance, double maxDistance) {
-    // Set the internal members for particles and gravitational constant.
-    this->particleA = particleA;
-    this->particleB = particleB;
-    this->gravConstant = gravitationalConstant;
-
-    // Set the minimum and maximum effective distances for gravitational attraction.
-    this->minDistance = minDistance;
-    this->maxDistance = maxDistance;
+Aerolite::ParticleGAttraction::ParticleGAttraction(
+    Aerolite::Particle& particleA,
+    Aerolite::Particle& particleB,
+    real gravitationalConstant,
+    double minDistance,
+    double maxDistance)
+    : particleA(particleA),  // Initialize particleA
+    particleB(particleB),  // Initialize particleB
+    gravConstant(gravitationalConstant),  // Initialize gravConstant
+    minDistance(minDistance),  // Initialize minDistance
+    maxDistance(maxDistance)   // Initialize maxDistance
+{
+    // Constructor body, if needed for additional setup.
 }
 
+
 // Apply gravitational attraction force between two particles.
-void Aerolite::ParticleGAttraction::UpdateForce(std::shared_ptr<Particle> particle, real dt) {
+void Aerolite::ParticleGAttraction::UpdateForce(Aerolite::Particle& particle, real dt) {
     // Calculate the displacement vector between particleB and particleA.
-    Vec2 d = (particleB->position - particleA->position);
+    Vec2 d = (particleB.position - particleA.position);
 
     // Compute the squared distance between the particles.
     double distanceSquared = d.MagnitudeSquared();
@@ -117,26 +121,26 @@ void Aerolite::ParticleGAttraction::UpdateForce(std::shared_ptr<Particle> partic
     distanceSquared = std::clamp(distanceSquared, (double)minDistance, (double)maxDistance);
 
     // Calculate the magnitude of gravitational attraction using Newton's law of universal gravitation.
-    real attractionMagnitude = gravConstant * (particleA->mass * particleB->mass) / distanceSquared;
+    real attractionMagnitude = gravConstant * (particleA.mass * particleB.mass) / distanceSquared;
 
     // Construct the gravitational force vector, directed towards particleB.
     Vec2 attractionForce = d.UnitVector() * attractionMagnitude;
 
     // Apply the gravitational force to the particle.
-    particle->ApplyForce(attractionForce);
+    particle.ApplyForce(attractionForce);
 }
 
 Aerolite::ParticleSpringAnchored::ParticleSpringAnchored(const Vec2 anchor, real restLength, real springConstant)
+    : anchor(anchor), restLength(restLength), k(springConstant)
 {
-    this->anchor = anchor;
-    this->restLength = restLength;
-    this->k = springConstant;
+    // Constructor body can be empty if you're just initializing members
 }
 
-void Aerolite::ParticleSpringAnchored::UpdateForce(std::shared_ptr<Particle> particle, real dt)
+
+void Aerolite::ParticleSpringAnchored::UpdateForce(Aerolite::Particle& particle, real dt)
 {
     // Calculate the distance between the anchor and the particle.
-    Vec2 d = particle->position - anchor;
+    Vec2 d = particle.position - anchor;
 
     // Find the spring displacement considering the rest length;
     real displacement = d.Magnitude() - restLength;
@@ -147,21 +151,20 @@ void Aerolite::ParticleSpringAnchored::UpdateForce(std::shared_ptr<Particle> par
 
     // Calculate the final resulting spring force vector.
     Vec2 springForce = springDirection * springMagnitude;
-    particle->ApplyForce(springForce);
+    particle.ApplyForce(springForce);
 }
 
-Aerolite::ParticleSpring::ParticleSpring(std::shared_ptr<Particle> particleA, std::shared_ptr<Particle> particleB, const real restLength, const real springConstant)
+Aerolite::ParticleSpring::ParticleSpring(Aerolite::Particle& particleA, Aerolite::Particle& particleB, const real restLength, const real springConstant)
+    : particleA(particleA), particleB(particleB), l0(restLength), k(springConstant)
 {
-    this->particleA = particleA;
-    this->particleB = particleB;
-    this->l0 = restLength;
-    this->k = springConstant;
+    // No need to set the members in the constructor body since they are already initialized
 }
 
-void Aerolite::ParticleSpring::UpdateForce(std::shared_ptr<Particle> particle, real dt)
+
+void Aerolite::ParticleSpring::UpdateForce(Aerolite::Particle& particle, real dt)
 {
     // Calculate the distance between the anchor and the particle.
-    Vec2 d = particleA->position - particleB->position;
+    Vec2 d = particleA.position - particleB.position;
 
     // Find the spring displacement considering the rest length;
     real displacement = d.Magnitude() - l0;
@@ -172,5 +175,5 @@ void Aerolite::ParticleSpring::UpdateForce(std::shared_ptr<Particle> particle, r
 
     // Calculate the final resulting spring force vector.
     Vec2 springForce = springDirection * springMagnitude;
-    particle->ApplyForce(springForce);
+    particle.ApplyForce(springForce);
 }

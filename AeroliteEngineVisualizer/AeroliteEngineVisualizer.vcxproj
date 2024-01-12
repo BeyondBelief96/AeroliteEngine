@@ -74,7 +74,7 @@
     <LibraryPath>C:\Users\brand\Code\cpp\Aerolite\AeroliteEngine\AeroliteEngine\x64\Debug;$(LibraryPath)</LibraryPath>
     <ExternalIncludePath>
     </ExternalIncludePath>
-    <IncludePath>C:\Users\brand\Code\cpp\Aerolite\AeroliteEngine\AeroliteEngine\src\Physics;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)AeroliteEngine\src\Physics;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LibraryPath>C:\Users\brand\Code\cpp\Aerolite\AeroliteEngine\AeroliteEngine\x64\Debug;$(LibraryPath)</LibraryPath>
@@ -168,9 +168,10 @@
     <Image Include="assets\metal.png" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\scenes\AeroWorld2DScene.cpp" />
     <ClCompile Include="src\scenes\BilliardsScene.cpp" />
     <ClCompile Include="src\scenes\Collision2DScene.cpp" />
-    <ClCompile Include="src\scenes\ProjectionResolutionScene.cpp" />
+    <ClCompile Include="src\scenes\CollisionProjectionScene.cpp" />
     <ClCompile Include="src\scenes\SATCollisionScene.cpp" />
     <ClCompile Include="src\scenes\SolarSystemScene.cpp" />
     <ClCompile Include="src\scenes\GravityDragScene.cpp" />

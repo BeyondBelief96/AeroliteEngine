@@ -47,13 +47,16 @@
     <ClCompile Include="src\scenes\SpringScene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\scenes\ProjectionResolutionScene.cpp">
+    <ClCompile Include="src\scenes\CollisionProjectionScene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\scenes\Collision2DScene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\scenes\SATCollisionScene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scenes\AeroWorld2DScene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

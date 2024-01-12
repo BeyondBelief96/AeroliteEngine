@@ -4,7 +4,7 @@
 #include "Constants.h"
 #include "Scene.h"
 
-void GenerateParticlesInLine(std::vector<std::shared_ptr<Particle>>& particles,
+void GenerateParticlesInLine(std::vector<std::unique_ptr<Particle>>& particles,
         int numParticles, float verticalSeparation, const Vec2& anchor,
         float width, float mass) 
     {
@@ -15,20 +15,20 @@ void GenerateParticlesInLine(std::vector<std::shared_ptr<Particle>>& particles,
             std::cout << verticalSeparation;
             std::cout << i+1 * verticalSeparation;
             float yPosition = anchor.y + ((i+1) * verticalSeparation);
-            auto particle = std::make_shared<Particle>(xPosition, yPosition, mass);
-            particles.push_back(particle);
+            auto particle = std::make_unique<Particle>(xPosition, yPosition, mass);
+            particles.push_back(std::move(particle));
         }
     };
 
 
-auto dragGenerator = std::make_shared<ParticleDrag>(0.001, 0.005);
+auto dragGenerator = std::make_unique<ParticleDrag>(0.001, 0.005);
 
 ///////////////////////////////////////////////////////////////////////////////
 // Setup function (executed once in the beginning of the simulation)
 ///////////////////////////////////////////////////////////////////////////////
 void SpringScene::Setup() {
     running = Graphics::OpenWindow();
-    particles = std::vector<std::shared_ptr<Particle>>();
+    particles = std::vector<std::unique_ptr<Particle>>();
     anchor = Vec2(Graphics::Width() / 2, 30);
     GenerateParticlesInLine(particles, NUM_PARTICLES, restLength, anchor, Graphics::Width(), PARTICLE_MASS);
 }
@@ -116,25 +116,25 @@ void SpringScene::Update() {
     for(int i = 0; i < particles.size(); i++)
     {
         // Applying weight force.
-        auto weightForceGenerator = std::make_shared<ParticleGravity>(Vec2(0, 9.8 * particles[i]->mass * PIXELS_PER_METER));
-        pfg.Add(particles[i], weightForceGenerator);
+        auto weightForceGenerator = std::make_unique<ParticleGravity>(Vec2(0, 9.8 * particles[i]->mass * PIXELS_PER_METER));
+        pfg.Add(*particles[i], *weightForceGenerator);
         
         // Apply drag force to each particle.
         particles[i]->ApplyForce(pushForce);
-        pfg.Add(particles[i], dragGenerator);
+        pfg.Add(*particles[i], *dragGenerator);
 
         // Apply spring forces.
         if(i == 0)
         {
-            auto anchorForceGenerator = std::make_shared<ParticleSpringAnchored>(anchor, restLength, k);
-            pfg.Add(particles[i], anchorForceGenerator);
+            auto anchorForceGenerator = std::make_unique<ParticleSpringAnchored>(anchor, restLength, k);
+            pfg.Add(*particles[i], *anchorForceGenerator);
         }
         else
         {
-            auto springForceGenerator = std::make_shared<ParticleSpring>(particles[i], particles[i - 1], restLength, k);
-            auto invSpringForceGenerator = std::make_shared<ParticleSpring>(particles[i - 1], particles[i], restLength, k);
-            pfg.Add(particles[i], springForceGenerator);
-            pfg.Add(particles[i - 1], invSpringForceGenerator);
+            auto springForceGenerator = std::make_unique<ParticleSpring>(*particles[i], *particles[i - 1], restLength, k);
+            auto invSpringForceGenerator = std::make_unique<ParticleSpring>(*particles[i - 1], *particles[i], restLength, k);
+            pfg.Add(*particles[i], *springForceGenerator);
+            pfg.Add(*particles[i - 1], *invSpringForceGenerator);
         }
     }
 
@@ -143,14 +143,14 @@ void SpringScene::Update() {
     pfg.UpdateForces(deltaTime);
 
     // Preform integration for each particle.
-    for (auto particle : particles)
+    for (auto& particle : particles)
     {
         // Integrate the accleration and velocity to find the new position.
         particle->Integrate(deltaTime);
     }
 
     // Check boundaries and keep particle inside window.
-    for (auto particle : particles)
+    for (auto& particle : particles)
     {
         // Nasty hardcoded flip in velocity if it touches the limits of the screen
         if (particle->position.x - particle->radius <= 0) {

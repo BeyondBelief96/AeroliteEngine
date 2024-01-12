@@ -19,7 +19,7 @@ namespace Aerolite {
         this->angularAcceleration = 0.0f;
         this->sumForces = Vec2(0.0f, 0.0f);
         this->sumTorque = 0.0f;
-        this->restitution = 0.99;
+        this->restitution = 0.5;
         this->friction = 0.7;
 
         if(mass != 0.0) {
@@ -73,12 +73,7 @@ namespace Aerolite {
     {
         IntegrateLinear(dt);
         IntegrateAngular(dt);
-        bool isPolygon = shape->GetType() == Polygon || shape->GetType() == Box;
-
-        if(isPolygon) {
-            auto polygonShape = (PolygonShape*) shape;
-            polygonShape->UpdateVertices(rotation, position);
-        }
+        shape->UpdateVertices(rotation, position);
     }
 
     // Destructor for Body2D.

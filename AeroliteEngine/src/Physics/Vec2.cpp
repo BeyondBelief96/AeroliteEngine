@@ -36,7 +36,7 @@ namespace Aerolite {
 
     Vec2 Vec2::Normal() const noexcept
     {
-        Vec2 result = Vec2(-y, x);
+        Vec2 result = Vec2(y, -x);
         result.Normalize();
         return result;
     }

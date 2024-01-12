@@ -90,7 +90,7 @@ void CollisionProjectionResolutionScene::Update() {
         for(int j = i+1; j < bodies.size(); j++)
         {   
             Aerolite::Contact2D contact;
-            if(CollisionDetection2D::IsColliding(bodies[i].get(), bodies[j].get(), contact))
+            if(CollisionDetection2D::IsColliding(*bodies[i], *bodies[j], contact))
             {
                 contact.ResolveCollision();
                 bodies[i]->isColliding = true;

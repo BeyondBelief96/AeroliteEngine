@@ -5,8 +5,8 @@
 
 // GLOBAL VARIABLES
 Vec2 gravity(0.0, 9.8 * PIXELS_PER_METER);
-auto gravityForceGenerator = std::make_shared<ParticleGravity>(gravity);
-auto dragForceGenerator = std::make_shared<ParticleDrag>(1, 0.03f);
+auto gravityForceGenerator = std::make_unique<ParticleGravity>(gravity);
+auto dragForceGenerator = std::make_unique<ParticleDrag>(1, 0.03f);
 
 ///////////////////////////////////////////////////////////////////////////////
 // Setup function (executed once in the beginning of the simulation)
@@ -30,8 +30,8 @@ void GravityDragScene::Setup() {
     //    auto smallBall = std::make_shared<Particle>(distx(gen), disty(gen), 1.0);
     //    particles.push_back(smallBall);
     //}
-    auto smallBall = std::make_shared<Particle>(50, 100, 1.0);
-    particles.push_back(smallBall);
+    auto smallBall = std::make_unique<Particle>(50, 100, 1.0);
+    particles.push_back(std::move(smallBall));
 
     // Initializing liquid object to simulate drag forces.
     liquid.x = 0;
@@ -79,9 +79,9 @@ void GravityDragScene::Input() {
                 {
                     int x, y;
                     SDL_GetMouseState(&x, &y);
-                    auto particle = std::make_shared<Particle>(x, y, 1.0);
+                    auto particle = std::make_unique<Particle>(x, y, 1.0);
                     particle->radius = 5;
-                    particles.push_back(particle);
+                    particles.push_back(std::move(particle));
                 }
                 break;
         }
@@ -109,13 +109,13 @@ void GravityDragScene::Update() {
     timePreviousFrame = SDL_GetTicks();
 
     // Create Particle - Force Registration Pairs.
-    for (auto particle : particles)
+    for (auto& particle : particles)
     {
         particle->ApplyForce(pushForce);
-        pfg.Add(particle, gravityForceGenerator);
+        pfg.Add(*particle, *gravityForceGenerator);
 
         if (particle->position.y >= liquid.y) {
-            pfg.Add(particle, dragForceGenerator);
+            pfg.Add(*particle, *dragForceGenerator);
         }
     }
 
@@ -123,14 +123,14 @@ void GravityDragScene::Update() {
     pfg.UpdateForces(deltaTime);
 
     // Preform integration for each particle.
-    for (auto particle : particles)
+    for (auto& particle : particles)
     {
         // Integrate the accleration and velocity to find the new position.
         particle->Integrate(deltaTime); 
     }
     
     // Check boundaries and keep particle inside window.
-    for (auto particle : particles)
+    for (auto& particle : particles)
     {
         // Nasty hardcoded flip in velocity if it touches the limits of the screen
         if (particle->position.x - particle->radius <= 0) {
@@ -162,7 +162,7 @@ void GravityDragScene::Render() {
     Graphics::DrawFillRect(liquid.x + liquid.w / 2, liquid.y + liquid.h / 2,
         liquid.w, liquid.h, 0xFF331504);
 
-    for (auto particle : particles)
+    for (auto& particle : particles)
         Graphics::DrawFillCircle(particle->position.x, particle->position.y, particle->radius, 0xFFFFFFFF);
     Graphics::RenderFrame();
 }

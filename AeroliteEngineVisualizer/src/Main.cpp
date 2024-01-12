@@ -2,7 +2,7 @@
 
 
 int main(int argc, char *args[]) {
-    SATCollisionScene scene;
+    AeroWorld2DScene scene;
 
     scene.Setup();
 

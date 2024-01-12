@@ -4,7 +4,7 @@
 #include "Scene.h"
 
 // GLOBAL VARIABLES
-auto frictionForceGenerator = std::make_shared<ParticleFriction>(10 * PIXELS_PER_METER);
+auto frictionForceGenerator = std::make_unique<ParticleFriction>(10 * PIXELS_PER_METER);
 
 ///////////////////////////////////////////////////////////////////////////////
 // Setup function (executed once in the beginning of the simulation)
@@ -12,8 +12,8 @@ auto frictionForceGenerator = std::make_shared<ParticleFriction>(10 * PIXELS_PER
 void BilliardScene::Setup() {
     running = Graphics::OpenWindow();
 
-    auto smallBall = std::make_shared<Particle>(50, 100, 1.0);
-    particles.push_back(smallBall);
+    auto smallBall = std::make_unique<Particle>(50, 100, 1.0);
+    particles.push_back(std::move(smallBall));
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -96,24 +96,24 @@ void BilliardScene::Update() {
     timePreviousFrame = SDL_GetTicks();
 
     // Create Particle - Force Registration Pairs.
-    for (auto particle : particles)
+    for (auto& particle : particles)
     {
         particle->ApplyForce(pushForce);
-        pfg.Add(particle, frictionForceGenerator);
+        pfg.Add(*particle, *frictionForceGenerator);
     }
 
     // Update Forces From Particle Force Registry
     pfg.UpdateForces(deltaTime);
 
     // Preform integration for each particle.
-    for (auto particle : particles)
+    for (auto& particle : particles)
     {
         // Integrate the accleration and velocity to find the new position.
         particle->Integrate(deltaTime);
     }
 
     // Check boundaries and keep particle inside window.
-    for (auto particle : particles)
+    for (auto& particle : particles)
     {
         // Nasty hardcoded flip in velocity if it touches the limits of the screen
         if (particle->position.x - particle->radius <= 0) {
@@ -143,7 +143,7 @@ void BilliardScene::Render() {
     
     if(leftMouseButtonDown)
         Graphics::DrawLine(particles[0]->position.x, particles[0]->position.y, mouseCursor.x, mouseCursor.y, 0xFF000000);
-    for (auto particle : particles)
+    for (auto& particle : particles)
         Graphics::DrawFillCircle(particle->position.x, particle->position.y, particle->radius, 0xFFFFFFFF);
     Graphics::RenderFrame();
 }

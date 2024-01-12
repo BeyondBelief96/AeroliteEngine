@@ -5,6 +5,7 @@
 #include "Body2D.h"
 #include "pfgen.h"
 #include "Contact2D.h"
+#include "AeroWorld2D.h"
 #include <vector>
 #include <memory>
 #include "../Graphics.h"
@@ -28,7 +29,7 @@ protected:
 class GravityDragScene : public Scene
 {
 private:
-    std::vector<std::shared_ptr<Particle>> particles;
+    std::vector<std::unique_ptr<Particle>> particles;
     ParticleForceRegistry pfg;
     SDL_Rect liquid;
     SDL_Rect floor;
@@ -45,7 +46,7 @@ public:
 class BilliardScene : public Scene
 {
 private:
-    std::vector<std::shared_ptr<Particle>> particles;
+    std::vector<std::unique_ptr<Particle>> particles;
     ParticleForceRegistry pfg;
     Vec2 pushForce;
     Vec2 mouseCursor;
@@ -63,15 +64,15 @@ public:
 class SolarSystemScene : public Scene
 {
 private:
-    std::vector<std::shared_ptr<Particle>> planets;
+    std::vector<std::unique_ptr<Particle>> planets;
     std::vector<float> planetRadii;
     ParticleForceRegistry pfg;
     Vec2 mouseCursor;
     bool leftMouseButtonDown;
 public:
-    void GenerateSolarSystem(std::vector<std::shared_ptr<Particle>>& planets,
-        std::vector<std::shared_ptr<ParticleGAttraction>>& gravAttractionForces,
-        std::shared_ptr<Particle> sun,
+    void GenerateSolarSystem(std::vector<std::unique_ptr<Particle>>& planets,
+        std::vector<std::unique_ptr<ParticleGAttraction>>& gravAttractionForces,
+        std::unique_ptr<Particle>& sun,
         int numPlanets,
         float gravitationalConstant,
         float minOrbitRadius,
@@ -89,7 +90,7 @@ public:
 class SpringScene : public Scene
 {
 private:
-    std::vector<std::shared_ptr<Particle>> particles;
+    std::vector<std::unique_ptr<Particle>> particles;
     ParticleForceRegistry pfg;
     Vec2 pushForce;
     Vec2 mouseCursor;
@@ -151,7 +152,21 @@ private:
     Vec2 pushForce;
     Vec2 mouseCursor;
     bool leftMouseButtonDown;
+    bool debug = false;
 
+public:
+    void Setup() override;
+    void Input() override;
+    void Update() override;
+    void Render() override;
+    void Destroy()override;
+};
+
+class AeroWorld2DScene : public Scene
+{
+private:
+    std::unique_ptr<Aerolite::AeroWorld2D> world;
+    bool debug;
 public:
     void Setup() override;
     void Input() override;

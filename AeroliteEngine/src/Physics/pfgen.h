@@ -16,7 +16,7 @@ namespace Aerolite {
     public:
         // Pure virtual function that applies a force to a particle over a time interval.
         // Must be implemented by derived force generators.
-        virtual void UpdateForce(std::shared_ptr<Particle> particle, real dt) = 0;
+        virtual void UpdateForce(Aerolite::Particle& particle, real dt) = 0;
     };
 
     // ParticleForceRegistry maintains a list of particle-force generator associations.
@@ -25,8 +25,8 @@ namespace Aerolite {
     protected:
         // Nested struct to associate a Particle with a ForceGenerator.
         struct ParticleForceRegistration {
-            std::shared_ptr<Particle> particle;             // Pointer to the particle
-            std::shared_ptr<ParticleForceGenerator> fg;     // Pointer to the force generator affecting the particle
+            Aerolite::Particle& particle;             // Pointer to the particle
+            Aerolite::ParticleForceGenerator& fg;     // Pointer to the force generator affecting the particle
         };
 
         // Typedef for a vector of ParticleForceRegistration, representing the registry.
@@ -35,7 +35,7 @@ namespace Aerolite {
 
     public:
         // Adds a particle and its associated force generator to the registry.
-        void Add(std::shared_ptr<Particle> particle, std::shared_ptr<ParticleForceGenerator> fg);
+        void Add(Aerolite::Particle& particle, Aerolite::ParticleForceGenerator& fg);
 
         // Clears all registrations from the registry.
         void Clear(void);
@@ -59,7 +59,7 @@ namespace Aerolite {
         // Overrides the UpdateForce method to apply gravitational force to a particle.
         // particle: The particle to which the force will be applied.
         // dt: The duration over which to apply the force (usually a time step in the simulation).
-        virtual void UpdateForce(std::shared_ptr<Particle> particle, real dt) override;
+        virtual void UpdateForce(Aerolite::Particle& particle, real dt) override;
 
     private:
         Vec2 gravity;  // The gravitational force vector. This is usually a constant value, like gravity on Earth.
@@ -78,7 +78,7 @@ namespace Aerolite {
         // Overrides the UpdateForce method to apply drag force to a particle.
         // particle: The particle to which the force will be applied.
         // dt: The duration over which to apply the force (usually a time step in the simulation).
-        virtual void UpdateForce(std::shared_ptr<Particle> particle, real dt) override;
+        virtual void UpdateForce(Aerolite::Particle& particle, real dt) override;
 
     private:
         real k1;  // The linear drag coefficient. Controls how much the velocity directly affects drag.
@@ -101,7 +101,7 @@ namespace Aerolite {
         //           which can be useful when particles are accessed from multiple places.
         // dt: The time step over which to apply the force. This is typically the duration of a single
         //     frame in a simulation or game loop.
-        virtual void UpdateForce(std::shared_ptr<Particle> particle, real dt) override;
+        virtual void UpdateForce(Aerolite::Particle& particle, real dt) override;
 
     private:
         real frictionCoeff; // Coefficient of friction. This member variable stores the value set by the constructor.
@@ -136,8 +136,8 @@ namespace Aerolite {
         //                              simulation of gravitational forces, as it avoids the calculation of forces for
         //                              extremely close or distant particles.
         //
-        ParticleGAttraction(std::shared_ptr<Particle> particleA,
-            std::shared_ptr<Particle> particleB,
+        ParticleGAttraction(Aerolite::Particle& particleA,
+            Aerolite::Particle& particleB,
             real gravitationalConstant, double minDistance, double maxDistance);
 
         // Overrides the UpdateForce method from ParticleForceGenerator. 
@@ -146,14 +146,14 @@ namespace Aerolite {
         //           In the context of this class, it should be the same as particleA.
         // dt: The time step over which to apply the force. This is typically the duration of a single
         //     frame in a simulation or game loop.
-        virtual void UpdateForce(std::shared_ptr<Particle> particle, real dt) override;
+        virtual void UpdateForce(Aerolite::Particle& particle, real dt) override;
 
     private:
         // Shared pointers to the particles involved in the gravitational interaction.
         // Using shared pointers ensures proper memory management and shared ownership, 
         // which is useful when particles are accessed from multiple places.
-        std::shared_ptr<Particle> particleA;  // The particle that receives the gravitational force.
-        std::shared_ptr<Particle> particleB;  // The particle that exerts the gravitational force.
+        Aerolite::Particle& particleA;  // The particle that receives the gravitational force.
+        Aerolite::Particle& particleB;  // The particle that exerts the gravitational force.
 
         real gravConstant;  // The gravitational constant used in the force calculation. 
         // This constant is key in determining the magnitude of the force.
@@ -188,7 +188,7 @@ namespace Aerolite {
         // 
         // @param particle: The shared pointer to the Particle object on which the force is to be applied.
         // @param dt: The time interval over which the force acts.
-        virtual void UpdateForce(std::shared_ptr<Particle> particle, real dt) override;
+        virtual void UpdateForce(Aerolite::Particle& particle, real dt) override;
 
     private:
         Vec2 anchor;     // The fixed anchor point in space to which the spring is attached.
@@ -202,10 +202,10 @@ class ParticleSpring : public ParticleForceGenerator
 {
 private:
     // particleA: A shared pointer to the first Particle object connected by the spring.
-    std::shared_ptr<Particle> particleA;
+    Aerolite::Particle& particleA;
 
     // particleB: A shared pointer to the second Particle object connected by the spring.
-    std::shared_ptr<Particle> particleB;
+    Aerolite::Particle& particleB;
 
     // l0: The rest length of the spring. This is the length at which the spring neither exerts compression nor tension.
     real l0;
@@ -221,7 +221,7 @@ public:
     // @param particleB: A shared pointer to the second Particle object to be connected by the spring.
     // @param restLength: The natural (rest) length of the spring.
     // @param springConstant: The stiffness of the spring.
-    ParticleSpring(std::shared_ptr<Particle> particleA, std::shared_ptr<Particle> particleB, const real restLength, const real springConstant);
+    ParticleSpring(Aerolite::Particle& particleA, Aerolite::Particle& particleB, const real restLength, const real springConstant);
 
     // UpdateForce: Overrides the virtual function from ParticleForceGenerator.
     // This method calculates and applies the spring force to each of the two connected particles.
@@ -229,7 +229,7 @@ public:
     // 
     // @param particle: The shared pointer to the Particle object on which the force is to be applied.
     // @param dt: The time interval over which the force acts.
-    virtual void UpdateForce(std::shared_ptr<Particle> particle, real dt) override;
+    virtual void UpdateForce(Aerolite::Particle& particle, real dt) override;
 };
 
 
