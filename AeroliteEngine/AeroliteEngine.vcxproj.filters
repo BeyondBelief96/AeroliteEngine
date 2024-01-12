@@ -66,6 +66,9 @@
     <ClInclude Include="include\VecN.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\MatMxN.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Vec2.cpp">

@@ -7,7 +7,7 @@ namespace Aerolite {
 
     //Defines a real number precision. Aerolite engine can be compiled in single or double-precision versions. By default, single
     //precision is provided.
-    typedef double real;
+    typedef float real;
 
     const real epsilon = 0.005f;
 

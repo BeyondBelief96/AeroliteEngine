@@ -28,6 +28,12 @@ namespace Aerolite {
             }
         }
 
+        explicit VecN(const VecN& v) noexcept {
+            for (std::size_t i = 0; i < N; ++i) {
+                components[i] = v[i];
+            }
+        }
+
         // Default destructor. (Trivial in this case as no dynamic memory allocation is involved)
         ~VecN() noexcept = default;
 
