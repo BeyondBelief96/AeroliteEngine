@@ -32,7 +32,6 @@ namespace Aerolite {
             }
         }
 
-
         explicit MatrixMxN(const MatMN& m) {
             *this = m;
         }
@@ -90,8 +89,12 @@ namespace Aerolite {
         }
 
         // Matrix multiplication operator. Returns a new MatrixMN that is the result of multiplying this matrix by another matrix.
-        template <std::size_t P>
-        MatrixMxN<M, P> operator*(const MatrixMxN<N, P>& o) const noexcept {
+        template <std::size_t M, std::size_t N, std::size_t P>
+        MatrixMxN<M, P> operator*(const MatrixMxN<N, P>& o) const {
+            if (Columns() != o.Rows()) {
+                throw std::invalid_argument("Matrix sizes are incompatible for multiplication.");
+            }
+
             MatrixMxN<M, P> result;
             for (std::size_t i = 0; i < M; ++i) {
                 for (std::size_t j = 0; j < P; ++j) {
@@ -118,20 +121,7 @@ namespace Aerolite {
         // Matrix multiplication function for MatrixMN multiplied by another MatrixMN
         template <std::size_t M, std::size_t N, std::size_t P>
         static MatrixMxN<M, P> MatrixMultiply(const MatrixMxN<M, N>& a, const MatrixMxN<N, P>& b) {
-            if (N != a.Columns() || N != b.Rows()) {
-                throw std::invalid_argument("Matrix sizes are incompatible for multiplication.");
-            }
-
-            MatrixMxN<M, P> result;
-            for (std::size_t i = 0; i < M; ++i) {
-                for (std::size_t j = 0; j < P; ++j) {
-                    result(i, j) = real(0);
-                    for (std::size_t k = 0; k < N; ++k) {
-                        result(i, j) += a(i, k) * b(k, j);
-                    }
-                }
-            }
-            return result;
+            return a * b;
         }
 
         // Destructor
