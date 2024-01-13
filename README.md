@@ -14,6 +14,8 @@ Aerolite Physics Engine is a comprehensive, efficient 2D physics library with pl
 - **Particle Systems**: Efficient particle system for simulating large numbers of interacting objects.
 - **Material Properties**: Customize friction and restitution for different materials for varied interaction effects.
 
+- 
+
 ## Algorithms and Techniques
 - **Numerical Integration**: Utilizes Euler and Runge-Kutta integration methods for precise motion calculation.
 - **Broad and Narrow Phase Collision Detection**: Efficiently detects collisions using AABB for broad phase and SAT for narrow phase.
@@ -50,7 +52,6 @@ if (CollisionDetection2D::IsColliding(*bodyA, *bodyB, contact)) {
     contact.ResolveCollision();
 }
 ```
-- 
 
 ## Installation
 To install Aerolite Physics Engine, clone the repository and include it in your project:
@@ -68,5 +69,3 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-
