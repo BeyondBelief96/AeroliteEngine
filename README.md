@@ -23,6 +23,14 @@ Aerolite Physics Engine is a comprehensive, efficient 2D physics library with pl
 - **Constraint Solving**: Simulates complex joint behavior with constraints.
 - **Particle Dynamics**: Manages large numbers of particles effectively for simulations like smoke or liquid.
 
+## Video Demos
+![](https://media.giphy.com/media/SjMKPCeDbF7v8hfMD9/giphy-downsized.gif)
+![](https://media.giphy.com/media/0yMefjgNv3bT1rpKgJ/giphy.gif)
+![](https://media.giphy.com/media/f32PIb3eAezzNjVlL9/giphy.gif)
+![](https://media.giphy.com/media/hXcrdktMv16XPBxdgM/giphy.gif)
+![](https://media.giphy.com/media/2kfcJxGm1gajUlvVeU/giphy.gif)
+![](https://media.giphy.com/media/YqBF9Lsdx7SrsP6Ckr/giphy.gif)
+
 ## Usage and Examples
 - Creating and Configuring a 2D Body
 ```#include "Body2D.h"
