@@ -28,6 +28,18 @@ namespace Aerolite {
         // The velocity and acceleration are initialized to zero by default.
         Particle(real x, real y, real mass);
 
+        // Copy constructor
+        Particle(const Particle& other);
+
+        // Move constructor
+        Particle(Particle&& other) noexcept;
+
+        // Copy assignment operator
+        Particle& operator=(const Particle& other);
+
+        // Move assignment operator
+        Particle& operator=(Particle&& other) noexcept;
+
         // Destructor for the Particle. Currently, it does not need to perform any specific actions
         // as the struct does not manage any resources directly.
         ~Particle();

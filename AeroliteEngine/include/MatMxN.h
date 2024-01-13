@@ -32,9 +32,11 @@ namespace Aerolite {
             }
         }
 
-        explicit MatrixMxN(const MatMN& m) {
-            *this = m;
+        // Copy constructor. Creates a new MatrixMN that is a copy of the provided matrix.
+        MatrixMxN(const MatrixMxN& other) noexcept {
+            *this = other;
         }
+
 
         inline real Rows(void) const noexcept {
             return M;

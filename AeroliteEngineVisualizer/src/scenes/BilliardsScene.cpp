@@ -3,17 +3,14 @@
 #include "pfgen.h"
 #include "Scene.h"
 
-// GLOBAL VARIABLES
-auto frictionForceGenerator = std::make_unique<ParticleFriction>(10 * PIXELS_PER_METER);
-
 ///////////////////////////////////////////////////////////////////////////////
 // Setup function (executed once in the beginning of the simulation)
 ///////////////////////////////////////////////////////////////////////////////
 void BilliardScene::Setup() {
     running = Graphics::OpenWindow();
-
+    world = std::make_unique<AeroWorld2D>(0);
     auto smallBall = std::make_unique<Particle>(50, 100, 1.0);
-    particles.push_back(std::move(smallBall));
+    world->AddParticle(std::move(smallBall));
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -66,6 +63,7 @@ void BilliardScene::Input() {
         case SDL_MOUSEBUTTONUP:
             if (leftMouseButtonDown && event.button.button == SDL_BUTTON_LEFT) {
                 leftMouseButtonDown = false;
+                auto particles = world->GetParticles();
                 Vec2 impulseDirection = (particles[0]->position - mouseCursor).UnitVector();
                 float impulseMagnitude = (particles[0]->position - mouseCursor).Magnitude() * 5.0;
                 particles[0]->velocity = impulseDirection * impulseMagnitude;
@@ -95,22 +93,15 @@ void BilliardScene::Update() {
     // Set the time of the current frame to be used in the next one.
     timePreviousFrame = SDL_GetTicks();
 
+    auto particles = world->GetParticles();
     // Create Particle - Force Registration Pairs.
     for (auto& particle : particles)
     {
         particle->ApplyForce(pushForce);
-        pfg.Add(*particle, *frictionForceGenerator);
+        particle->ApplyForce(ParticleForceGenerators::GenerateFrictionForce(*particle, 10 * PIXELS_PER_METER));
     }
 
-    // Update Forces From Particle Force Registry
-    pfg.UpdateForces(deltaTime);
-
-    // Preform integration for each particle.
-    for (auto& particle : particles)
-    {
-        // Integrate the accleration and velocity to find the new position.
-        particle->Integrate(deltaTime);
-    }
+    world->Update(deltaTime);
 
     // Check boundaries and keep particle inside window.
     for (auto& particle : particles)
@@ -141,6 +132,7 @@ void BilliardScene::Update() {
 void BilliardScene::Render() {
     Graphics::ClearScreen(0xFF1C520C);
     
+    auto particles = world->GetParticles();
     if(leftMouseButtonDown)
         Graphics::DrawLine(particles[0]->position.x, particles[0]->position.y, mouseCursor.x, mouseCursor.y, 0xFF000000);
     for (auto& particle : particles)

@@ -29,7 +29,7 @@ protected:
 class GravityDragScene : public Scene
 {
 private:
-    AeroWorld2D world;
+    std::unique_ptr<Aerolite::AeroWorld2D> world;
     SDL_Rect liquid;
     SDL_Rect floor;
     Vec2 pushForce;
@@ -45,8 +45,7 @@ public:
 class BilliardScene : public Scene
 {
 private:
-    std::vector<std::unique_ptr<Particle>> particles;
-    ParticleForceRegistry pfg;
+    std::unique_ptr<Aerolite::AeroWorld2D> world;
     Vec2 pushForce;
     Vec2 mouseCursor;
     bool leftMouseButtonDown;
@@ -63,15 +62,13 @@ public:
 class SolarSystemScene : public Scene
 {
 private:
-    std::vector<std::unique_ptr<Particle>> planets;
+    std::unique_ptr<Aerolite::AeroWorld2D> world;
     std::vector<float> planetRadii;
-    ParticleForceRegistry pfg;
     Vec2 mouseCursor;
     bool leftMouseButtonDown;
 public:
     void GenerateSolarSystem(std::vector<std::unique_ptr<Particle>>& planets,
-        std::vector<std::unique_ptr<ParticleGAttraction>>& gravAttractionForces,
-        std::unique_ptr<Particle>& sun,
+        std::shared_ptr<Particle>& sun,
         int numPlanets,
         float gravitationalConstant,
         float minOrbitRadius,
@@ -89,16 +86,15 @@ public:
 class SpringScene : public Scene
 {
 private:
-    std::vector<std::unique_ptr<Particle>> particles;
-    ParticleForceRegistry pfg;
+    std::unique_ptr<Aerolite::AeroWorld2D> world;
     Vec2 pushForce;
     Vec2 mouseCursor;
     bool leftMouseButtonDown;
 
     Vec2 anchor = Vec2(0, 0);
     float k = 150;
-    float restLength = 15;
-    int NUM_PARTICLES = 15;
+    float restLength = 50;
+    int NUM_PARTICLES = 5;
     float PARTICLE_MASS = 1.0;
 
 public:

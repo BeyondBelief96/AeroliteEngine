@@ -166,11 +166,11 @@
     <ClCompile Include="src\AeroWorld2D.cpp" />
     <ClCompile Include="src\Body2D.cpp" />
     <ClCompile Include="src\Collision2D.cpp" />
+    <ClCompile Include="src\Constraint2D.cpp" />
     <ClCompile Include="src\Contact2D.cpp" />
     <ClCompile Include="src\Matrix3x3.cpp" />
     <ClCompile Include="src\Matrix3x4.cpp" />
     <ClCompile Include="src\Particle.cpp" />
-    <ClCompile Include="src\pfgen.cpp" />
     <ClCompile Include="src\Shape.cpp" />
     <ClCompile Include="src\Vec2.cpp" />
     <ClCompile Include="src\Vec3.cpp" />

@@ -95,13 +95,13 @@
     <ClCompile Include="src\Matrix3x4.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\pfgen.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Shape.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\AeroWorld2D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Constraint2D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

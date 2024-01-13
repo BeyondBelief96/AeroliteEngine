@@ -10,27 +10,22 @@ void GenerateParticlesInLine(std::vector<std::unique_ptr<Particle>>& particles,
     {
         for (int i = 0; i < numParticles; i++) {
             float xPosition = width / 2.0;
-
-            std::cout << anchor.y;
-            std::cout << verticalSeparation;
-            std::cout << i+1 * verticalSeparation;
             float yPosition = anchor.y + ((i+1) * verticalSeparation);
             auto particle = std::make_unique<Particle>(xPosition, yPosition, mass);
             particles.push_back(std::move(particle));
         }
     };
 
-
-auto dragGenerator = std::make_unique<ParticleDrag>(0.001, 0.005);
-
 ///////////////////////////////////////////////////////////////////////////////
 // Setup function (executed once in the beginning of the simulation)
 ///////////////////////////////////////////////////////////////////////////////
 void SpringScene::Setup() {
     running = Graphics::OpenWindow();
-    particles = std::vector<std::unique_ptr<Particle>>();
+    world = std::make_unique<Aerolite::AeroWorld2D>();
+    auto particles = std::vector<std::unique_ptr<Particle>>();
     anchor = Vec2(Graphics::Width() / 2, 30);
     GenerateParticlesInLine(particles, NUM_PARTICLES, restLength, anchor, Graphics::Width(), PARTICLE_MASS);
+    world->AddParticles(std::move(particles));
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -83,8 +78,9 @@ void SpringScene::Input() {
         case SDL_MOUSEBUTTONUP:
             if (leftMouseButtonDown && event.button.button == SDL_BUTTON_LEFT) {
                 leftMouseButtonDown = false;
+                auto particles = world->GetParticles();
                 Vec2 impulseDirection = (particles[particles.size() - 1]->position - mouseCursor).UnitVector();
-                float impulseMagnitude = (particles[particles.size() - 1]->position - mouseCursor).Magnitude() * 6.0;
+                float impulseMagnitude = -(particles[particles.size() - 1]->position - mouseCursor).Magnitude() * 6.0;
                 particles[particles.size() - 1]->velocity = impulseDirection * impulseMagnitude;
             }
             break;
@@ -112,42 +108,23 @@ void SpringScene::Update() {
     // Set the time of the current frame to be used in the next one.
     timePreviousFrame = SDL_GetTicks();
 
-    //Create Particle - Force Registration Pairs.
-    for(int i = 0; i < particles.size(); i++)
+    auto particles = world->GetParticles();
+    Vec2 springForce = ParticleForceGenerators::GenerateAnchoredSpringForce(*particles[0], anchor, restLength, k);
+    particles[0]->ApplyForce(springForce);
+    for(int i = 1; i < particles.size(); i++)
     {
-        // Applying weight force.
-        auto weightForceGenerator = std::make_unique<ParticleGravity>(Vec2(0, 9.8 * particles[i]->mass * PIXELS_PER_METER));
-        pfg.Add(*particles[i], *weightForceGenerator);
-        
+        int currParticle = i;
+        int prevParticle = i - 1;
+        Vec2 springForce = ParticleForceGenerators::GenerateSpringForce(*particles[currParticle],
+            *particles[prevParticle], restLength, k);
         // Apply drag force to each particle.
         particles[i]->ApplyForce(pushForce);
-        pfg.Add(*particles[i], *dragGenerator);
-
-        // Apply spring forces.
-        if(i == 0)
-        {
-            auto anchorForceGenerator = std::make_unique<ParticleSpringAnchored>(anchor, restLength, k);
-            pfg.Add(*particles[i], *anchorForceGenerator);
-        }
-        else
-        {
-            auto springForceGenerator = std::make_unique<ParticleSpring>(*particles[i], *particles[i - 1], restLength, k);
-            auto invSpringForceGenerator = std::make_unique<ParticleSpring>(*particles[i - 1], *particles[i], restLength, k);
-            pfg.Add(*particles[i], *springForceGenerator);
-            pfg.Add(*particles[i - 1], *invSpringForceGenerator);
-        }
+        particles[i]->ApplyForce(ParticleForceGenerators::GenerateDragForce(*particles[i], 0.1, 0.002));
+        particles[currParticle]->ApplyForce(springForce);
+        particles[prevParticle]->ApplyForce(-springForce);
     }
 
-    
-    // Update Forces From Particle Force Registry
-    pfg.UpdateForces(deltaTime);
-
-    // Preform integration for each particle.
-    for (auto& particle : particles)
-    {
-        // Integrate the accleration and velocity to find the new position.
-        particle->Integrate(deltaTime);
-    }
+    world->Update(deltaTime);
 
     // Check boundaries and keep particle inside window.
     for (auto& particle : particles)
@@ -178,6 +155,7 @@ void SpringScene::Update() {
 void SpringScene::Render() {
     Graphics::ClearScreen(0xFF060224);
 
+    auto particles = world->GetParticles();
     if (leftMouseButtonDown)
         Graphics::DrawLine(particles[particles.size() - 1]->position.x, particles[particles.size() - 1]->position.y, mouseCursor.x, mouseCursor.y, 0xFFFFFFFF);
 

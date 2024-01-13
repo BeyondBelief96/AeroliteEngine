@@ -15,11 +15,11 @@ namespace Aerolite {
         std::vector<Aerolite::Contact2D> contacts;
         std::vector<Aerolite::Vec2> bodyForces;
         std::vector<Aerolite::real> bodyTorques;
-        Aerolite::ParticleForceRegistry pfr;
-        Aerolite::ParticleGravity particleGravityGenerator;
+        std::vector<Aerolite::Vec2> particleForces;
         Aerolite::real G = 9.8;
 
     public:
+        AeroWorld2D();
         AeroWorld2D(Aerolite::real gravity);
         ~AeroWorld2D();
         AeroWorld2D(AeroWorld2D&& other) noexcept;
@@ -27,14 +27,15 @@ namespace Aerolite {
 
         void AddBody2D(std::unique_ptr<Aerolite::Body2D> body);
         void AddParticle(std::unique_ptr<Aerolite::Particle> particle);
+        void AddParticles(std::vector<std::unique_ptr<Aerolite::Particle>> particles);
         void RemoveBody2D(int index);
-        const std::vector<std::unique_ptr<Aerolite::Body2D>>& GetBodies(void) const;
+        std::vector<Aerolite::Body2D*> GetBodies();
+        std::vector<Aerolite::Particle*> GetParticles();
         const std::vector<Aerolite::Contact2D> GetContacts(void) const;
 
-        void AddForce(const Aerolite::Vec2& force);
+        void AddForceBody(const Aerolite::Vec2& force);
+        void AddForceParticle(const Aerolite::Vec2& force);
         void AddTorque(const Aerolite::real torque);
-        void AddParticleWithForce(Aerolite::ParticleForceGenerator& forceGenerator, std::unique_ptr<Aerolite::Particle> particle);
-
         void Update(Aerolite::real dt);
 
         void CheckCollisions(void);

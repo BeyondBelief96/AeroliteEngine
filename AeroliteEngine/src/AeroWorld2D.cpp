@@ -5,8 +5,12 @@
 #include <stdexcept>
 
 namespace Aerolite {
-    AeroWorld2D::AeroWorld2D(Aerolite::real gravity) : G(-gravity),
-        particleGravityGenerator(Aerolite::Vec2(0, -gravity)) {
+
+    AeroWorld2D::AeroWorld2D() : G(9.8) {
+        std::cout << "AeroWorld2D constructor called!" << std::endl;
+    }
+
+    AeroWorld2D::AeroWorld2D(Aerolite::real gravity) : G(-gravity) {
         // Initialization of other members, if needed
         std::cout << "AeroWorld2D constructor called!" << std::endl;
     }
@@ -16,10 +20,9 @@ namespace Aerolite {
         std::cout << "AeroWorld2D destructor called!" << std::endl;
     }
 
-
     AeroWorld2D::AeroWorld2D(AeroWorld2D&& other) noexcept
         : bodies(std::move(other.bodies)), particles(std::move(other.particles)),
-        bodyForces(std::move(other.bodyForces)), bodyTorques(std::move(other.bodyTorques)), G(other.G), particleGravityGenerator(Vec2(0.0, G)) {
+        bodyForces(std::move(other.bodyForces)), bodyTorques(std::move(other.bodyTorques)), G(other.G) {
     }
 
     AeroWorld2D& AeroWorld2D::operator=(AeroWorld2D&& other) noexcept {
@@ -29,7 +32,6 @@ namespace Aerolite {
             bodyForces = std::move(other.bodyForces);
             bodyTorques = std::move(other.bodyTorques);
             G = other.G;
-            particleGravityGenerator = Vec2(0.0, G);
         }
         return *this;
     }
@@ -43,15 +45,15 @@ namespace Aerolite {
     void AeroWorld2D::AddParticle(std::unique_ptr<Aerolite::Particle> particle)
     {
         if (particle != nullptr) {
-            pfr.Add(particle.get(), &particleGravityGenerator);
-            particles.push_back(std::move(particle));
+            particles.push_back(std::move(particle)); // Use std::move to transfer ownership
         }
     }
 
-    void AeroWorld2D::AddParticleWithForce(Aerolite::ParticleForceGenerator& forceGenerator, std::unique_ptr<Aerolite::Particle> particle)
+    void AeroWorld2D::AddParticles(std::vector<std::unique_ptr<Aerolite::Particle>> particles)
     {
-        pfr.Add(particle.get(), &forceGenerator);
-        particles.push_back(std::move(particle));
+        for (auto& particle : particles) {
+            AddParticle(std::move(particle)); // Use std::move to transfer ownership
+        }
     }
 
     void AeroWorld2D::RemoveBody2D(int index)
@@ -65,8 +67,20 @@ namespace Aerolite {
         bodies.erase(bodies.begin() + index);
     }
 
-    const std::vector<std::unique_ptr<Aerolite::Body2D>>& AeroWorld2D::GetBodies() const {
-        return bodies;
+    std::vector<Aerolite::Body2D*> AeroWorld2D::GetBodies() {
+        std::vector<Aerolite::Body2D*> pointers;
+        for (auto& body : bodies) {
+            pointers.push_back(body.get());
+        }
+        return pointers;
+    }
+
+    std::vector<Aerolite::Particle*> AeroWorld2D::GetParticles() {
+        std::vector<Aerolite::Particle*> pointers;
+        for (auto& particle : particles) {
+            pointers.push_back(particle.get());
+        }
+        return pointers;
     }
 
     const std::vector<Aerolite::Contact2D> AeroWorld2D::GetContacts(void) const
@@ -74,7 +88,7 @@ namespace Aerolite {
         return contacts;
     }
 
-    void AeroWorld2D::AddForce(const Aerolite::Vec2& force) {
+    void AeroWorld2D::AddForceBody(const Aerolite::Vec2& force) {
         bodyForces.push_back(force);
     }
 
@@ -96,16 +110,16 @@ namespace Aerolite {
             for (auto& torque : bodyTorques) {
                 body->AddTorque(torque);
             }
-        }
-
-        for (auto& body : bodies) {
+            
             body->Update(dt);
         }
 
-        //// Update particles
-        //for (auto& particle : particles) {
-        //    pfr.UpdateForces(dt);
-        //}
+        // Update particles
+        for (auto& particle : particles) {
+            Aerolite::Vec2 weight = Vec2(0.0, particle->mass * G * PIXELS_PER_METER);
+            particle->ApplyForce(weight);
+            particle->Integrate(dt);
+        }
 
         CheckCollisions();
     }

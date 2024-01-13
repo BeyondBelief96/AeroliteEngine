@@ -28,10 +28,8 @@ namespace Aerolite {
             }
         }
 
-        explicit VecN(const VecN& v) noexcept {
-            for (std::size_t i = 0; i < N; ++i) {
-                components[i] = v[i];
-            }
+        VecN(const VecN& v) noexcept {
+            *this = v;
         }
 
         // Default destructor. (Trivial in this case as no dynamic memory allocation is involved)
@@ -205,6 +203,22 @@ namespace Aerolite {
                 components[i] /= n;
             }
             return *this;
+        }
+
+        // Element access operator. Returns a reference to the element at the specified index.
+        real& operator[](std::size_t index) noexcept {
+            if (index >= N) {
+                throw std::out_of_range("Index out of bounds in VecN.");
+            }
+            return components[index];
+        }
+
+        // Element access operator (const version). Returns a const reference to the element at the specified index.
+        const real& operator[](std::size_t index) const noexcept {
+            if (index >= N) {
+                throw std::out_of_range("Index out of bounds in VecN.");
+            }
+            return components[index];
         }
     };
 }
