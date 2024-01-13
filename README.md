@@ -5,6 +5,7 @@ Aerolite Physics Engine is a comprehensive, efficient 2D physics library with pl
 
 ## Features
 - **2D and Planned 3D Support**: Robust support for 2D physics and a roadmap for 3D simulation capabilities.
+- - **AeroWorld2D**: A dedicated 2D world manager for handling physics simulations.
 - **Collision Detection and Response**: Advanced algorithms for detecting and responding to collisions between various shapes (circles, polygons, boxes) using methods like AABB and SAT (Separating Axis Theorem).
 - **Rigid Body Dynamics**: Simulates realistic rigid body dynamics, including rotation and translation.
 - **Impulse Resolution**: Implements impulse resolution for accurate collision responses.
@@ -27,6 +28,14 @@ Aerolite Physics Engine is a comprehensive, efficient 2D physics library with pl
 auto box = std::make_unique<Aerolite::Body2D>(new BoxShape(50, 50), 100, 100, 10.0);
 box->restitution = 0.8;
 ```
+- Creating and Adding bodies to the world
+```
+auto box = std::make_unique<Aerolite::Body2D>(new BoxShape(50, 50), 100, 100, 10.0);
+world->AddBody2D(std::move(box));
+```
+- Running the simulation
+```world->Update(deltaTime);```
+
 - Applying force
 ```#include "Vec2.h"
 // Applying a force to a body
