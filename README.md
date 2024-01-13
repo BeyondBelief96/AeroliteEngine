@@ -1,63 +1,44 @@
-# Aerolite Engine
+# AeroLite Physics Engine
 
-Aerolite Engine is a lightweight 2D and 3D physics simulation library written in C++. It can be used to add physical behaviors like collisions, rigid body dynamics, and particle systems to games and other graphical applications. 
+AeroLite is a lightweight 2D physics engine designed to facilitate game development and graphical simulations. This engine provides a comprehensive set of features and algorithms to simulate realistic interactions between objects in a 2D space, with plans for future expansions into 3D physics.
 
-## About
+## Features
 
-Key features of Aerolite:
+### Collision Detection
 
-- Uses a particle-based system to simulate physical objects
-- Supports basic rigid bodies, joints, particle systems, and aggregate bodies
-- Integration functions for simulating Newtonian physics
-- Collision detection and response 
-- Forces like gravity, drag, friction, springs, attraction, etc.
-- Written in C++ for maximum performance
+AeroLite employs efficient algorithms for detecting collisions between various shapes, including circles, rectangles, and polygons. The collision detection system ensures accurate and reliable handling of object interactions.
 
-The goal of this project is to provide a simple yet powerful physics engine that can be easily integrated into games, simulations, and other graphical apps built with C/C++ and OpenGL. It aims to strike a balance between performance, flexibility, and ease-of-use.
+### Rigid Body Dynamics
 
-## Installation
+Simulate rigid body motion with AeroLite, allowing objects to move, rotate, and interact with each other based on physical principles. The engine supports a variety of shapes, enabling diverse and dynamic gameplay scenarios.
 
-The demo scenes project depends on a few libraries:
+### Gravity Simulation
 
-### Windows
+Gravity plays a crucial role in creating a realistic environment within your simulations. AeroLite implements gravitational forces based on Newton's law of universal gravitation, allowing objects to attract each other with appropriate forces.
 
-- SDL2
-- SDL2_image
-- SDL2_gfx
-- vcpkg (for managing dependencies)
+### Particle System
 
-Run the following in a command prompt to install required libraries using vcpkg:
+A basic particle system is included in AeroLite, providing a framework for simulating individual particles with customizable forces and interactions. This feature is particularly useful for creating dynamic effects within your graphical simulations.
 
-```
-vcpkg install sdl2 sdl2-image sdl2-gfx
-```
+## Algorithms and Techniques
 
-Then build the project in your preferred IDE like Visual Studio.
+### Collision Resolution
 
-### Mac/Linux
+AeroLite utilizes impulse-based resolution techniques to handle collisions and resolve interpenetrations between objects. This ensures stable and accurate collision responses, crucial for creating realistic and visually appealing simulations.
 
-- SDL2 
-- SDL2_image
-- SDL2_gfx
+### Verlet Integration
 
-Install these libraries using your preferred package manager like Homebrew or APT.
+For stable and accurate simulation of rigid body dynamics, AeroLite employs the Verlet integration method. This technique ensures the preservation of energy and stability during the simulation, leading to more realistic motion.
 
-Then build the project using Make/CMake.
+### Gravity Calculation
 
-## Usage
+The engine calculates gravitational forces between objects using Newton's law of universal gravitation. This allows you to create engaging scenarios where objects interact with each other through gravitational attraction.
 
-See the scenes/ folder for sample code snippets showing how to:
+## Getting Started
 
-- Create particles, rigid bodies, and joints
-- Apply forces like gravity and springs 
-- Perform collision detection
-- Integrate physics over time
-- Render physics objects using SDL2
+### Installation
 
-## Contributing
+Clone the repository to your local machine:
 
-Contributions are welcome! Please create an issue or PR for any enhancements or fixes.
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
+```bash
+git clone https://github.com/your-username/aerolite-physics.git
