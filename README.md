@@ -1,44 +1,63 @@
-# AeroLite Physics Engine
+# Aerolite Physics Engine
 
-AeroLite is a lightweight 2D physics engine designed to facilitate game development and graphical simulations. This engine provides a comprehensive set of features and algorithms to simulate realistic interactions between objects in a 2D space, with plans for future expansions into 3D physics.
+## Overview
+Aerolite Physics Engine is a comprehensive, efficient 2D physics library with planned extensions for 3D simulations. Tailored for game development and graphical simulations, it offers a robust platform for realistic physics behavior in a variety of environments.
 
 ## Features
-
-### Collision Detection
-
-AeroLite employs efficient algorithms for detecting collisions between various shapes, including circles, rectangles, and polygons. The collision detection system ensures accurate and reliable handling of object interactions.
-
-### Rigid Body Dynamics
-
-Simulate rigid body motion with AeroLite, allowing objects to move, rotate, and interact with each other based on physical principles. The engine supports a variety of shapes, enabling diverse and dynamic gameplay scenarios.
-
-### Gravity Simulation
-
-Gravity plays a crucial role in creating a realistic environment within your simulations. AeroLite implements gravitational forces based on Newton's law of universal gravitation, allowing objects to attract each other with appropriate forces.
-
-### Particle System
-
-A basic particle system is included in AeroLite, providing a framework for simulating individual particles with customizable forces and interactions. This feature is particularly useful for creating dynamic effects within your graphical simulations.
+- **2D and Planned 3D Support**: Robust support for 2D physics and a roadmap for 3D simulation capabilities.
+- **Collision Detection and Response**: Advanced algorithms for detecting and responding to collisions between various shapes (circles, polygons, boxes) using methods like AABB and SAT (Separating Axis Theorem).
+- **Rigid Body Dynamics**: Simulates realistic rigid body dynamics, including rotation and translation.
+- **Impulse Resolution**: Implements impulse resolution for accurate collision responses.
+- **Force Generators**: Flexible force generators to simulate gravity, drag, springs, and more.
+- **Constraint Systems**: Implements constraints for realistic joint and articulated structure simulation.
+- **Particle Systems**: Efficient particle system for simulating large numbers of interacting objects.
+- **Material Properties**: Customize friction and restitution for different materials for varied interaction effects.
 
 ## Algorithms and Techniques
+- **Numerical Integration**: Utilizes Euler and Runge-Kutta integration methods for precise motion calculation.
+- **Broad and Narrow Phase Collision Detection**: Efficiently detects collisions using AABB for broad phase and SAT for narrow phase.
+- **Force-Based Dynamics**: Applies realistic forces to bodies for authentic movement.
+- **Constraint Solving**: Simulates complex joint behavior with constraints.
+- **Particle Dynamics**: Manages large numbers of particles effectively for simulations like smoke or liquid.
 
-### Collision Resolution
+## Usage and Examples
+- Creating and Configuring a 2D Body
+```#include "Body2D.h"
+// Creating a box body
+auto box = std::make_unique<Aerolite::Body2D>(new BoxShape(50, 50), 100, 100, 10.0);
+box->restitution = 0.8;
+```
+- Applying force
+```#include "Vec2.h"
+// Applying a force to a body
+Vec2 force(10.0, 0.0);
+box->ApplyForce(force);
+```
+- Collision Detection & Response
+```#include "Collision2D.h"
+// Assuming bodyA and bodyB are already created and initialized
+Aerolite::Contact2D contact;
+if (CollisionDetection2D::IsColliding(*bodyA, *bodyB, contact)) {
+    contact.ResolveCollision();
+}
+```
+- 
 
-AeroLite utilizes impulse-based resolution techniques to handle collisions and resolve interpenetrations between objects. This ensures stable and accurate collision responses, crucial for creating realistic and visually appealing simulations.
-
-### Verlet Integration
-
-For stable and accurate simulation of rigid body dynamics, AeroLite employs the Verlet integration method. This technique ensures the preservation of energy and stability during the simulation, leading to more realistic motion.
-
-### Gravity Calculation
-
-The engine calculates gravitational forces between objects using Newton's law of universal gravitation. This allows you to create engaging scenarios where objects interact with each other through gravitational attraction.
-
-## Getting Started
-
-### Installation
-
-Clone the repository to your local machine:
-
+## Installation
+To install Aerolite Physics Engine, clone the repository and include it in your project:
 ```bash
-git clone https://github.com/your-username/aerolite-physics.git
+git clone https://github.com/your-repository/aerolite.git
+```
+
+## License
+# The MIT License (MIT)
+
+Copyright (c) [year] [fullname]
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
