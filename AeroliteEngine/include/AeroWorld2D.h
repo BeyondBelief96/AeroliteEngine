@@ -4,14 +4,16 @@
 #include <vector>
 #include "Body2D.h"
 #include "Contact2D.h"
-#include "Particle.h"
+#include "Particle2D.h"
 #include "pfgen.h"
+#include "Constraint2D.h"
 
 namespace Aerolite {
     class AeroWorld2D {
     private:
         std::vector<std::unique_ptr<Aerolite::Body2D>> bodies;
-        std::vector<std::unique_ptr<Aerolite::Particle>> particles;
+        std::vector<std::unique_ptr<Aerolite::Particle2D>> particles;
+        std::vector<std::unique_ptr<Aerolite::Constraint2D>> constraints;
         std::vector<Aerolite::Contact2D> contacts;
         std::vector<Aerolite::Vec2> bodyForces;
         std::vector<Aerolite::real> bodyTorques;
@@ -26,19 +28,25 @@ namespace Aerolite {
         AeroWorld2D& operator=(AeroWorld2D&& other) noexcept;
 
         void AddBody2D(std::unique_ptr<Aerolite::Body2D> body);
-        void AddParticle(std::unique_ptr<Aerolite::Particle> particle);
-        void AddParticles(std::vector<std::unique_ptr<Aerolite::Particle>> particles);
+        std::vector<std::unique_ptr<Aerolite::Body2D>>& GetBodies();
         void RemoveBody2D(int index);
-        std::vector<Aerolite::Body2D*> GetBodies();
-        std::vector<Aerolite::Particle*> GetParticles();
-        const std::vector<Aerolite::Contact2D> GetContacts(void) const;
+        void RemoveBody2D(Body2D* bodyToRemove);
+
+        void AddConstraint(std::unique_ptr<Constraint2D> constraint);
+        std::vector<std::unique_ptr<Aerolite::Constraint2D>>& GetConstraints(void);
+
+        void AddParticle2D(std::unique_ptr<Aerolite::Particle2D> particle);
+        void AddParticle2Ds(std::vector<std::unique_ptr<Aerolite::Particle2D>> particles);
+        std::vector<Aerolite::Particle2D*> GetParticle2Ds();
 
         void AddForceBody(const Aerolite::Vec2& force);
-        void AddForceParticle(const Aerolite::Vec2& force);
+        void AddForceParticle2D(const Aerolite::Vec2& force);
         void AddTorque(const Aerolite::real torque);
+
         void Update(Aerolite::real dt);
 
         void CheckCollisions(void);
+        const std::vector<Aerolite::Contact2D> GetContacts(void) const;
     };
 }
 

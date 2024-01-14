@@ -155,7 +155,7 @@
     <ClInclude Include="src\Physics\Forces\pfgen.h" />
     <ClInclude Include="include\Matrix3x3.h" />
     <ClInclude Include="include\Matrix3x4.h" />
-    <ClInclude Include="include\Particle.h" />
+    <ClInclude Include="include\Particle2D.h" />
     <ClInclude Include="include\pfgen.h" />
     <ClInclude Include="include\Precision.h" />
     <ClInclude Include="include\Shape.h" />

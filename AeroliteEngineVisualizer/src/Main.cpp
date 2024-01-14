@@ -2,7 +2,8 @@
 
 
 int main(int argc, char *args[]) {
-    AeroWorld2DScene scene;
+    JointConstraintScene
+        scene;
 
     scene.Setup();
 

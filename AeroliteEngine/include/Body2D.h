@@ -40,12 +40,14 @@ namespace Aerolite {
         real restitution; // Coefficient of restitution for the body.
         real friction;    // Coefficient of friction of the body. Used in tangent impulse calculations.
         
-        Shape* shape; // Shared pointer to a Shape object. Initialized to nullptr.
+        Shape* shape = nullptr; // Raw pointer to a Shape object. Initialized to nullptr.
 
 
         // Constructor for Body2D.
-        // Takes a shared pointer to Shape, position coordinates (x, y), and mass.
         Body2D(Shape* shape, const real x, const real y, const real mass);
+
+        // Destructor for Body2D.
+        ~Body2D();
 
         /// <summary>
         /// Returns an AABB surrounding the rigid body for broad phase collision detection.
@@ -53,11 +55,13 @@ namespace Aerolite {
         /// <returns>The AABB for collision detection.</returns>
         AABB2D GetAABB(void);
 
+        /// <summary>
+        /// Updates the body by preforming linear and angular integration of the accelerations to derive the new positions
+        /// for the current time step of the simulation.
+        /// </summary>
+        /// <param name="dt">The current time step of the simulation frame.</param>
         void Update(const real dt); 
 
-        // Destructor for Body2D.
-        ~Body2D();
-        
         /// @brief Determines if the Body2D has an infinite mass.
         /// @return Returns true if mass is zero, false otherwise.
         bool IsStatic(void) const;
@@ -87,13 +91,28 @@ namespace Aerolite {
         // Method to clear all torques acting on the body.
         void ClearTorque(void);
 
-        // Method to integrate the body's position and velocity over time (dt).
+        // Method to integrate the body's linear position and velocity over time (dt).
         void IntegrateLinear(const real dt);
 
         // Method to integrate the body's rotation and angular velocity over time (dt).
         void IntegrateAngular(const real dt);
+
+        /// <summary>
+        /// Converts a given point defined in local space of this body to world space coordinates
+        /// with respect to this body.
+        /// </summary>
+        /// <param name="point">The point in local space with respect to the body.</param>
+        /// <returns>A point in world space with respect to the body.</returns>
+        Aerolite::Vec2 LocalSpaceToWorldSpace(const Vec2& point);
+
+        /// <summary>
+        /// Converts a given point defined in world space of this body to local space coordinates
+        /// with respect to this body.
+        /// </summary>
+        /// <param name="point">The point in world space with respect to the body.</param>
+        /// <returns>A point in local space with respect to the body.</returns>
+        Aerolite::Vec2 WorldSpaceToLocalSpace(const Vec2& point);
     };
 }
 
-// End of include guard.
 #endif

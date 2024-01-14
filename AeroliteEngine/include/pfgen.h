@@ -4,14 +4,14 @@
 #include <vector>
 #include <memory>
 #include <algorithm>
-#include "Particle.h"
+#include "Particle2D.h"
 #include "Precision.h"
 #include "Vec2.h"
 
 namespace Aerolite {
 
-    static struct ParticleForceGenerators {
-        static Vec2 GenerateDragForce(const Particle& particle, real k1, real k2) {
+    static struct Particle2DForceGenerators {
+        static Vec2 GenerateDragForce(const Particle2D& particle, real k1, real k2) {
             Vec2 dragForce = Vec2(0, 0);
             // Only apply drag if the particle is moving (velocity magnitude is greater than zero).
             if (particle.velocity.MagnitudeSquared() > 0) {
@@ -28,7 +28,7 @@ namespace Aerolite {
             return dragForce;
         }
 
-        static Vec2 GenerateFrictionForce(const Particle& particle, real coefficientOfFriction) {
+        static Vec2 GenerateFrictionForce(const Particle2D& particle, real coefficientOfFriction) {
             // Calculate the direction of friction force, which is opposite to the particle's velocity direction.
             Vec2 frictionDirection = particle.velocity.UnitVector() * -1.0;
 
@@ -41,7 +41,7 @@ namespace Aerolite {
             return frictionForce;
         }
 
-        static Vec2 GenerateGravitationalAttractionForce(const Particle& a, const Particle& b, real minDistance, real maxDistance, real gravConstant) {
+        static Vec2 GenerateGravitationalAttractionForce(const Particle2D& a, const Particle2D& b, real minDistance, real maxDistance, real gravConstant) {
             // Calculate the displacement vector between particleB and particleA.
             Vec2 d = (b.position - a.position);
 
@@ -60,7 +60,7 @@ namespace Aerolite {
             return attractionForce;
         }
 
-        static Vec2 GenerateAnchoredSpringForce(const Particle& particle, const Vec2& anchor, real restLength, real springConstant) {
+        static Vec2 GenerateAnchoredSpringForce(const Particle2D& particle, const Vec2& anchor, real restLength, real springConstant) {
             // Calculate the distance between the anchor and the particle.
             Vec2 d = particle.position - anchor;
 
@@ -76,7 +76,7 @@ namespace Aerolite {
             return springForce;
         }
 
-        static Vec2 GenerateSpringForce(const Particle& a, const Particle& b, real restLength, real springConstant) {
+        static Vec2 GenerateSpringForce(const Particle2D& a, const Particle2D& b, real restLength, real springConstant) {
             // Calculate the distance between the anchor and the particle.
             Vec2 d = a.position - b.position;
 

@@ -59,6 +59,9 @@
     <ClCompile Include="src\scenes\AeroWorld2DScene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\scenes\JointConstraintScene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\scenes\Scene.h">

@@ -4,14 +4,14 @@
 #include "Constants.h"
 #include "Scene.h"
 
-void GenerateParticlesInLine(std::vector<std::unique_ptr<Particle>>& particles,
-        int numParticles, float verticalSeparation, const Vec2& anchor,
+void GenerateParticle2DsInLine(std::vector<std::unique_ptr<Particle2D>>& particles,
+        int numParticle2Ds, float verticalSeparation, const Vec2& anchor,
         float width, float mass) 
     {
-        for (int i = 0; i < numParticles; i++) {
+        for (int i = 0; i < numParticle2Ds; i++) {
             float xPosition = width / 2.0;
             float yPosition = anchor.y + ((i+1) * verticalSeparation);
-            auto particle = std::make_unique<Particle>(xPosition, yPosition, mass);
+            auto particle = std::make_unique<Particle2D>(xPosition, yPosition, mass);
             particles.push_back(std::move(particle));
         }
     };
@@ -22,10 +22,10 @@ void GenerateParticlesInLine(std::vector<std::unique_ptr<Particle>>& particles,
 void SpringScene::Setup() {
     running = Graphics::OpenWindow();
     world = std::make_unique<Aerolite::AeroWorld2D>();
-    auto particles = std::vector<std::unique_ptr<Particle>>();
+    auto particles = std::vector<std::unique_ptr<Particle2D>>();
     anchor = Vec2(Graphics::Width() / 2, 30);
-    GenerateParticlesInLine(particles, NUM_PARTICLES, restLength, anchor, Graphics::Width(), PARTICLE_MASS);
-    world->AddParticles(std::move(particles));
+    GenerateParticle2DsInLine(particles, NUM_PARTICLES, restLength, anchor, Graphics::Width(), PARTICLE_MASS);
+    world->AddParticle2Ds(std::move(particles));
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -78,7 +78,7 @@ void SpringScene::Input() {
         case SDL_MOUSEBUTTONUP:
             if (leftMouseButtonDown && event.button.button == SDL_BUTTON_LEFT) {
                 leftMouseButtonDown = false;
-                auto particles = world->GetParticles();
+                auto particles = world->GetParticle2Ds();
                 Vec2 impulseDirection = (particles[particles.size() - 1]->position - mouseCursor).UnitVector();
                 float impulseMagnitude = -(particles[particles.size() - 1]->position - mouseCursor).Magnitude() * 6.0;
                 particles[particles.size() - 1]->velocity = impulseDirection * impulseMagnitude;
@@ -108,20 +108,20 @@ void SpringScene::Update() {
     // Set the time of the current frame to be used in the next one.
     timePreviousFrame = SDL_GetTicks();
 
-    auto particles = world->GetParticles();
-    Vec2 springForce = ParticleForceGenerators::GenerateAnchoredSpringForce(*particles[0], anchor, restLength, k);
+    auto particles = world->GetParticle2Ds();
+    Vec2 springForce = Particle2DForceGenerators::GenerateAnchoredSpringForce(*particles[0], anchor, restLength, k);
     particles[0]->ApplyForce(springForce);
     for(int i = 1; i < particles.size(); i++)
     {
-        int currParticle = i;
-        int prevParticle = i - 1;
-        Vec2 springForce = ParticleForceGenerators::GenerateSpringForce(*particles[currParticle],
-            *particles[prevParticle], restLength, k);
+        int currParticle2D = i;
+        int prevParticle2D = i - 1;
+        Vec2 springForce = Particle2DForceGenerators::GenerateSpringForce(*particles[currParticle2D],
+            *particles[prevParticle2D], restLength, k);
         // Apply drag force to each particle.
         particles[i]->ApplyForce(pushForce);
-        particles[i]->ApplyForce(ParticleForceGenerators::GenerateDragForce(*particles[i], 0.1, 0.002));
-        particles[currParticle]->ApplyForce(springForce);
-        particles[prevParticle]->ApplyForce(-springForce);
+        particles[i]->ApplyForce(Particle2DForceGenerators::GenerateDragForce(*particles[i], 0.1, 0.002));
+        particles[currParticle2D]->ApplyForce(springForce);
+        particles[prevParticle2D]->ApplyForce(-springForce);
     }
 
     world->Update(deltaTime);
@@ -155,7 +155,7 @@ void SpringScene::Update() {
 void SpringScene::Render() {
     Graphics::ClearScreen(0xFF060224);
 
-    auto particles = world->GetParticles();
+    auto particles = world->GetParticle2Ds();
     if (leftMouseButtonDown)
         Graphics::DrawLine(particles[particles.size() - 1]->position.x, particles[particles.size() - 1]->position.y, mouseCursor.x, mouseCursor.y, 0xFFFFFFFF);
 

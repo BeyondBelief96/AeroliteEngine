@@ -14,7 +14,7 @@ void GravityDragScene::Setup() {
     running = Graphics::OpenWindow();
     world = std::make_unique<AeroWorld2D>();
 
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 500; i++)
     {
         int x, y;
         std::random_device rd;
@@ -28,8 +28,8 @@ void GravityDragScene::Setup() {
 
         std::uniform_int_distribution<int> distx(lower_boundx, upper_boundx);
         std::uniform_int_distribution<int> disty(lower_boundy, upper_boundy);
-        auto smallBall = std::make_unique<Particle>(distx(gen), disty(gen), 1.0);
-        world->AddParticle(std::move(smallBall));
+        auto smallBall = std::make_unique<Particle2D>(distx(gen), disty(gen), 1.0);
+        world->AddParticle2D(std::move(smallBall));
     }
     // Initializing liquid object to simulate drag forces.
     liquid.x = 0;
@@ -77,9 +77,9 @@ void GravityDragScene::Input() {
                 {
                     int x, y;
                     SDL_GetMouseState(&x, &y);
-                    auto particle = std::make_unique<Particle>(x, y, 1.0);
+                    auto particle = std::make_unique<Particle2D>(x, y, 1.0);
                     particle->radius = 5;
-                    world->AddParticle(std::move(particle));
+                    world->AddParticle2D(std::move(particle));
                 }
                 break;
         }
@@ -106,18 +106,18 @@ void GravityDragScene::Update() {
     // Set the time of the current frame to be used in the next one.
     timePreviousFrame = SDL_GetTicks();
 
-    for (auto& particle : world->GetParticles())
+    for (auto& particle : world->GetParticle2Ds())
     {
         particle->ApplyForce(pushForce);
         if (particle->position.y >= liquid.y) {
-            particle->ApplyForce(ParticleForceGenerators::GenerateDragForce(*particle, 0.03, 0.03));
+            particle->ApplyForce(Particle2DForceGenerators::GenerateDragForce(*particle, 0.03, 0.03));
         }
     }
 
     world->Update(deltaTime);
 
     // Check boundaries and keep particle inside window.
-    for (auto& particle : world->GetParticles())
+    for (auto& particle : world->GetParticle2Ds())
     {
         // Nasty hardcoded flip in velocity if it touches the limits of the screen
         if (particle->position.x - particle->radius <= 0) {
@@ -149,7 +149,7 @@ void GravityDragScene::Render() {
     Graphics::DrawFillRect(liquid.x + liquid.w / 2, liquid.y + liquid.h / 2,
         liquid.w, liquid.h, 0xFF331504);
 
-    for (auto& particle : world->GetParticles())
+    for (auto& particle : world->GetParticle2Ds())
         Graphics::DrawFillCircle(particle->position.x, particle->position.y, particle->radius, 0xFFFFFFFF);
     Graphics::RenderFrame();
 }

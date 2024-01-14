@@ -42,17 +42,26 @@ namespace Aerolite {
         }
     }
 
-    void AeroWorld2D::AddParticle(std::unique_ptr<Aerolite::Particle> particle)
+    void AeroWorld2D::AddConstraint(std::unique_ptr<Aerolite::Constraint2D> constraint) {
+        constraints.push_back(std::move(constraint));
+    }
+
+    std::vector<std::unique_ptr<Aerolite::Constraint2D>>& AeroWorld2D::GetConstraints(void)
+    {
+        return constraints;
+    }
+
+    void AeroWorld2D::AddParticle2D(std::unique_ptr<Aerolite::Particle2D> particle)
     {
         if (particle != nullptr) {
             particles.push_back(std::move(particle)); // Use std::move to transfer ownership
         }
     }
 
-    void AeroWorld2D::AddParticles(std::vector<std::unique_ptr<Aerolite::Particle>> particles)
+    void AeroWorld2D::AddParticle2Ds(std::vector<std::unique_ptr<Aerolite::Particle2D>> particles)
     {
         for (auto& particle : particles) {
-            AddParticle(std::move(particle)); // Use std::move to transfer ownership
+            AddParticle2D(std::move(particle)); // Use std::move to transfer ownership
         }
     }
 
@@ -67,16 +76,23 @@ namespace Aerolite {
         bodies.erase(bodies.begin() + index);
     }
 
-    std::vector<Aerolite::Body2D*> AeroWorld2D::GetBodies() {
-        std::vector<Aerolite::Body2D*> pointers;
-        for (auto& body : bodies) {
-            pointers.push_back(body.get());
+    void AeroWorld2D::RemoveBody2D(Body2D* bodyToRemove) {
+        auto it = std::remove_if(bodies.begin(), bodies.end(),
+            [bodyToRemove](const std::unique_ptr<Body2D>& body) {
+                return body.get() == bodyToRemove;
+            });
+
+        if (it != bodies.end()) {
+            bodies.erase(it, bodies.end());
         }
-        return pointers;
     }
 
-    std::vector<Aerolite::Particle*> AeroWorld2D::GetParticles() {
-        std::vector<Aerolite::Particle*> pointers;
+    std::vector<std::unique_ptr<Aerolite::Body2D>>& AeroWorld2D::GetBodies() {
+        return bodies;
+    }
+
+    std::vector<Aerolite::Particle2D*> AeroWorld2D::GetParticle2Ds() {
+        std::vector<Aerolite::Particle2D*> pointers;
         for (auto& particle : particles) {
             pointers.push_back(particle.get());
         }
@@ -90,6 +106,11 @@ namespace Aerolite {
 
     void AeroWorld2D::AddForceBody(const Aerolite::Vec2& force) {
         bodyForces.push_back(force);
+    }
+
+    void AeroWorld2D::AddForceParticle2D(const Aerolite::Vec2& force)
+    {
+        particleForces.push_back(force);
     }
 
     void AeroWorld2D::AddTorque(const Aerolite::real torque) {

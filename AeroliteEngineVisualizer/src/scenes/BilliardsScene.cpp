@@ -9,8 +9,8 @@
 void BilliardScene::Setup() {
     running = Graphics::OpenWindow();
     world = std::make_unique<AeroWorld2D>(0);
-    auto smallBall = std::make_unique<Particle>(50, 100, 1.0);
-    world->AddParticle(std::move(smallBall));
+    auto smallBall = std::make_unique<Particle2D>(50, 100, 1.0);
+    world->AddParticle2D(std::move(smallBall));
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -63,7 +63,7 @@ void BilliardScene::Input() {
         case SDL_MOUSEBUTTONUP:
             if (leftMouseButtonDown && event.button.button == SDL_BUTTON_LEFT) {
                 leftMouseButtonDown = false;
-                auto particles = world->GetParticles();
+                auto particles = world->GetParticle2Ds();
                 Vec2 impulseDirection = (particles[0]->position - mouseCursor).UnitVector();
                 float impulseMagnitude = (particles[0]->position - mouseCursor).Magnitude() * 5.0;
                 particles[0]->velocity = impulseDirection * impulseMagnitude;
@@ -93,12 +93,12 @@ void BilliardScene::Update() {
     // Set the time of the current frame to be used in the next one.
     timePreviousFrame = SDL_GetTicks();
 
-    auto particles = world->GetParticles();
-    // Create Particle - Force Registration Pairs.
+    auto particles = world->GetParticle2Ds();
+    // Create Particle2D - Force Registration Pairs.
     for (auto& particle : particles)
     {
         particle->ApplyForce(pushForce);
-        particle->ApplyForce(ParticleForceGenerators::GenerateFrictionForce(*particle, 10 * PIXELS_PER_METER));
+        particle->ApplyForce(Particle2DForceGenerators::GenerateFrictionForce(*particle, 10 * PIXELS_PER_METER));
     }
 
     world->Update(deltaTime);
@@ -132,7 +132,7 @@ void BilliardScene::Update() {
 void BilliardScene::Render() {
     Graphics::ClearScreen(0xFF1C520C);
     
-    auto particles = world->GetParticles();
+    auto particles = world->GetParticle2Ds();
     if(leftMouseButtonDown)
         Graphics::DrawLine(particles[0]->position.x, particles[0]->position.y, mouseCursor.x, mouseCursor.y, 0xFF000000);
     for (auto& particle : particles)

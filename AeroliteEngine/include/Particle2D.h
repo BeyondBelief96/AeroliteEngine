@@ -7,10 +7,10 @@
 using namespace Aerolite;
 
 namespace Aerolite {
-    // The Particle struct represents a simple physical particle in a 2D space.
+    // The Particle2D struct represents a simple physical particle in a 2D space.
     // It is designed to simulate basic physics properties like position, velocity, 
     // and acceleration, as well as handling the integration of these properties over time.
-    struct Particle {
+    struct Particle2D {
         int radius;          // The radius of the particle. Useful for rendering or collision detection.
 
         Vec2 position;       // The current position of the particle in 2D space.
@@ -24,25 +24,25 @@ namespace Aerolite {
         // such as force application. It is particularly handy in physics engines where 
         // division by mass is common, as multiplying by the inverse mass is more efficient.
 
-        // Constructor for the Particle. Initializes the particle with a position (x, y), and mass.
+        // Constructor for the Particle2D. Initializes the particle with a position (x, y), and mass.
         // The velocity and acceleration are initialized to zero by default.
-        Particle(real x, real y, real mass);
+        Particle2D(real x, real y, real mass);
 
         // Copy constructor
-        Particle(const Particle& other);
+        Particle2D(const Particle2D& other);
 
         // Move constructor
-        Particle(Particle&& other) noexcept;
+        Particle2D(Particle2D&& other) noexcept;
 
         // Copy assignment operator
-        Particle& operator=(const Particle& other);
+        Particle2D& operator=(const Particle2D& other);
 
         // Move assignment operator
-        Particle& operator=(Particle&& other) noexcept;
+        Particle2D& operator=(Particle2D&& other) noexcept;
 
-        // Destructor for the Particle. Currently, it does not need to perform any specific actions
+        // Destructor for the Particle2D. Currently, it does not need to perform any specific actions
         // as the struct does not manage any resources directly.
-        ~Particle();
+        ~Particle2D();
 
         /// <summary>
         /// Function used to apply forces to this particle to change its acceleration.

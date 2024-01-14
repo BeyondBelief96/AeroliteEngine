@@ -8,8 +8,8 @@
 #include "Scene.h"
 
 // Generates a solar system layout with planets in orbit around a central sun.
-void SolarSystemScene::GenerateSolarSystem(std::vector<std::unique_ptr<Particle>>& planets,
-    std::shared_ptr<Particle>& sun,
+void SolarSystemScene::GenerateSolarSystem(std::vector<std::unique_ptr<Particle2D>>& planets,
+    std::shared_ptr<Particle2D>& sun,
     int numPlanets,
     real gravitationalConstant,
     real minOrbitRadius,
@@ -37,7 +37,7 @@ void SolarSystemScene::GenerateSolarSystem(std::vector<std::unique_ptr<Particle>
         Vec2 velocity(-y, x); // Rotate position vector by 90 degrees to get tangent direction
 
         // Create the planet particle.
-        auto planet = std::make_unique<Particle>(sun->position.x + x, sun->position.y + y, MASS_OF_EARTH); // Assuming a unit mass for simplicity.
+        auto planet = std::make_unique<Particle2D>(sun->position.x + x, sun->position.y + y, MASS_OF_EARTH); // Assuming a unit mass for simplicity.
         planet->velocity = velocity.UnitVector() * velocityMagnitude;
         planet->radius = 10;
 
@@ -46,7 +46,7 @@ void SolarSystemScene::GenerateSolarSystem(std::vector<std::unique_ptr<Particle>
 }
 
 // GLOBAL VARIABLES
-auto sun = std::make_shared<Particle>(0, 0, MASS_OF_SUN);
+auto sun = std::make_shared<Particle2D>(0, 0, MASS_OF_SUN);
 auto planetColors = std::vector<unsigned int>();
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -58,8 +58,8 @@ void SolarSystemScene::Setup() {
     sun->radius = 30;
     sun->position.x = Graphics::Width() / 2;
     sun->position.y = Graphics::Height() / 2;
-    auto planets = std::vector<std::unique_ptr<Particle>>();
-    GenerateSolarSystem(planets, sun, 1500,
+    auto planets = std::vector<std::unique_ptr<Particle2D>>();
+    GenerateSolarSystem(planets, sun, 10000,
         GRAV_CONSTANT, 100, 700, sun->mass);
 
     for (auto& planet : planets) {
@@ -79,7 +79,7 @@ void SolarSystemScene::Setup() {
         planetColors.push_back(color);
     }
 
-    world->AddParticles(std::move(planets));
+    world->AddParticle2Ds(std::move(planets));
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -112,7 +112,7 @@ void SolarSystemScene::Input() {
         case SDL_MOUSEBUTTONUP:
             if (leftMouseButtonDown && event.button.button == SDL_BUTTON_LEFT) {
                 leftMouseButtonDown = false;
-                auto planets = world->GetParticles();
+                auto planets = world->GetParticle2Ds();
                 Vec2 impulseDirection = (planets[0]->position - mouseCursor).UnitVector();
                 float impulseMagnitude = (planets[0]->position - mouseCursor).Magnitude() * 1;
                 planets[0]->velocity = impulseDirection * impulseMagnitude;
@@ -142,10 +142,10 @@ void SolarSystemScene::Update() {
     // Set the time of the current frame to be used in the next one.
     timePreviousFrame = SDL_GetTicks();
 
-    auto planets = world->GetParticles();
+    auto planets = world->GetParticle2Ds();
     for (int i = 0; i < planets.size(); i++)
     {
-        Vec2 gravitationalForce = ParticleForceGenerators::GenerateGravitationalAttractionForce(*planets[i],
+        Vec2 gravitationalForce = Particle2DForceGenerators::GenerateGravitationalAttractionForce(*planets[i],
             *sun, 5, 1000, GRAV_CONSTANT);
         planets[i]->ApplyForce(gravitationalForce);
         sun->ApplyForce(-gravitationalForce);
@@ -181,7 +181,7 @@ void SolarSystemScene::Update() {
 ///////////////////////////////////////////////////////////////////////////////
 void SolarSystemScene::Render() {
     Graphics::ClearScreen(0xFF000000);
-    auto planets = world->GetParticles();
+    auto planets = world->GetParticle2Ds();
     if (leftMouseButtonDown)
         Graphics::DrawLine(planets[0]->position.x, planets[0]->position.y, mouseCursor.x, mouseCursor.y, 0xFFFF1808);
 

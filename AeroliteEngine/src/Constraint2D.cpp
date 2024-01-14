@@ -2,6 +2,10 @@
 
 namespace Aerolite {
 
+	Constraint2D::Constraint2D(Aerolite::Body2D& a, Aerolite::Body2D& b) : a(a), b(b)
+	{
+	}
+
 	/// <summary>
 	/// Creates inverse mass matrix.
 	/// </summary>
@@ -35,5 +39,19 @@ namespace Aerolite {
 		v[5] = b.angularVelocity;
 
 		return v;
+	}
+
+	JointConstraint::JointConstraint(Aerolite::Body2D& a, Aerolite::Body2D& b, const Vec2& anchorPoint) : Constraint2D(a, b)
+	{
+		this->aPoint = a.WorldSpaceToLocalSpace(anchorPoint);
+		this->bPoint = b.WorldSpaceToLocalSpace(anchorPoint);
+	}
+
+	void JointConstraint::Solve(void)
+	{
+	}
+
+	void PenetrationConstraint::Solve(void)
+	{
 	}
 }

@@ -12,49 +12,23 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Setup function (executed once in the beginning of the simulation)
 ///////////////////////////////////////////////////////////////////////////////
-void AeroWorld2DScene::Setup() {
+void JointConstraintScene::Setup() {
     running = Graphics::OpenWindow();
 
-    world = std::make_unique<Aerolite::AeroWorld2D>(-9.8);
+    world = std::make_unique<Aerolite::AeroWorld2D>(0.0);
+    auto a = std::make_unique<Aerolite::Body2D>(new CircleShape(30), Graphics::Width() / 2.0, Graphics::Height() / 2.0, 0.0f);
+    auto b = std::make_unique<Aerolite::Body2D>(new CircleShape(20), a->position.x - 100, a->position.y, 1.0f);
+    auto joint = std::make_unique<Aerolite::JointConstraint>(*a, *b, a->position);
 
-    auto bar1 = std::make_unique<Aerolite::Body2D>(new BoxShape(500, 50),
-        Graphics::Width() / 2.0 - 600, Graphics::Height() - 500, 0.0);
-    bar1->restitution = 1.0;
-    bar1->rotation = 0.5;
-
-    auto bar2 = std::make_unique<Aerolite::Body2D>(new BoxShape(500, 50),
-        Graphics::Width() / 2.0 + 600, Graphics::Height() - 500, 0.0);
-    bar2->restitution = 1.0;
-    bar2->rotation = -0.5;
-
-    auto floor = std::make_unique<Aerolite::Body2D>(new BoxShape(Graphics::Width() - 50, 50),
-        Graphics::Width() / 2.0, Graphics::Height() - 50, 0.0);
-    floor->restitution = 1.0;
-
-    auto leftWall = std::make_unique<Aerolite::Body2D>(new BoxShape(50, Graphics::Height() - 50),
-        0, Graphics::Height() / 2.0, 0.0);
-    leftWall->restitution = 1.0;
-
-    auto rightWall = std::make_unique<Aerolite::Body2D>(new BoxShape(50, Graphics::Height() - 50),
-        Graphics::Width(), Graphics::Height() / 2.0, 0.0);
-    rightWall->restitution = 1.0;
-
-    auto bigBox = std::make_unique<Aerolite::Body2D>(new BoxShape(200, 200), Graphics::Width() / 2.0,
-        Graphics::Height() / 2.0, 0.0);
-    bigBox->restitution = 0.5;
-
-    world->AddBody2D(std::move(bar1));
-    world->AddBody2D(std::move(bar2));
-    world->AddBody2D(std::move(floor));
-    world->AddBody2D(std::move(leftWall));
-    world->AddBody2D(std::move(rightWall));
-    world->AddBody2D(std::move(bigBox));
+    world->AddBody2D(std::move(a));
+    world->AddBody2D(std::move(b));
+    world->AddConstraint(std::move(joint));
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 // Input processing
 ///////////////////////////////////////////////////////////////////////////////
-void AeroWorld2DScene::Input() {
+void JointConstraintScene::Input() {
     SDL_Event event;
     //static std::default_random_engine engine(std::random_device{}()); // Random number engine
     //static std::uniform_int_distribution<int> distribution(0, 1);    // Distribution to generate either 0 or 1
@@ -97,7 +71,7 @@ void AeroWorld2DScene::Input() {
 ///////////////////////////////////////////////////////////////////////////////
 // Update function (called several times per second to update objects)
 ///////////////////////////////////////////////////////////////////////////////
-void AeroWorld2DScene::Update() {
+void JointConstraintScene::Update() {
     // Check if we are too fast, and if so, waste some milliseconds until we reach
     // MILLISECONDS_PER_FRAME.
     int timeToWait = MILLISECS_PER_FRAME - (SDL_GetTicks() - timePreviousFrame);
@@ -120,12 +94,12 @@ void AeroWorld2DScene::Update() {
 ///////////////////////////////////////////////////////////////////////////////
 // Render function (called several times per second to draw objects)
 ///////////////////////////////////////////////////////////////////////////////
-void AeroWorld2DScene::Render() {
+void JointConstraintScene::Render() {
     Graphics::ClearScreen(0xFF000000);
     for (auto& body : world->GetBodies()) {
         if (body->shape->GetType() == Circle) {
             auto circleShape = dynamic_cast<CircleShape*>(body->shape);
-            Graphics::DrawCircle(body->position.x, body->position.y, circleShape->radius, body->rotation, 0xFF0000FF);
+            Graphics::DrawCircle(body->position.x, body->position.y, circleShape->radius, body->rotation, 0xFFFFFFFF);
         }
         else  if (body->shape->GetType() == Box) {
             auto boxShape = dynamic_cast<BoxShape*>(body->shape);
@@ -153,6 +127,6 @@ void AeroWorld2DScene::Render() {
 ///////////////////////////////////////////////////////////////////////////////
 // Destroy function to delete objects and close the window
 ///////////////////////////////////////////////////////////////////////////////
-void AeroWorld2DScene::Destroy() {
+void JointConstraintScene::Destroy() {
     Graphics::CloseWindow();
 }

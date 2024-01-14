@@ -1,8 +1,8 @@
-#include "Particle.h"
+#include "Particle2D.h"
 #include <iostream>
 using namespace Aerolite;
 
-Particle::Particle(real x, real y, real mass) : position(x, y), mass(mass)
+Particle2D::Particle2D(real x, real y, real mass) : position(x, y), mass(mass)
 {
 	radius = 4.0;
 	velocity = Vec2(0.0, 0.0);
@@ -13,11 +13,11 @@ Particle::Particle(real x, real y, real mass) : position(x, y), mass(mass)
 	else
 		invMass = 0.0;
 
-	std::cout << "Particle constructor called" << std::endl;
+	std::cout << "Particle2D constructor called" << std::endl;
 }
 
 // Copy constructor
-Particle::Particle(const Particle& other)
+Particle2D::Particle2D(const Particle2D& other)
     : radius(other.radius),
     position(other.position),
     velocity(other.velocity),
@@ -30,7 +30,7 @@ Particle::Particle(const Particle& other)
 }
 
 // Move constructor
-Particle::Particle(Particle&& other) noexcept
+Particle2D::Particle2D(Particle2D&& other) noexcept
     : radius(std::exchange(other.radius, 0)),
     position(std::move(other.position)),
     velocity(std::move(other.velocity)),
@@ -43,7 +43,7 @@ Particle::Particle(Particle&& other) noexcept
 }
 
 // Copy assignment operator
-Particle& Particle::operator=(const Particle& other) {
+Particle2D& Particle2D::operator=(const Particle2D& other) {
     if (this != &other) {
         radius = other.radius;
         position = other.position;
@@ -58,7 +58,7 @@ Particle& Particle::operator=(const Particle& other) {
 }
 
 // Move assignment operator
-Particle& Particle::operator=(Particle&& other) noexcept {
+Particle2D& Particle2D::operator=(Particle2D&& other) noexcept {
     if (this != &other) {
         radius = std::exchange(other.radius, 0);
         position = std::move(other.position);
@@ -72,27 +72,27 @@ Particle& Particle::operator=(Particle&& other) noexcept {
     return *this;
 }
 
-Particle::~Particle()
+Particle2D::~Particle2D()
 {
-	std::cout << "Particle destructor called" << std::endl;
+	std::cout << "Particle2D destructor called" << std::endl;
 }
 
-void Particle::ApplyForce(const Vec2& force)
+void Particle2D::ApplyForce(const Vec2& force)
 {
 	netForces += force;
 }
 
-void Particle::ClearForces()
+void Particle2D::ClearForces()
 {
 	netForces = Vec2(0.0f, 0.0f);
 }
 
-bool Aerolite::Particle::HasFiniteMass(void)
+bool Aerolite::Particle2D::HasFiniteMass(void)
 {
 	return invMass != 0.0f;
 }
 
-void Particle::Integrate(const real dt)
+void Particle2D::Integrate(const real dt)
 {
 	// Find the acceleration based on forces being applied.
 	acceleration = netForces * invMass;

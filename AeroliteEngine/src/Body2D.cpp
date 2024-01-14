@@ -155,4 +155,19 @@ namespace Aerolite {
         rotation += angularVelocity * dt;
         ClearTorque();
     }
+
+    Aerolite::Vec2 Body2D::LocalSpaceToWorldSpace(const Vec2& point)
+    {
+        Vec2 rotated = point.Rotate(rotation);
+        return rotated + position;
+    }
+
+    Aerolite::Vec2 Body2D::WorldSpaceToLocalSpace(const Vec2& point)
+    {
+        real translatedX = point.x - position.x;
+        real translatedY = point.y - position.y;
+        real rotatedX = cos(-rotation) * translatedX - sin(-rotation) * translatedY;
+        real rotatedY = cos(-rotation) * translatedY + sin(-rotation) * translatedX;
+        return Vec2(rotatedX, rotatedY);
+    }
 }

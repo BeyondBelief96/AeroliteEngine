@@ -1,7 +1,7 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
-#include "Particle.h"
+#include "Particle2D.h"
 #include "Body2D.h"
 #include "pfgen.h"
 #include "Contact2D.h"
@@ -67,8 +67,8 @@ private:
     Vec2 mouseCursor;
     bool leftMouseButtonDown;
 public:
-    void GenerateSolarSystem(std::vector<std::unique_ptr<Particle>>& planets,
-        std::shared_ptr<Particle>& sun,
+    void GenerateSolarSystem(std::vector<std::unique_ptr<Particle2D>>& planets,
+        std::shared_ptr<Particle2D>& sun,
         int numPlanets,
         float gravitationalConstant,
         float minOrbitRadius,
@@ -93,8 +93,8 @@ private:
 
     Vec2 anchor = Vec2(0, 0);
     float k = 150;
-    float restLength = 50;
-    int NUM_PARTICLES = 5;
+    float restLength = 20;
+    int NUM_PARTICLES = 30;
     float PARTICLE_MASS = 1.0;
 
 public:
@@ -158,6 +158,19 @@ public:
 };
 
 class AeroWorld2DScene : public Scene
+{
+private:
+    std::unique_ptr<Aerolite::AeroWorld2D> world;
+    bool debug;
+public:
+    void Setup() override;
+    void Input() override;
+    void Update() override;
+    void Render() override;
+    void Destroy()override;
+};
+
+class JointConstraintScene : public Scene
 {
 private:
     std::unique_ptr<Aerolite::AeroWorld2D> world;

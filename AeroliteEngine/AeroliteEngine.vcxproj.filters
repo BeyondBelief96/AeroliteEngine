@@ -21,7 +21,7 @@
     <ClInclude Include="include\Vec3.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Particle.h">
+    <ClInclude Include="include\Particle2D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Constants.h">
