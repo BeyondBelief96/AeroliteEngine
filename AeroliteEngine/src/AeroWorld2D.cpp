@@ -119,7 +119,6 @@ namespace Aerolite {
 
     void AeroWorld2D::Update(Aerolite::real dt) {
         contacts.clear();
-        // Update bodies
         for (auto& body : bodies) {
             Aerolite::Vec2 weight = Vec2(0.0, body->mass * G * PIXELS_PER_METER);
             body->AddForce(weight);
@@ -131,18 +130,27 @@ namespace Aerolite {
             for (auto& torque : bodyTorques) {
                 body->AddTorque(torque);
             }
-            
-            body->Update(dt);
         }
 
-        // Update particles
+        for (auto& body : bodies) {
+            body->IntegrateForces(dt);
+        }
+
+        for (auto& constraint : constraints) {
+            constraint->Solve();
+        }
+
+        for (auto& body : bodies) {
+            body->IntegrateVelocities(dt);
+        }
+
+        CheckCollisions();
+
         for (auto& particle : particles) {
             Aerolite::Vec2 weight = Vec2(0.0, particle->mass * G * PIXELS_PER_METER);
             particle->ApplyForce(weight);
             particle->Integrate(dt);
         }
-
-        CheckCollisions();
     }
 
     void AeroWorld2D::CheckCollisions() {

@@ -75,11 +75,11 @@ void CollisionProjectionResolutionScene::Update() {
     }
 
     for(auto& body : bodies) {
-        body->Update(deltaTime);
+        /*body->Update(deltaTime);*/
     }
 
     for (auto& body : bodies) {
-        body->Update(deltaTime);
+        /*body->Update(deltaTime);*/
         body->isColliding = false; // Temporary until we have collision detection engine setup.
     }
    

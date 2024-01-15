@@ -150,7 +150,7 @@
     <ClInclude Include="include\Constants.h" />
     <ClInclude Include="include\Constraint2D.h" />
     <ClInclude Include="include\Contact2D.h" />
-    <ClInclude Include="include\MatMxN.h" />
+    <ClInclude Include="include\MatrixMxN.h" />
     <ClInclude Include="include\VecN.h" />
     <ClInclude Include="src\Physics\Forces\pfgen.h" />
     <ClInclude Include="include\Matrix3x3.h" />
@@ -170,10 +170,12 @@
     <ClCompile Include="src\Contact2D.cpp" />
     <ClCompile Include="src\Matrix3x3.cpp" />
     <ClCompile Include="src\Matrix3x4.cpp" />
+    <ClCompile Include="src\MatrixMxN.cpp" />
     <ClCompile Include="src\Particle.cpp" />
     <ClCompile Include="src\Shape.cpp" />
     <ClCompile Include="src\Vec2.cpp" />
     <ClCompile Include="src\Vec3.cpp" />
+    <ClCompile Include="src\VecN.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

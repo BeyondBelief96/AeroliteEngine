@@ -122,7 +122,7 @@ void SATCollisionScene::Update() {
     }
 
     for (auto& body : bodies) {
-        body->Update(deltaTime);
+        /*body->Update(deltaTime);*/
         body->isColliding = false; // Temporary until we have collision detection engine setup.
     }
 

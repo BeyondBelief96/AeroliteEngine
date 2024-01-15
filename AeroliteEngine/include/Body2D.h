@@ -56,11 +56,18 @@ namespace Aerolite {
         AABB2D GetAABB(void);
 
         /// <summary>
-        /// Updates the body by preforming linear and angular integration of the accelerations to derive the new positions
-        /// for the current time step of the simulation.
+        /// Preforms integration of the forces/torques and linear/angular accelerations to find the new velocities of the current
+        /// simulation frame.
         /// </summary>
-        /// <param name="dt">The current time step of the simulation frame.</param>
-        void Update(const real dt); 
+        /// <param name="dt"></param>
+        void IntegrateForces(real dt);
+
+        /// <summary>
+        /// Preforms integration of the linear and angular velocities to find the new position/rotation
+        /// of the current simulation frame.
+        /// </summary>
+        /// <param name="dt"></param>
+        void IntegrateVelocities(real dt);
 
         /// @brief Determines if the Body2D has an infinite mass.
         /// @return Returns true if mass is zero, false otherwise.
@@ -73,29 +80,29 @@ namespace Aerolite {
         void AddTorque(const real torque);
            
         /// <summary>
-        /// Applies an impulse to the body at the center of mass generated from a collision.
+        /// Applies a linear impulse to the body at the center of mass.
         /// </summary>
         /// <param name="j">The impulse vector to apply.</param>
-        void ApplyImpulse(const Vec2& j);
+        void ApplyImpulseLinear(const Vec2& j);
+
+        /// <summary>
+        /// Applies an angular impulse to the body at the center of mass.
+        /// </summary>
+        /// <param name="j">The amount of angular impulse to apply.</param>
+        void ApplyImpulseAngular(const real j);
 
         /// <summary>
         /// Applies an impulse j to the body at the point r generated from a collision.
         /// </summary>
         /// <param name="j">The impulse vector to apply.</param>
         /// <param name="r">The point on the body to apply the impulse.</param>
-        void ApplyImpulse(const Vec2& j, const Vec2& r);
+        void ApplyImpulseAtPoint(const Vec2& j, const Vec2& r);
 
         // Method to clear all forces acting on the body.
         void ClearForces(void);
 
         // Method to clear all torques acting on the body.
         void ClearTorque(void);
-
-        // Method to integrate the body's linear position and velocity over time (dt).
-        void IntegrateLinear(const real dt);
-
-        // Method to integrate the body's rotation and angular velocity over time (dt).
-        void IntegrateAngular(const real dt);
 
         /// <summary>
         /// Converts a given point defined in local space of this body to world space coordinates

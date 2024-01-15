@@ -2,7 +2,7 @@
 #define CONSTRAINT2D_H
 
 #include "Body2D.h"
-#include "MatMxN.h"
+#include "MatrixMxN.h"
 #include "VecN.h"
 
 namespace Aerolite {
@@ -21,13 +21,13 @@ namespace Aerolite {
 		/// Creates inverse mass/moment matrix for constraint solving.
 		/// </summary>
 		/// <returns>matrix of inverse mass and inverse moment of inertia for bodies "a" and "b".</returns>
-		Aerolite::MatrixMxN<6, 6> GetInvM() const;
+		Aerolite::MatrixMxN GetInvM() const;
 
 		/// <summary>
 		/// Creates linear and angular velocity vector for constraint solving.
 		/// </summary>
 		/// <returns>1x6 vector of linear and angular velocities of bodies "a" and "b".</returns>
-		VecN<6> GetVelocities() const;
+		VecN GetVelocities() const;
 
 		/// <summary>
 		/// Solves the constraint.
@@ -37,8 +37,9 @@ namespace Aerolite {
 
 	class JointConstraint : public Constraint2D {
 	private:
-		MatrixMxN<1, 6> jacobian;
+		MatrixMxN jacobian;
 	public:
+		real bias;
 		JointConstraint() = default;
 		JointConstraint(Aerolite::Body2D& a, Aerolite::Body2D& b, const Vec2& anchorPoint);
 
@@ -49,7 +50,7 @@ namespace Aerolite {
 	};
 
 	class PenetrationConstraint : public Constraint2D {
-		MatrixMxN<1, 6> jacobian;
+		MatrixMxN jacobian;
 
 		/// <summary>
 		/// Solves the penetration constraint.

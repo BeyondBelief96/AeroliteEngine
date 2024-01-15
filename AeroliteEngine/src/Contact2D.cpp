@@ -99,7 +99,7 @@ namespace Aerolite {
         // taking into account both collision response (normal impulse) and friction (tangential impulse).
         Vec2 j = jN + jT;
 
-        a->ApplyImpulse(j, ra);  // Apply impulse to object A
-        b->ApplyImpulse(-j, rb); // Apply opposite impulse to object B
+        a->ApplyImpulseAtPoint(j, ra);  // Apply impulse to object A
+        b->ApplyImpulseAtPoint(-j, rb); // Apply opposite impulse to object B
     }
 }

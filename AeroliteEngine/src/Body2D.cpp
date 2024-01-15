@@ -68,11 +68,39 @@ namespace Aerolite {
         return aabb;
     }
 
-    // Method to update the body's state over time (dt).
-    void Body2D::Update(const Aerolite::real dt)
+    void Body2D::IntegrateForces(real dt)
     {
-        IntegrateLinear(dt);
-        IntegrateAngular(dt);
+        if (IsStatic()) return;
+
+
+        // Find the acceleration based on the forces that are being applied this frame.
+        acceleration = sumForces * invMass;
+
+        // Integrate the acceleration to find the new velocity.
+        velocity += acceleration * dt;
+
+        // Integrate the torques to find the new angular acceleration.
+        angularAcceleration = sumTorque * invI;
+
+        // Integrate the angular acceleration to find the new angular velocity.
+        angularVelocity += angularAcceleration * dt;
+
+        // Clear all forces and torque acting on the body before the next physics simulation frame.
+        ClearForces();
+        ClearTorque();
+    }
+
+    void Body2D::IntegrateVelocities(real dt)
+    {
+        if (IsStatic()) return;
+
+        // Integrate the velocity to find the new position.
+        position += velocity * dt + (acceleration * dt * dt) / 2.0f;
+
+        // Integrate the angular velocity to find the new rotation angle.
+        rotation += angularVelocity * dt;
+
+        // Update the vertices of the shape based on the position/rotation.
         shape->UpdateVertices(rotation, position);
     }
 
@@ -101,14 +129,20 @@ namespace Aerolite {
         sumTorque += torque;
     }
 
-    void Body2D::ApplyImpulse(const Vec2& j)
+    void Body2D::ApplyImpulseLinear(const Vec2& j)
     {
         if (IsStatic()) return;
 
         velocity += j * invMass;
     }
 
-    void Body2D::ApplyImpulse(const Vec2& j, const Vec2& r)
+    void Body2D::ApplyImpulseAngular(const real j)
+    {
+        if (IsStatic()) return;
+        angularVelocity += j * invI;
+    }
+
+    void Body2D::ApplyImpulseAtPoint(const Vec2& j, const Vec2& r)
     {
         if (IsStatic()) return;
 
@@ -126,34 +160,6 @@ namespace Aerolite {
     void Body2D::ClearTorque(void)
     {
         sumTorque = 0;
-    }
-
-    // Method to integrate the body's linear position and velocity over time (dt).
-    void Body2D::IntegrateLinear(const Aerolite::real dt)
-    {
-        if(IsStatic()) return;
-
-        // Find the acceleration based on forces being applied.
-        acceleration = sumForces * invMass;
-
-        // Integrate acceleration to find velocity;
-        velocity += acceleration * dt;
-
-        // Integrate velocity to find position.
-        position += velocity * dt + (acceleration * dt * dt) / 2.0f;
-
-        // Clear all the forces on the body before next frame.
-        ClearForces();
-    }
-
-    // Method to integrate the body's angular position and angular velocity over time (dt).
-    void Body2D::IntegrateAngular(const Aerolite::real dt)
-    {
-        if(IsStatic()) return;
-        angularAcceleration = sumTorque * invI;
-        angularVelocity += angularAcceleration * dt;
-        rotation += angularVelocity * dt;
-        ClearTorque();
     }
 
     Aerolite::Vec2 Body2D::LocalSpaceToWorldSpace(const Vec2& point)

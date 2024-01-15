@@ -15,7 +15,7 @@
 void JointConstraintScene::Setup() {
     running = Graphics::OpenWindow();
 
-    world = std::make_unique<Aerolite::AeroWorld2D>(0.0);
+    world = std::make_unique<Aerolite::AeroWorld2D>();
     auto a = std::make_unique<Aerolite::Body2D>(new CircleShape(30), Graphics::Width() / 2.0, Graphics::Height() / 2.0, 0.0f);
     auto b = std::make_unique<Aerolite::Body2D>(new CircleShape(20), a->position.x - 100, a->position.y, 1.0f);
     auto joint = std::make_unique<Aerolite::JointConstraint>(*a, *b, a->position);
