@@ -36,6 +36,8 @@ namespace Aerolite {
             invI = 0.0;
         }
 
+        shape->UpdateVertices(rotation, position);
+
         std::cout << "Body constructor called!" << std::endl;
     }
 
@@ -132,7 +134,6 @@ namespace Aerolite {
     void Body2D::ApplyImpulseLinear(const Vec2& j)
     {
         if (IsStatic()) return;
-
         velocity += j * invMass;
     }
 

@@ -1,34 +1,123 @@
 #ifndef VECN_H
 #define VECN_H
 
+#include <array>
 #include <stdexcept>
-#include <cassert>
-#include "Precision.h"
+#include <cmath>
 
 namespace Aerolite {
 
-    struct VecN {
-        int N;
-        real* data;
+    template<std::size_t N>
+    class VecN {
+    private:
+        std::array<real, N> components; // Array to store vector components
 
-        VecN();
-        VecN(int N);
-        VecN(const VecN& v);
-        ~VecN();
+    public:
+        // Default constructor: Initializes all components to zero.
+        VecN() {
+            components.fill(0.0);
+        }
 
-        void Zero();                              // v1.Zero()
-        real Dot(const VecN& v) const;            // v1.Dot(v2)
+        void Zero(void) {
+            for (int i = 0; i < N; i++)
+            {
+                components[i] = 0;
+            }
+        }
 
-        VecN& operator = (const VecN& v);          // v1 = v2
-        VecN operator + (const VecN& v) const;     // v1 + v2
-        VecN operator - (const VecN& v) const;     // v1 - v2
-        VecN operator * (const real n) const;     // v1 * n
-        const VecN& operator += (const VecN& v);   // v1 += v2
-        const VecN& operator -= (const VecN& v);   // v1 -= v2
-        const VecN& operator *= (const real n);   // v1 *= n
-        real operator [] (const int index) const; // v1[index]
-        real& operator [] (const int index);      // v1[index]
+        // Access element (const and non-const versions).
+        real operator[](std::size_t index) const {
+            if (index >= N) {
+                throw std::out_of_range("Index out of range");
+            }
+            return components[index];
+        }
+
+        real& operator[](std::size_t index) {
+            if (index >= N) {
+                throw std::out_of_range("Index out of range");
+            }
+            return components[index];
+        }
+
+        // Calculate and return the dot product of this vector with another vector.
+        real Dot(const VecN& other) const {
+            real sum = 0.0;
+            for (std::size_t i = 0; i < N; ++i) {
+                sum += components[i] * other.components[i];
+            }
+            return sum;
+        }
+
+        // Calculate and return the Euclidean norm (length) of the vector.
+        real Norm() const {
+            return std::sqrt(this->Dot(*this));
+        }
+
+        // Normalize the vector (make it unit length).
+        void Normalize() {
+            real norm = this->Norm();
+            if (norm == 0) {
+                throw std::runtime_error("Cannot normalize a zero vector.");
+            }
+            for (auto& component : components) {
+                component /= norm;
+            }
+        }
+
+        // Addition of two vectors.
+        VecN operator+(const VecN& other) const {
+            VecN result;
+            for (std::size_t i = 0; i < N; ++i) {
+                result.components[i] = components[i] + other.components[i];
+            }
+            return result;
+        }
+
+        // Subtraction of two vectors.
+        VecN operator-(const VecN& other) const {
+            VecN result;
+            for (std::size_t i = 0; i < N; ++i) {
+                result.components[i] = components[i] - other.components[i];
+            }
+            return result;
+        }
+
+        // Scalar multiplication operator.
+        VecN operator*(real scalar) const {
+            VecN result;
+            for (std::size_t i = 0; i < N; ++i) {
+                result.components[i] = components[i] * scalar;
+            }
+            return result;
+        }
+
+        // In-place addition.
+        VecN& operator+=(const VecN& other) {
+            for (std::size_t i = 0; i < N; ++i) {
+                components[i] += other.components[i];
+            }
+            return *this;
+        }
+
+        // In-place subtraction.
+        VecN& operator-=(const VecN& other) {
+            for (std::size_t i = 0; i < N; ++i) {
+                components[i] -= other.components[i];
+            }
+            return *this;
+        }
+
+        // In-place scalar multiplication.
+        VecN& operator*=(real scalar) {
+            for (std::size_t i = 0; i < N; ++i) {
+                components[i] *= scalar;
+            }
+            return *this;
+        }
+
+        // Additional methods and operator overloads can be added as needed.
     };
 }
 
-#endif // VECN_H
+#endif

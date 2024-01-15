@@ -21,42 +21,55 @@ namespace Aerolite {
 		/// Creates inverse mass/moment matrix for constraint solving.
 		/// </summary>
 		/// <returns>matrix of inverse mass and inverse moment of inertia for bodies "a" and "b".</returns>
-		Aerolite::MatrixMxN GetInvM() const;
+		Aerolite::MatrixMxN<6,6> GetInvM() const;
 
 		/// <summary>
 		/// Creates linear and angular velocity vector for constraint solving.
 		/// </summary>
 		/// <returns>1x6 vector of linear and angular velocities of bodies "a" and "b".</returns>
-		VecN GetVelocities() const;
+		MatrixMxN<6,1> GetVelocities() const;
+
+
+		virtual void PreSolve(void) = 0;
 
 		/// <summary>
 		/// Solves the constraint.
 		/// </summary>
 		virtual void Solve(void) = 0;
+
+		virtual void PostSolve(void) = 0;
 	};
 
 	class JointConstraint : public Constraint2D {
 	private:
-		MatrixMxN jacobian;
+		MatrixMxN<1,6> jacobian;
+		real cachedLambda;
 	public:
 		real bias;
 		JointConstraint() = default;
 		JointConstraint(Aerolite::Body2D& a, Aerolite::Body2D& b, const Vec2& anchorPoint);
 
+		void PreSolve(void) override;
+
 		/// <summary>
 		/// Solves the joint constraint.
 		/// </summary>
 		void Solve(void) override;
+
+		void PostSolve(void) override;
 	};
 
 	class PenetrationConstraint : public Constraint2D {
-		MatrixMxN jacobian;
+		MatrixMxN<1,6> jacobian;
+
+		void PreSolve(void) override;
 
 		/// <summary>
-		/// Solves the penetration constraint.
+		/// Solves the joint constraint.
 		/// </summary>
-		/// <param name=""></param>
 		void Solve(void) override;
+
+		void PostSolve(void) override;
 	};
 }
 

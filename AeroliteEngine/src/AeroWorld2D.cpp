@@ -22,7 +22,8 @@ namespace Aerolite {
 
     AeroWorld2D::AeroWorld2D(AeroWorld2D&& other) noexcept
         : bodies(std::move(other.bodies)), particles(std::move(other.particles)),
-        bodyForces(std::move(other.bodyForces)), bodyTorques(std::move(other.bodyTorques)), G(other.G) {
+        bodyForces(std::move(other.bodyForces)), bodyTorques(std::move(other.bodyTorques)),
+        constraints(std::move(other.constraints)), G(other.G) {
     }
 
     AeroWorld2D& AeroWorld2D::operator=(AeroWorld2D&& other) noexcept {
@@ -31,6 +32,7 @@ namespace Aerolite {
             particles = std::move(other.particles);
             bodyForces = std::move(other.bodyForces);
             bodyTorques = std::move(other.bodyTorques);
+            constraints = std::move(other.constraints);
             G = other.G;
         }
         return *this;
@@ -137,7 +139,17 @@ namespace Aerolite {
         }
 
         for (auto& constraint : constraints) {
-            constraint->Solve();
+            constraint->PreSolve();
+        }
+
+        for (int i = 0; i < 2; i++) {
+            for (auto& constraint : constraints) {
+                constraint->Solve();
+            }
+        }
+
+        for (auto& constraint : constraints) {
+            constraint->PostSolve();
         }
 
         for (auto& body : bodies) {

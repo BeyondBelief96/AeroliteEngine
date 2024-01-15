@@ -16,13 +16,22 @@ void JointConstraintScene::Setup() {
     running = Graphics::OpenWindow();
 
     world = std::make_unique<Aerolite::AeroWorld2D>();
-    auto a = std::make_unique<Aerolite::Body2D>(new CircleShape(30), Graphics::Width() / 2.0, Graphics::Height() / 2.0, 0.0f);
-    auto b = std::make_unique<Aerolite::Body2D>(new CircleShape(20), a->position.x - 100, a->position.y, 1.0f);
-    auto joint = std::make_unique<Aerolite::JointConstraint>(*a, *b, a->position);
 
-    world->AddBody2D(std::move(a));
-    world->AddBody2D(std::move(b));
-    world->AddConstraint(std::move(joint));
+    const int NUM_BODIES = 8;
+    for (int i = 0; i < NUM_BODIES; i++) {
+        real mass = (i == 0) ? 0.0 : 1.0;
+        auto body = std::make_unique<Body2D>(new BoxShape(30, 30), Graphics::Width() / 2.0 - (i * 40), 100, mass);
+        world->AddBody2D(std::move(body));
+    }
+
+    for (int i = 0; i < NUM_BODIES - 1; i++) {
+        std::vector<std::unique_ptr<Body2D>>& bodies = world->GetBodies();
+        auto a = bodies[i].get();
+        auto b = bodies[i + 1].get();
+        auto joint = std::make_unique<JointConstraint>(*a, *b, a->position);
+        world->AddConstraint(std::move(joint));
+    }
+    
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -96,6 +105,13 @@ void JointConstraintScene::Update() {
 ///////////////////////////////////////////////////////////////////////////////
 void JointConstraintScene::Render() {
     Graphics::ClearScreen(0xFF000000);
+
+    for (auto& joint : world->GetConstraints()) {
+        const Vec2 pa = joint->a.LocalSpaceToWorldSpace(joint->aPoint);
+        const Vec2 pb = joint->b.LocalSpaceToWorldSpace(joint->bPoint);
+        Graphics::DrawLine(pa.x, pa.y, pb.x, pb.y, 0xFFFFFFFF);
+    }
+
     for (auto& body : world->GetBodies()) {
         if (body->shape->GetType() == Circle) {
             auto circleShape = dynamic_cast<CircleShape*>(body->shape);
