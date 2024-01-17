@@ -1,6 +1,7 @@
 #ifndef AERO_WORLD_2D_H
 #define AERO_WORLD_2D_H
 
+#include <chrono>
 #include <vector>
 #include "Body2D.h"
 #include "Contact2D.h"
@@ -20,6 +21,9 @@ namespace Aerolite {
         std::vector<Aerolite::Vec2> particleForces;
         Aerolite::real G = 9.8;
 
+        std::chrono::high_resolution_clock::time_point lastLogTime;
+        std::chrono::duration<double> accumulatedTime = std::chrono::seconds(0);
+        int frameCount = 0;
     public:
         AeroWorld2D();
         AeroWorld2D(Aerolite::real gravity);

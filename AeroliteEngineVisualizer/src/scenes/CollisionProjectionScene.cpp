@@ -14,9 +14,9 @@
 void CollisionProjectionResolutionScene::Setup() {
     running = Graphics::OpenWindow();
 
+    world = std::make_unique<AeroWorld2D>();
     auto bigBall = std::make_unique<Body2D>(new CircleShape(100), Graphics::Width() / 2.0, Graphics::Height() / 2.0, 0.0);
-
-    bodies.push_back(std::move(bigBall));
+    world->AddBody2D(std::move(bigBall));
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -32,12 +32,13 @@ void CollisionProjectionResolutionScene::Input() {
         case SDL_KEYDOWN:
             if (event.key.keysym.sym == SDLK_ESCAPE)
                 running = false;
+            break;
         case SDL_MOUSEBUTTONDOWN:
             if(event.button.button == SDL_BUTTON_LEFT) {
                 int x, y;
                 SDL_GetMouseState(&x, &y);
                 auto ball = std::make_unique<Body2D>(new CircleShape(50), x, y, 1.0);
-                bodies.push_back(std::move(ball));
+                world->AddBody2D(std::move(ball));
             }
             break;
         }
@@ -65,51 +66,7 @@ void CollisionProjectionResolutionScene::Update() {
     // Set the time of the current frame to be used in the next one.
     timePreviousFrame = SDL_GetTicks();
 
-    // Create body - Force Registration Pairs.
-    for(auto& body : bodies) {
-         Vec2 weight = Vec2(0, body->mass * 9.8 * PIXELS_PER_METER);
-         body->AddForce(weight);
-
-         Vec2 wind = Vec2(2.0 * PIXELS_PER_METER, 0.0);
-         body->AddForce(wind);
-    }
-
-    for(auto& body : bodies) {
-        /*body->Update(deltaTime);*/
-    }
-
-    // Check all rigid bodies for collision
-    for(int i = 0; i < bodies.size() - 1; i++)
-    {
-        for(int j = i+1; j < bodies.size(); j++)
-        {   
-            std::vector<Aerolite::Contact2D> contacts;
-            if(CollisionDetection2D::IsColliding(*bodies[i], *bodies[j], contacts))
-            {
-            }
-        }
-    }
-
-    // Check the boundaries of the window applying a hardcoded bounce flip in velocity
-    for (auto& body : bodies) {
-        if (body->shape->GetType() == Aerolite::ShapeType::Circle) {
-            auto circleShape = dynamic_cast<CircleShape*>(body->shape);
-            if (body->position.x - circleShape->radius <= 0) {
-                body->position.x = circleShape->radius;
-                body->velocity.x *= -0.9;
-            } else if (body->position.x + circleShape->radius >= Graphics::Width()) {
-                body->position.x = Graphics::Width() - circleShape->radius;
-                body->velocity.x *= -0.9;
-            }
-            if (body->position.y - circleShape->radius <= 0) {
-                body->position.y = circleShape->radius;
-                body->velocity.y *= -0.9;
-            } else if (body->position.y + circleShape->radius >= Graphics::Height()) {
-                body->position.y = Graphics::Height() - circleShape->radius;
-                body->velocity.y *= -0.9;
-            }
-        }
-    }
+    world->Update(deltaTime);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -117,6 +74,7 @@ void CollisionProjectionResolutionScene::Update() {
 ///////////////////////////////////////////////////////////////////////////////
 void CollisionProjectionResolutionScene::Render() {
     Graphics::ClearScreen(0xFF000000);
+    std::vector<std::unique_ptr<Body2D>>& bodies = world->GetBodies();
     for(auto& body : bodies) {
         if(body->shape->GetType() == Circle) {
             auto circleShape = dynamic_cast<CircleShape*>(body->shape);

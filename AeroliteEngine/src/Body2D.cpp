@@ -38,8 +38,6 @@ namespace Aerolite {
         }
 
         shape->UpdateVertices(rotation, position);
-
-        std::cout << "Body constructor called!" << std::endl;
     }
 
     AABB2D Body2D::GetAABB(void)
@@ -111,7 +109,6 @@ namespace Aerolite {
     {
         delete(shape);
         shape = nullptr;
-        std::cout << "Destroying Body2D!" << std::endl;
     }
 
     bool Body2D::IsStatic(void) const

@@ -141,7 +141,7 @@ void OptimizationScene::Input() {
                 int x, y;
                 SDL_GetMouseState(&x, &y);
                 // Create and add a new CircleShape at the mouse location
-                auto circle = std::make_unique<Body2D>(PolygonShape::CreateRegularPolygon(5, 50), x, y, 1.0); // Assuming radius 25 for the circle
+                auto circle = std::make_unique<Body2D>(new BoxShape(50,50), x, y, 1.0); // Assuming radius 25 for the circle
                 circle->restitution = 0;
                 circle->friction = 0.4;
                 world->AddBody2D(std::move(circle));

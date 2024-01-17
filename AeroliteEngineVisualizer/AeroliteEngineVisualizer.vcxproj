@@ -81,7 +81,7 @@
     <ExternalIncludePath>
     </ExternalIncludePath>
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\brand\Code\cpp\Aerolite\AeroliteEngine\AeroliteEngine\src\Physics;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\brand\source\repos\AeroliteEngine\AeroliteEngine\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>C:\Users\brand\Code\cpp\Aerolite\AeroliteEngine\AeroliteEngine\src\Physics;$(IncludePath)</IncludePath>

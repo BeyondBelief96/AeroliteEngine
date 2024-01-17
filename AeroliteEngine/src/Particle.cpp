@@ -12,8 +12,6 @@ Particle2D::Particle2D(real x, real y, real mass) : position(x, y), mass(mass)
 		invMass = 1.0 / mass;
 	else
 		invMass = 0.0;
-
-	std::cout << "Particle2D constructor called" << std::endl;
 }
 
 // Copy constructor
@@ -74,7 +72,6 @@ Particle2D& Particle2D::operator=(Particle2D&& other) noexcept {
 
 Particle2D::~Particle2D()
 {
-	std::cout << "Particle2D destructor called" << std::endl;
 }
 
 void Particle2D::ApplyForce(const Vec2& force)

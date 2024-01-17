@@ -6,12 +6,10 @@
 Aerolite::CircleShape::CircleShape(const real radius)
 {
     this->radius = radius;
-    std::cout << "CircleShape constructor called!" << std::endl;
 }
 
 Aerolite::CircleShape::~CircleShape()
 {
-    std::cout << "CircleShape destructor called!" << std::endl;
 }
 
 Aerolite::ShapeType Aerolite::CircleShape::GetType() const
@@ -49,13 +47,10 @@ Aerolite::BoxShape::BoxShape(const real width, const real height)
     this->worldVertices.push_back(Vec2(width / 2.0, -height / 2.0));
     this->worldVertices.push_back(Vec2(width / 2.0, height / 2.0));
     this->worldVertices.push_back(Vec2(-width / 2.0, height / 2.0));
-
-    std::cout << "BoxShape constructor called" << std::endl;
 }
 
 Aerolite::BoxShape::~BoxShape()
 {
-    std::cout << "BoxShape destructor called" << std::endl;
 }
 
 Aerolite::ShapeType Aerolite::BoxShape::GetType() const
@@ -78,12 +73,10 @@ Aerolite::PolygonShape::PolygonShape(const std::vector<Vec2>& vertices)
         localVertices.emplace_back(vertex);
         worldVertices.emplace_back(vertex);
     }
-    std::cout << "PolygonShape constructor called!" << std::endl;
 }
 
 Aerolite::PolygonShape::~PolygonShape()
 {
-    std::cout << "PolygonShape destructor called!" << std::endl;
 }
 
 Aerolite::ShapeType Aerolite::PolygonShape::GetType() const

@@ -126,7 +126,7 @@ public:
 class CollisionProjectionResolutionScene : public Scene
 {
     private:
-        std::vector<std::unique_ptr<Body2D>> bodies;
+        std::unique_ptr<AeroWorld2D> world;
         Vec2 pushForce;
         Vec2 mouseCursor;
         bool leftMouseButtonDown;
@@ -142,8 +142,7 @@ class CollisionProjectionResolutionScene : public Scene
 class SATCollisionScene : public Scene
 {
 private:
-    std::vector<std::unique_ptr<Body2D>> bodies;
-    std::vector<Aerolite::Contact2D> contactList;
+    std::unique_ptr<AeroWorld2D> world;
     Vec2 pushForce;
     Vec2 mouseCursor;
     bool leftMouseButtonDown;

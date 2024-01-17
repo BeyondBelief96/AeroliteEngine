@@ -41,6 +41,14 @@ namespace Aerolite
     }
 
 
+    bool CollisionDetection2D::IntersectAABBs(AABB2D& a, AABB2D& b)
+    {
+        if (a.max.x <= b.min.x || b.max.x <= a.min.x ||
+            a.max.y <= b.min.y || b.max.y <= a.min.y) return false;
+
+        return true;
+    }
+
     // Function: IsCollidingCircleCircle
     // Purpose: Checks for collision between two circles.
     // Parameters:

@@ -13,7 +13,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 void SATCollisionScene::Setup() {
     running = Graphics::OpenWindow();
-
+    world = std::make_unique<AeroWorld2D>();
     auto moveableBox = std::make_unique<Aerolite::Body2D>(new BoxShape(100, 100), 0, 0, 1.0);
     moveableBox->rotation = 0.3;
     auto bar1 = std::make_unique<Aerolite::Body2D>(new BoxShape(500, 50),
@@ -42,13 +42,12 @@ void SATCollisionScene::Setup() {
         Graphics::Height() / 2.0, 0.0);
     bigBox->restitution = 0.3;
 
-    /*bodies.push_back(std::move(moveableBox));*/
-    bodies.push_back(std::move(floor));
-    bodies.push_back(std::move(leftWall));
-    bodies.push_back(std::move(rightWall));
-    bodies.push_back(std::move(bigBox));
-    bodies.push_back(std::move(bar1));
-    bodies.push_back(std::move(bar2));
+    world->AddBody2D(std::move(floor));
+    world->AddBody2D(std::move(leftWall));
+    world->AddBody2D(std::move(rightWall));
+    world->AddBody2D(std::move(bigBox));
+    world->AddBody2D(std::move(bar1));
+    world->AddBody2D(std::move(bar2));
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -78,7 +77,7 @@ void SATCollisionScene::Input() {
                 auto polygon = std::make_unique<Body2D>(PolygonShape::CreateRegularPolygon(5, 50), x, y, 2.0);
                 polygon->restitution = 0.1;
                 polygon->friction = 0.4;
-                bodies.push_back(std::move(polygon));
+                world->AddBody2D(std::move(polygon));
             }
             else if (event.button.button == SDL_BUTTON_RIGHT) {
                 int x, y;
@@ -87,7 +86,7 @@ void SATCollisionScene::Input() {
                 auto circle = std::make_unique<Body2D>(new CircleShape(25), x, y, 1.0); // Assuming radius 25 for the circle
                 circle->restitution = 0.5;
                 circle->friction = 0.4;
-                bodies.push_back(std::move(circle));
+                world->AddBody2D(std::move(circle));
             }
             break;
         }
@@ -114,25 +113,7 @@ void SATCollisionScene::Update() {
     // Set the time of the current frame to be used in the next one.
     timePreviousFrame = SDL_GetTicks();
 
-   contactList.clear();
-
-    for (auto& body : bodies) {
-        Vec2 weight = Vec2(0, body->mass * 9.8 * PIXELS_PER_METER);
-        body->AddForce(weight);
-    }
-
-    // Collision Detection
-    for (int i = 0; i < bodies.size() - 1; i++)
-    {
-        for (int j = i + 1; j < bodies.size(); j++)
-        {
-            std::vector<Aerolite::Contact2D> contacts;
-            if (CollisionDetection2D::IsColliding(*bodies[i], *bodies[j], contacts))
-            {
-                contactList = contacts;
-            }
-        }
-    }
+    world->Update(deltaTime);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -140,6 +121,7 @@ void SATCollisionScene::Update() {
 ///////////////////////////////////////////////////////////////////////////////
 void SATCollisionScene::Render() {
     Graphics::ClearScreen(0xFF000000);
+    std::vector<std::unique_ptr<Body2D>>& bodies = world->GetBodies();
     for (auto& body : bodies) {
         if (body->shape->GetType() == Circle) {
             auto circleShape = dynamic_cast<CircleShape*>(body->shape);
@@ -156,7 +138,7 @@ void SATCollisionScene::Render() {
     }
 
     if (debug) {
-        for (auto& contact : contactList)
+        for (auto& contact : world->GetContacts())
         {
             Graphics::DrawFillCircle(contact.start.x, contact.start.y, 4, 0xFFFF00FF);
             Graphics::DrawFillCircle(contact.end.x, contact.end.y, 4, 0xFFFF00FF);

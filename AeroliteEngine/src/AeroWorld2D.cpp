@@ -6,19 +6,11 @@
 
 namespace Aerolite {
 
-    AeroWorld2D::AeroWorld2D() : G(9.8) {
-        std::cout << "AeroWorld2D constructor called!" << std::endl;
-    }
+    AeroWorld2D::AeroWorld2D() : G(9.8) {}
 
-    AeroWorld2D::AeroWorld2D(Aerolite::real gravity) : G(-gravity) {
-        // Initialization of other members, if needed
-        std::cout << "AeroWorld2D constructor called!" << std::endl;
-    }
+    AeroWorld2D::AeroWorld2D(Aerolite::real gravity) : G(-gravity) {}
 
-    AeroWorld2D::~AeroWorld2D()
-    {
-        std::cout << "AeroWorld2D destructor called!" << std::endl;
-    }
+    AeroWorld2D::~AeroWorld2D() {}
 
     AeroWorld2D::AeroWorld2D(AeroWorld2D&& other) noexcept
         : bodies(std::move(other.bodies)), particles(std::move(other.particles)),
@@ -118,6 +110,7 @@ namespace Aerolite {
     }
 
     void AeroWorld2D::Update(Aerolite::real dt) {
+        auto startTime = std::chrono::high_resolution_clock::now();
         // Create a vector of penetration constraint to be solved per frame
         std::vector<PenetrationConstraint> penetrations;
 
@@ -144,6 +137,9 @@ namespace Aerolite {
             for (int j = i + 1; j < bodies.size(); ++j) {
                 std::unique_ptr<Aerolite::Body2D>& a = bodies[i];
                 std::unique_ptr<Aerolite::Body2D>& b = bodies[j];
+                auto aAABB = a->GetAABB();
+                auto bAABB = b->GetAABB();
+                if (!CollisionDetection2D::IntersectAABBs(aAABB, bAABB)) continue;
                 std::vector<Aerolite::Contact2D> contacts;
                 if (CollisionDetection2D::IsColliding(*a, *b, contacts))
                 {
@@ -189,6 +185,23 @@ namespace Aerolite {
             Aerolite::Vec2 weight = Vec2(0.0, particle->mass * G * PIXELS_PER_METER);
             particle->ApplyForce(weight);
             particle->Integrate(dt);
+        }
+
+        auto endTime = std::chrono::high_resolution_clock::now();
+        accumulatedTime += endTime - startTime;
+        frameCount++;
+
+        // Log the average frame time and the number of bodies every second or after every 60 frames
+        if (accumulatedTime >= std::chrono::seconds(1) || frameCount >= 60) {
+            double averageTime = accumulatedTime.count() / frameCount;
+            std::size_t bodyCount = bodies.size(); // Assuming bodies is a container like std::vector
+
+            std::cout << "Average frame time: " << averageTime << " seconds, "
+                << "Number of bodies: " << bodyCount << std::endl;
+
+            // Reset counters
+            accumulatedTime = std::chrono::seconds(0);
+            frameCount = 0;
         }
     }
 }

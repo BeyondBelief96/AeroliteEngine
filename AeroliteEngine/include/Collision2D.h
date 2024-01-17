@@ -19,6 +19,15 @@ namespace Aerolite {
         /// @return Returns true if collision is detected, false if not.
         static bool IsColliding(Aerolite::Body2D& a, Aerolite::Body2D& b, std::vector<Aerolite::Contact2D>& contacts);
 
+        /// <summary>
+        /// Determines if two axis-aligned bounding boxes for two bodies are intersecting.
+        /// This helps reduce the amount of collision checks needed between bodies.
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        static bool IntersectAABBs(AABB2D& a, AABB2D& b);
+
     private:
         /// @brief Detects if two circle Body2D's are colliding.
         /// @param a The first circle body for detection.
