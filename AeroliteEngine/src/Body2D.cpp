@@ -3,6 +3,7 @@
 #include "Body2D.h"
 #include "Precision.h"
 
+
 namespace Aerolite {
 
     // Constructor for Body2D.
@@ -73,7 +74,6 @@ namespace Aerolite {
     void Body2D::IntegrateForces(real dt)
     {
         if (IsStatic()) return;
-
 
         // Find the acceleration based on the forces that are being applied this frame.
         acceleration = sumForces * invMass;

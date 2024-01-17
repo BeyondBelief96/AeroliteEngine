@@ -13,11 +13,12 @@
 ///////////////////////////////////////////////////////////////////////////////
 void Collision2DScene::Setup() {
     running = Graphics::OpenWindow();
-    auto bigBall = std::make_unique<Body2D>(new CircleShape(100), 100, 100, 5.0);
-    auto smallBall = std::make_unique<Body2D>(new CircleShape(50), Graphics::Width() / 2.0, Graphics::Height() / 2.0, 0.0);
+    world = std::make_unique<AeroWorld2D>(0);
+    auto smallBox = std::make_unique<Body2D>(new BoxShape(100, 100), 100, 100, 5.0);
+    auto bigBox = std::make_unique<Body2D>(new BoxShape(200, 200), Graphics::Width() / 2.0, Graphics::Height() / 2.0, 0.0);
 
-    bodies.push_back(std::move(bigBall));
-    bodies.push_back(std::move(smallBall));
+    world->AddBody2D(std::move(smallBox));
+    world->AddBody2D(std::move(bigBox));
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -33,9 +34,11 @@ void Collision2DScene::Input() {
         case SDL_KEYDOWN:
             if (event.key.keysym.sym == SDLK_ESCAPE)
                 running = false;
+            break;
         case SDL_MOUSEMOTION:
             int x, y;
             SDL_GetMouseState(&x, &y);
+            std::vector<std::unique_ptr<Body2D>>& bodies = world->GetBodies();
             bodies[0]->position.x = x;
             bodies[0]->position.y = y;
             break;
@@ -66,49 +69,30 @@ void Collision2DScene::Update() {
     // Set the time of the current frame to be used in the next one.
     timePreviousFrame = SDL_GetTicks();
 
-    // Create body - Force Registration Pairs.
-    for(auto& body : bodies) {
-
-    }
-
-    for(auto& body : bodies) {
-        /*body->Update(deltaTime);*/
-        body->isColliding = false; // Temporary until we have collision detection engine setup.
-    }
-
-    // Check all rigid bodies for collision
-    for(int i = 0; i < bodies.size() - 1; i++)
-    {
-        for(int j = i+1; j < bodies.size(); j++)
-        {   
-            Aerolite::Contact2D contact = Aerolite::Contact2D();
-            if(CollisionDetection2D::IsColliding(*bodies[i], *bodies[j], contact))
-            {
-                // Here we have the contact information inside the contact object.
-                Graphics::DrawFillCircle(contact.start.x, contact.start.y, 3, 0xFFFF00FF);
-                Graphics::DrawFillCircle(contact.end.x, contact.end.y, 3, 0xFFFF00FF);
-                Graphics::DrawLine(contact.start.x, contact.start.y, contact.start.x + contact.normal.x * 15, contact.start.y + contact.normal.y * 15, 0xFFFF00FF);
-                bodies[i]->isColliding = true;
-                bodies[j]->isColliding = true;
-            }
-        }
-    }
+    world->Update(deltaTime);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 // Render function (called several times per second to draw objects)
 ///////////////////////////////////////////////////////////////////////////////
 void Collision2DScene::Render() {
+    std::vector<std::unique_ptr<Body2D>>& bodies = world->GetBodies();
     for(auto& body : bodies) {
-
-        uint32_t color = body->isColliding ? 0xFF0000FF : 0xFFFFFFFF;
         if(body->shape->GetType() == Circle) {
             auto circleShape = dynamic_cast<CircleShape*>(body->shape);
-            Graphics::DrawCircle(body->position.x, body->position.y, circleShape->radius, body->rotation, color);
+            Graphics::DrawCircle(body->position.x, body->position.y, circleShape->radius, body->rotation, 0xFFFFFFFF);
         }
         else  if(body->shape->GetType() == Box) {
             auto boxShape = dynamic_cast<BoxShape*>(body->shape);
             Graphics::DrawPolygon(body->position.x, body->position.y, boxShape->worldVertices, 0xFFFFFFFF);  
+        }
+
+        auto contacts = world->GetContacts();
+
+        for (auto& contact : contacts)
+        {
+            Graphics::DrawCircle(contact.start.x, contact.start.y, 5, 0.0, 0xFF00FFFF);
+            Graphics::DrawCircle(contact.end.x, contact.end.y, 2, 0.0, 0xFF00FFFF);
         }
     }
 

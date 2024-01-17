@@ -20,7 +20,6 @@ namespace Aerolite {
     // Define a struct Body2D representing a 2D physical body.
     struct Body2D 
     {
-        bool isColliding = false;
         Vec2 position; // Position of the body in 2D space.
         Vec2 velocity; // Velocity of the body.
         Vec2 acceleration; // Acceleration of the body.
@@ -41,7 +40,6 @@ namespace Aerolite {
         real friction;    // Coefficient of friction of the body. Used in tangent impulse calculations.
         
         Shape* shape = nullptr; // Raw pointer to a Shape object. Initialized to nullptr.
-
 
         // Constructor for Body2D.
         Body2D(Shape* shape, const real x, const real y, const real mass);
@@ -110,7 +108,7 @@ namespace Aerolite {
         /// </summary>
         /// <param name="point">The point in local space with respect to the body.</param>
         /// <returns>A point in world space with respect to the body.</returns>
-        Aerolite::Vec2 LocalSpaceToWorldSpace(const Vec2& point);
+        Vec2 LocalSpaceToWorldSpace(const Vec2& point);
 
         /// <summary>
         /// Converts a given point defined in world space of this body to local space coordinates
@@ -118,7 +116,7 @@ namespace Aerolite {
         /// </summary>
         /// <param name="point">The point in world space with respect to the body.</param>
         /// <returns>A point in local space with respect to the body.</returns>
-        Aerolite::Vec2 WorldSpaceToLocalSpace(const Vec2& point);
+        Vec2 WorldSpaceToLocalSpace(const Vec2& point);
     };
 }
 

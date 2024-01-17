@@ -17,7 +17,7 @@ void JointConstraintScene::Setup() {
 
     world = std::make_unique<Aerolite::AeroWorld2D>();
 
-    const int NUM_BODIES = 8;
+    const int NUM_BODIES = 10;
     for (int i = 0; i < NUM_BODIES; i++) {
         real mass = (i == 0) ? 0.0 : 1.0;
         auto body = std::make_unique<Body2D>(new BoxShape(30, 30), Graphics::Width() / 2.0 - (i * 40), 100, mass);
@@ -106,11 +106,11 @@ void JointConstraintScene::Update() {
 void JointConstraintScene::Render() {
     Graphics::ClearScreen(0xFF000000);
 
-    for (auto& joint : world->GetConstraints()) {
-        const Vec2 pa = joint->a.LocalSpaceToWorldSpace(joint->aPoint);
-        const Vec2 pb = joint->b.LocalSpaceToWorldSpace(joint->bPoint);
-        Graphics::DrawLine(pa.x, pa.y, pb.x, pb.y, 0xFFFFFFFF);
-    }
+    //for (auto& joint : world->GetConstraints()) {
+    //    const Vec2 pa = joint->a.LocalSpaceToWorldSpace(joint->aPoint);
+    //    const Vec2 pb = joint->b.LocalSpaceToWorldSpace(joint->bPoint);
+    //    Graphics::DrawLine(pa.x, pa.y, pb.x, pb.y, 0xFFFFFFFF);
+    //}
 
     for (auto& body : world->GetBodies()) {
         if (body->shape->GetType() == Circle) {

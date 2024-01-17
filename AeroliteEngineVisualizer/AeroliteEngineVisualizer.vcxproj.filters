@@ -15,20 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="assets\basketball.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="assets\bowlingball.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="assets\crate.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="assets\metal.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="src\scenes\GravityDragScene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -60,6 +46,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\scenes\JointConstraintScene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scenes\RagdollJointScene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scenes\OptimizationScene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

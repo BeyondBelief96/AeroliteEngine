@@ -2,7 +2,7 @@
 
 
 int main(int argc, char *args[]) {
-    JointConstraintScene
+    OptimizationScene
         scene;
 
     scene.Setup();
@@ -12,8 +12,6 @@ int main(int argc, char *args[]) {
         scene.Update();
         scene.Render();
     }
-
     scene.Destroy();
-
     return 0;
 }

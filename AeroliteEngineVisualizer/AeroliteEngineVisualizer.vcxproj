@@ -162,17 +162,13 @@
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Image Include="assets\basketball.png" />
-    <Image Include="assets\bowlingball.png" />
-    <Image Include="assets\crate.png" />
-    <Image Include="assets\metal.png" />
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="src\scenes\AeroWorld2DScene.cpp" />
     <ClCompile Include="src\scenes\BilliardsScene.cpp" />
     <ClCompile Include="src\scenes\Collision2DScene.cpp" />
     <ClCompile Include="src\scenes\CollisionProjectionScene.cpp" />
     <ClCompile Include="src\scenes\JointConstraintScene.cpp" />
+    <ClCompile Include="src\scenes\OptimizationScene.cpp" />
+    <ClCompile Include="src\scenes\RagdollJointScene.cpp" />
     <ClCompile Include="src\scenes\SATCollisionScene.cpp" />
     <ClCompile Include="src\scenes\SolarSystemScene.cpp" />
     <ClCompile Include="src\scenes\GravityDragScene.cpp" />

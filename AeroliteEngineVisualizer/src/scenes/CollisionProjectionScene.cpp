@@ -78,23 +78,14 @@ void CollisionProjectionResolutionScene::Update() {
         /*body->Update(deltaTime);*/
     }
 
-    for (auto& body : bodies) {
-        /*body->Update(deltaTime);*/
-        body->isColliding = false; // Temporary until we have collision detection engine setup.
-    }
-   
-
     // Check all rigid bodies for collision
     for(int i = 0; i < bodies.size() - 1; i++)
     {
         for(int j = i+1; j < bodies.size(); j++)
         {   
-            Aerolite::Contact2D contact;
-            if(CollisionDetection2D::IsColliding(*bodies[i], *bodies[j], contact))
+            std::vector<Aerolite::Contact2D> contacts;
+            if(CollisionDetection2D::IsColliding(*bodies[i], *bodies[j], contacts))
             {
-                contact.ResolveCollision();
-                bodies[i]->isColliding = true;
-                bodies[j]->isColliding = true;
             }
         }
     }
@@ -127,11 +118,9 @@ void CollisionProjectionResolutionScene::Update() {
 void CollisionProjectionResolutionScene::Render() {
     Graphics::ClearScreen(0xFF000000);
     for(auto& body : bodies) {
-
-        uint32_t color = body->isColliding ? 0xFF0000FF : 0xFFFFFFFF;
         if(body->shape->GetType() == Circle) {
             auto circleShape = dynamic_cast<CircleShape*>(body->shape);
-            Graphics::DrawFillCircle(body->position.x, body->position.y, circleShape->radius, color);
+            Graphics::DrawFillCircle(body->position.x, body->position.y, circleShape->radius, 0xFFFFFFFF);
         }
         else  if(body->shape->GetType() == Box) {
             auto boxShape = dynamic_cast<BoxShape*>(body->shape);

@@ -67,13 +67,14 @@ private:
     Vec2 mouseCursor;
     bool leftMouseButtonDown;
 public:
-    void GenerateSolarSystem(std::vector<std::unique_ptr<Particle2D>>& planets,
+    void GenerateSolarSystem(
+        std::vector<std::unique_ptr<Particle2D>>& planets,
         std::shared_ptr<Particle2D>& sun,
         int numPlanets,
-        float gravitationalConstant,
-        float minOrbitRadius,
-        float maxOrbitRadius,
-        float sunMass);
+        real gravitationalConstant,
+        real minOrbitRadius,
+        real maxOrbitRadius,
+        real sunMass);
 
 
     void Setup() override;
@@ -109,8 +110,7 @@ public:
 class Collision2DScene : public Scene
 {
 private:
-    std::vector<std::unique_ptr<Body2D>> bodies;
-    Vec2 pushForce;
+    std::unique_ptr<AeroWorld2D> world;
     Vec2 mouseCursor;
     bool leftMouseButtonDown;
 
@@ -173,6 +173,33 @@ public:
 class JointConstraintScene : public Scene
 {
 private:
+    std::unique_ptr<Aerolite::AeroWorld2D> world;
+    bool debug;
+public:
+    void Setup() override;
+    void Input() override;
+    void Update() override;
+    void Render() override;
+    void Destroy()override;
+};
+
+class RagdollJointScene : public Scene
+{
+private:
+    std::unique_ptr<Aerolite::AeroWorld2D> world;
+    bool debug;
+public:
+    void Setup() override;
+    void Input() override;
+    void Update() override;
+    void Render() override;
+    void Destroy()override;
+};
+
+class OptimizationScene : public Scene
+{
+private:
+    SDL_Texture* bgTexture;
     std::unique_ptr<Aerolite::AeroWorld2D> world;
     bool debug;
 public:

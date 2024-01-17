@@ -52,9 +52,9 @@ namespace Aerolite {
 
         // Matrix-vector multiplication
         template<std::size_t P>
-        VecN<N> operator*(const VecN<P>& v) const {
+        VecN<M> operator*(const VecN<P>& v) const {
             static_assert(N == P, "Matrix and vector dimensions are not compatible for multiplication.");
-            VecN<N> result;
+            VecN<M> result;
             for (std::size_t i = 0; i < M; ++i) {
                 result[i] = rows[i].Dot(v);
             }
@@ -126,8 +126,9 @@ namespace Aerolite {
             // Iterate N times
             for (int iterations = 0; iterations < N; iterations++) {
                 for (int i = 0; i < N; i++) {
-                    if (A.rows[i][i] != 0.0f) {
-                        X[i] += (b[i] / A.rows[i][i]) - (A.rows[i].Dot(X) / A.rows[i][i]);
+                    real dx = (b[i] / A.rows[i][i]) - (A.rows[i].Dot(X) / A.rows[i][i]);
+                    if (dx == dx) {
+                        X[i] += dx;
                     }
                 }
             }

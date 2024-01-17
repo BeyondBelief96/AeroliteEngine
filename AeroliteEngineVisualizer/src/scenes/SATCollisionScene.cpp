@@ -121,33 +121,17 @@ void SATCollisionScene::Update() {
         body->AddForce(weight);
     }
 
-    for (auto& body : bodies) {
-        /*body->Update(deltaTime);*/
-        body->isColliding = false; // Temporary until we have collision detection engine setup.
-    }
-
     // Collision Detection
     for (int i = 0; i < bodies.size() - 1; i++)
     {
         for (int j = i + 1; j < bodies.size(); j++)
         {
-            Aerolite::Contact2D contact;
-            if (CollisionDetection2D::IsColliding(*bodies[i], *bodies[j], contact))
+            std::vector<Aerolite::Contact2D> contacts;
+            if (CollisionDetection2D::IsColliding(*bodies[i], *bodies[j], contacts))
             {
-                contactList.emplace_back(contact);
-
-                if (debug) {
-                    bodies[i]->isColliding = true;
-                    bodies[j]->isColliding = true;
-                }
+                contactList = contacts;
             }
         }
-    }
-
-    // Collision Resolution
-    for (auto& contact : contactList)
-    {
-        contact.ResolveCollision();
     }
 }
 

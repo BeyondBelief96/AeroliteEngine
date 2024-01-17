@@ -7,8 +7,8 @@
 
 namespace Aerolite {
 
-    // Represents a 2D contact point between two bodies in a physics simulation.
-    // This struct is used to store information about the collision between two bodies.
+    // Represents a 2D contact point between two bodies in our physics simulation.
+    // This class is used to store information about the collision between two bodies.
     class Contact2D {
 
     public:
@@ -38,10 +38,6 @@ namespace Aerolite {
         // Default destructor.
         // No custom destructor needed as raw pointers 'a' and 'b' do not own the bodies.
         ~Contact2D() = default;
-
-        // This function resolves a collision between two objects in a 2D environment.
-        // It applies both positional correction and an impulse based on the objects' properties.
-        void ResolveCollision(void);
 
         // Copy Constructor
         Contact2D(const Contact2D& other)
@@ -90,17 +86,6 @@ namespace Aerolite {
             }
             return *this;
         }
-
-    private:
-        // Resolves the penetration between the two Body2Ds.
-        // This function adjusts the positions and/or velocities of the bodies to resolve the collision.
-        void ResolvePenetration(void);
-
-        /// <summary>
-        /// This function resolves the impulse to apply to each body based on the linear and angular velocities
-        /// of each body.
-        /// </summary>
-        void ResolveImpulse(void);
     };
 } // namespace Aerolite
 

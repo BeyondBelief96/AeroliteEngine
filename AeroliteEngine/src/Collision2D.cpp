@@ -14,7 +14,7 @@ namespace Aerolite
     // Description: This function first checks the shape types of the bodies (circle or polygon).
     //              It then delegates the collision detection to the appropriate function based
     //              on the shape types.
-    bool CollisionDetection2D::IsColliding(Aerolite::Body2D& a, Aerolite::Body2D& b, Aerolite::Contact2D& contact)
+    bool CollisionDetection2D::IsColliding(Aerolite::Body2D& a, Aerolite::Body2D& b, std::vector<Aerolite::Contact2D>& contacts)
     {
         if (a.IsStatic() && b.IsStatic()) return false;
         bool aIsCircle = a.shape->GetType() == Aerolite::ShapeType::Circle;
@@ -22,19 +22,19 @@ namespace Aerolite
 
         if (aIsCircle && bIsCircle)
         {
-            return IsCollidingCircleCircle(a, b, contact);
+            return IsCollidingCircleCircle(a, b, contacts);
         }
         else if (!aIsCircle && !bIsCircle)
         {
-            return IsCollidingPolygonPolygon(a, b, contact);
+            return IsCollidingPolygonPolygon(a, b, contacts);
         }
         else if (aIsCircle && !bIsCircle)
         {
-            return IsCollidingCirclePolygon(b, a, contact);
+            return IsCollidingCirclePolygon(b, a, contacts);
         }
         else if (!aIsCircle && bIsCircle)
         {
-            return IsCollidingCirclePolygon(a, b, contact);
+            return IsCollidingCirclePolygon(a, b, contacts);
         }
 
         return false;
@@ -48,7 +48,7 @@ namespace Aerolite
     //   - contact: A reference to a Contact2D object to store collision details.
     // Description: This function calculates if two circles are colliding by comparing
     //              the distance between their centers to the sum of their radii.
-    bool CollisionDetection2D::IsCollidingCircleCircle(Aerolite::Body2D& a, Aerolite::Body2D& b, Aerolite::Contact2D& contact)
+    bool CollisionDetection2D::IsCollidingCircleCircle(Aerolite::Body2D& a, Aerolite::Body2D& b, std::vector<Contact2D>& contacts)
     {
         auto aCircleShape = dynamic_cast<Aerolite::CircleShape*>(a.shape);
         auto bCircleShape = dynamic_cast<Aerolite::CircleShape*>(b.shape);
@@ -60,6 +60,7 @@ namespace Aerolite
         if (!isColliding) {
             return false;
         }
+        Contact2D contact;
 
         contact.a = &a;
         contact.b = &b;
@@ -67,6 +68,8 @@ namespace Aerolite
         contact.start = b.position - (contact.normal * bCircleShape->radius);
         contact.end = a.position + (contact.normal * aCircleShape->radius);
         contact.depth = (contact.end - contact.start).Magnitude();
+
+        contacts.push_back(contact);
         return true;
     }
 
@@ -77,9 +80,9 @@ namespace Aerolite
     //   - contact: A reference to a Contact2D object, not used in this function as SAT does not provide contact points.
     // Description: This function checks for overlap along all possible axes formed by the edges of the polygons.
     //              If a separating axis is found (no overlap on an axis), the polygons are not colliding.
-    bool CollisionDetection2D::IsCollidingPolygonPolygon(Aerolite::Body2D& a, Aerolite::Body2D& b, Aerolite::Contact2D& contact)
+    bool CollisionDetection2D::IsCollidingPolygonPolygon(Aerolite::Body2D& a, Aerolite::Body2D& b, std::vector<Contact2D>& contacts)
     {
-        return IsCollidingSATOptimized(a, b, contact);
+        return IsCollidingSATOptimized(a, b, contacts);
     }
 
     bool CollisionDetection2D::IsCollidingSATBruteForce(Aerolite::Body2D& a, Aerolite::Body2D& b, Aerolite::Contact2D& contact)
@@ -165,51 +168,88 @@ namespace Aerolite
     }
 
     // Check for collision between two polygon shapes using the Separating Axis Theorem (SAT).
-    bool CollisionDetection2D::IsCollidingSATOptimized(Aerolite::Body2D& a, Aerolite::Body2D& b, Aerolite::Contact2D& contact)
+    bool CollisionDetection2D::IsCollidingSATOptimized(Aerolite::Body2D& a, Aerolite::Body2D& b, std::vector<Aerolite::Contact2D>& contacts)
     {
         // Cast the shapes of the bodies to polygon shapes
         auto polygonShapeA = dynamic_cast<PolygonShape*>(a.shape);
         auto polygonShapeB = dynamic_cast<PolygonShape*>(b.shape);
 
         // Variables to store the axis of minimum separation and the corresponding points
-        Aerolite::Vec2 aAxis, bAxis;
-        Aerolite::Vec2 aMinPoint, bMinPoint;
+        int aIndexReferenceEdge, bIndexReferenceEdge;
+        Aerolite::Vec2 aSupportPoint, bSupportPoint;
 
         // Find the minimum separation from A to B, along with the separation axis and point
-        Aerolite::real abSeparation = polygonShapeA->FindMinimumSeparation(*polygonShapeB, aAxis, aMinPoint);
+        Aerolite::real abSeparation = polygonShapeA->FindMinimumSeparation(*polygonShapeB, aIndexReferenceEdge, aSupportPoint);
         // Find the minimum separation from B to A, along with the separation axis and point
-        Aerolite::real baSeparation = polygonShapeB->FindMinimumSeparation(*polygonShapeA, bAxis, bMinPoint);
+        Aerolite::real baSeparation = polygonShapeB->FindMinimumSeparation(*polygonShapeA, bIndexReferenceEdge, bSupportPoint);
 
         // If either separation is non-negative, no overlap occurs, thus no collision
         if (abSeparation >= 0) return false;
         if (baSeparation >= 0) return false;
 
-        // Set the colliding bodies in the contact structure
-        contact.a = &a;
-        contact.b = &b;
-
-        // Determine which polygon has the greatest penetration and set the contact details
-        if (abSeparation > baSeparation)
-        {
-            contact.depth = -abSeparation;
-            contact.normal = aAxis.Normal();
-            contact.start = aMinPoint;
-            contact.end = aMinPoint + contact.normal * contact.depth;
+        PolygonShape* referenceShape;
+        PolygonShape* incidentShape;
+        int indexReferenceEdge;
+        if (abSeparation > baSeparation) {
+            // Set "A" as our reference shape and "B" as incident shape.
+            referenceShape = polygonShapeA;
+            incidentShape = polygonShapeB;
+            indexReferenceEdge = aIndexReferenceEdge;
         }
-        else
-        {
-            contact.depth = -baSeparation;
-            contact.normal = -bAxis.Normal();
-            contact.start = bMinPoint - contact.normal * contact.depth;;
-            contact.end = bMinPoint;
+        else {
+            // Set "B" as our reference shape and "A" as incident shape.
+            referenceShape = polygonShapeB;
+            incidentShape = polygonShapeA;
+            indexReferenceEdge = bIndexReferenceEdge;
         }
 
-        // Collision detected
+        Vec2 referenceEdge = referenceShape->EdgeAt(indexReferenceEdge);
+        
+        // Clipping
+        int incidentIndex = incidentShape->FindIncidentEdgeIndex(referenceEdge.Normal());
+        int incidentNextIndex = (incidentIndex + 1) % incidentShape->worldVertices.size();
+        Vec2 v0 = incidentShape->worldVertices[incidentIndex];
+        Vec2 v1 = incidentShape->worldVertices[incidentNextIndex];
+        std::vector<Vec2> contactPoints = { v0, v1 };
+        std::vector<Vec2> clippedPoints = contactPoints;
+        for (int i = 0; i < referenceShape->worldVertices.size(); i++) {
+            if (i == indexReferenceEdge) continue;
+
+            Vec2 c0 = referenceShape->worldVertices[i];
+            Vec2 c1 = referenceShape->worldVertices[(i + 1) % referenceShape->worldVertices.size()];
+            int numClipped = referenceShape->ClipLineSegmentToLine(contactPoints, clippedPoints, c0, c1);
+            if(numClipped < 2) {
+                break;
+            }
+
+            contactPoints = clippedPoints; // Make the next contact points the ones that were just clipped.
+        }
+
+        auto vref = referenceShape->worldVertices[indexReferenceEdge];
+
+        for (auto& vclip : clippedPoints) {
+            real separation = (vclip - vref).Dot(referenceEdge.Normal());
+            if (separation <= 0) {
+                Contact2D contact;
+                contact.a = &a;
+                contact.b = &b;
+                contact.normal = referenceEdge.Normal();
+                contact.start = vclip;
+                contact.end = vclip + contact.normal * -separation;
+                if (baSeparation >= abSeparation) {
+                    std::swap(contact.start, contact.end);
+                    contact.normal *= -1.0;
+                }
+
+                contacts.push_back(contact);
+            }
+        }
+
         return true;
     }
 
     // Check for collision between a circle and a polygon.
-    bool CollisionDetection2D::IsCollidingCirclePolygon(Aerolite::Body2D& polygon, Aerolite::Body2D& circle, Aerolite::Contact2D& contact)
+    bool CollisionDetection2D::IsCollidingCirclePolygon(Aerolite::Body2D& polygon, Aerolite::Body2D& circle, std::vector<Contact2D>& contacts)
     {
         // Cast the shapes to their respective types
         const Aerolite::PolygonShape* polygonShape = dynamic_cast<Aerolite::PolygonShape*>(polygon.shape);
@@ -252,6 +292,7 @@ namespace Aerolite
             }
         }
 
+        Contact2D contact;
         // Check for collision based on the region where the circle is relative to the closest edge
         if (isOutside)
         {
@@ -293,6 +334,8 @@ namespace Aerolite
             // Circle's center is inside the polygon, indicating a definite collision
             SetContactDetailsForInsideCollision(contact, polygon, circle, minCurrVertex, minNextVertex, circleShape->radius, distanceToCircleEdge);
         }
+
+        contacts.push_back(contact);
 
         // Collision detected
         return true;

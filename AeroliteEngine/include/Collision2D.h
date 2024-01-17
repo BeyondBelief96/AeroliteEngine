@@ -17,7 +17,7 @@ namespace Aerolite {
         /// @param b The second Body2D for detection.
         /// @param contact A contact2D object to store colission information if one is detected.
         /// @return Returns true if collision is detected, false if not.
-        static bool IsColliding(Aerolite::Body2D& a, Aerolite::Body2D& b, Aerolite::Contact2D& contact);
+        static bool IsColliding(Aerolite::Body2D& a, Aerolite::Body2D& b, std::vector<Aerolite::Contact2D>& contacts);
 
     private:
         /// @brief Detects if two circle Body2D's are colliding.
@@ -25,7 +25,7 @@ namespace Aerolite {
         /// @param b The second circle body for detection.
         /// @param contact A contact2D object to store colission information if one is detected.
         /// @return Returns true if the two circles are colliding, false if not.
-        static bool IsCollidingCircleCircle(Aerolite::Body2D& a, Aerolite::Body2D& b, Aerolite::Contact2D& contact);
+        static bool IsCollidingCircleCircle(Aerolite::Body2D& a, Aerolite::Body2D& b, std::vector<Aerolite::Contact2D>& contacts);
 
         /// <summary>
         /// Detects if two polygons are colliding.
@@ -33,7 +33,7 @@ namespace Aerolite {
         /// <param name="a">The first polygon body for detection.</param>
         /// <param name="b">The second polygon body for detection.</param>
         /// <returns>Returns true if the two polygons are colliding, false if not.</returns>
-        static bool IsCollidingPolygonPolygon(Aerolite::Body2D& a, Aerolite::Body2D& b, Aerolite::Contact2D& contact);
+        static bool IsCollidingPolygonPolygon(Aerolite::Body2D& a, Aerolite::Body2D& b, std::vector<Aerolite::Contact2D>& contacts);
 
         /// <summary>
         /// Detects if a circle and polygon are colliding.
@@ -42,7 +42,7 @@ namespace Aerolite {
         /// <param name="circle">The circle body for detection.</param>
         /// <param name="contact">A reference parameter to store collision and contact information.</param>
         /// <returns>Returns true if the polygon and circle are colliding, false if not.</returns>
-        static bool IsCollidingCirclePolygon(Aerolite::Body2D& polygon, Aerolite::Body2D& circle, Aerolite::Contact2D& contact);
+        static bool IsCollidingCirclePolygon(Aerolite::Body2D& polygon, Aerolite::Body2D& circle, std::vector<Aerolite::Contact2D>& contacts);
 
         /// <summary>
         /// Helper function for setting the contact details of the circle polygon collision detection algorithm for regions A and B.
@@ -76,7 +76,7 @@ namespace Aerolite {
         /// <param name="b">The second polygon for collision detection.</param>
         /// <param name="contact">A reference parameter to store collision and contact information.</param>
         /// <returns></returns>
-        static bool IsCollidingSATOptimized(Aerolite::Body2D& a, Aerolite::Body2D& b, Aerolite::Contact2D& contact);
+        static bool IsCollidingSATOptimized(Aerolite::Body2D& a, Aerolite::Body2D& b, std::vector<Aerolite::Contact2D>& contacts);
 
         /// <summary>
         /// Projects the given vertices onto the given axis and find the minimum and maximum projections

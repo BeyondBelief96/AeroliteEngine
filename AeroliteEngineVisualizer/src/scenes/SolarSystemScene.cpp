@@ -8,7 +8,8 @@
 #include "Scene.h"
 
 // Generates a solar system layout with planets in orbit around a central sun.
-void SolarSystemScene::GenerateSolarSystem(std::vector<std::unique_ptr<Particle2D>>& planets,
+void SolarSystemScene::GenerateSolarSystem(
+    std::vector<std::unique_ptr<Particle2D>>& planets,
     std::shared_ptr<Particle2D>& sun,
     int numPlanets,
     real gravitationalConstant,

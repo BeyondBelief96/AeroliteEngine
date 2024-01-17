@@ -138,7 +138,54 @@ Aerolite::Vec2 Aerolite::PolygonShape::GeometricCenter(void) const
         sumY / (Aerolite::real)worldVertices.size());
 }
 
-Aerolite::real Aerolite::PolygonShape::FindMinimumSeparation(const Aerolite::PolygonShape& other, Vec2& edgeOfSeparation, Vec2& point) const
+int Aerolite::PolygonShape::FindIncidentEdgeIndex(const Aerolite::Vec2& referenceEdgeNormal)
+{
+    int indexIncidentEdge = 0;
+    real minProj = std::numeric_limits<real>::max();
+    for (int i = 0; i < this->worldVertices.size(); i++)
+    {
+        auto edgeNormal = EdgeAt(i).Normal();
+        auto proj = edgeNormal.Dot(referenceEdgeNormal);
+        if (proj < minProj) {
+            minProj = proj;
+            indexIncidentEdge = i;
+        }
+    }
+
+    return indexIncidentEdge;
+}
+
+int Aerolite::PolygonShape::ClipLineSegmentToLine(const std::vector<Vec2>& contactsIn, std::vector<Vec2>& contactsOut, const Vec2& c0, const Vec2& c1) const
+{
+    // Start with no output points.
+    int numOut = 0;
+
+    // Calculate the distance of end points to the line.
+    Vec2 normal = (c1 - c0).UnitVector();
+    real dist0 = (contactsIn[0] - c0).Cross(normal);
+    real dist1 = (contactsIn[1] - c0).Cross(normal);
+
+    // If the points are behind the plane
+    if (dist0 <= 0)
+        contactsOut[numOut++] = contactsIn[0];
+    if (dist1 <= 0)
+        contactsOut[numOut++] = contactsIn[1];
+
+    // If the points are on different sides of the plane (one distance is negative and other is positive)
+    if (dist0 * dist1 < 0) {
+        real totalDist = dist0 - dist1;
+
+        // Find the intersection using linear interopolation
+        real t = dist0 / (totalDist);
+        Vec2 contact = contactsIn[0] + (contactsIn[1] - contactsIn[0]) * t;
+        contactsOut[numOut] = contact;
+        numOut++;
+    }
+
+    return numOut;
+}
+
+Aerolite::real Aerolite::PolygonShape::FindMinimumSeparation(const Aerolite::PolygonShape& other, int& indexReferenceEdge, Vec2& supportPoint) const
 {
     Aerolite::real separation = std::numeric_limits<Aerolite::real>::lowest();
 
@@ -162,8 +209,8 @@ Aerolite::real Aerolite::PolygonShape::FindMinimumSeparation(const Aerolite::Pol
         if (minSep > separation)
         {
             separation = minSep;
-            edgeOfSeparation = EdgeAt(i);
-            point = minVertex;
+            indexReferenceEdge = i;
+            supportPoint = minVertex;
         }
 
         if (separation > 0) return separation;

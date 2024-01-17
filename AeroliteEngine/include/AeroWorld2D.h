@@ -14,7 +14,7 @@ namespace Aerolite {
         std::vector<std::unique_ptr<Aerolite::Body2D>> bodies;
         std::vector<std::unique_ptr<Aerolite::Particle2D>> particles;
         std::vector<std::unique_ptr<Aerolite::Constraint2D>> constraints;
-        std::vector<Aerolite::Contact2D> contacts;
+        std::vector<Aerolite::Contact2D> contactsList;
         std::vector<Aerolite::Vec2> bodyForces;
         std::vector<Aerolite::real> bodyTorques;
         std::vector<Aerolite::Vec2> particleForces;
@@ -45,7 +45,6 @@ namespace Aerolite {
 
         void Update(Aerolite::real dt);
 
-        void CheckCollisions(void);
         const std::vector<Aerolite::Contact2D> GetContacts(void) const;
     };
 }

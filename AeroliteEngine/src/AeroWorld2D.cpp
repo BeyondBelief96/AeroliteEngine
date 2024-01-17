@@ -48,8 +48,7 @@ namespace Aerolite {
         constraints.push_back(std::move(constraint));
     }
 
-    std::vector<std::unique_ptr<Aerolite::Constraint2D>>& AeroWorld2D::GetConstraints(void)
-    {
+    std::vector<std::unique_ptr<Aerolite::Constraint2D>>& AeroWorld2D::GetConstraints(void) {
         return constraints;
     }
 
@@ -101,9 +100,8 @@ namespace Aerolite {
         return pointers;
     }
 
-    const std::vector<Aerolite::Contact2D> AeroWorld2D::GetContacts(void) const
-    {
-        return contacts;
+    const std::vector<Aerolite::Contact2D> AeroWorld2D::GetContacts(void) const {
+        return contactsList;
     }
 
     void AeroWorld2D::AddForceBody(const Aerolite::Vec2& force) {
@@ -120,7 +118,10 @@ namespace Aerolite {
     }
 
     void AeroWorld2D::Update(Aerolite::real dt) {
-        contacts.clear();
+        // Create a vector of penetration constraint to be solved per frame
+        std::vector<PenetrationConstraint> penetrations;
+
+        contactsList.clear();
         for (auto& body : bodies) {
             Aerolite::Vec2 weight = Vec2(0.0, body->mass * G * PIXELS_PER_METER);
             body->AddForce(weight);
@@ -138,13 +139,37 @@ namespace Aerolite {
             body->IntegrateForces(dt);
         }
 
-        for (auto& constraint : constraints) {
-            constraint->PreSolve();
+        // Collision Detection and Resolution.
+        for (int i = 0; i < bodies.size(); ++i) {
+            for (int j = i + 1; j < bodies.size(); ++j) {
+                std::unique_ptr<Aerolite::Body2D>& a = bodies[i];
+                std::unique_ptr<Aerolite::Body2D>& b = bodies[j];
+                std::vector<Aerolite::Contact2D> contacts;
+                if (CollisionDetection2D::IsColliding(*a, *b, contacts))
+                {
+                    contactsList.insert(contactsList.end(), contacts.begin(), contacts.end());
+                    for (auto& contact : contacts) {
+                        penetrations.emplace_back(PenetrationConstraint(*contact.a, *contact.b, contact.start, contact.end, contact.normal));
+                    }
+                }
+            }
         }
 
-        for (int i = 0; i < 2; i++) {
+        for (auto& constraint : constraints) {
+            constraint->PreSolve(dt);
+        }
+
+        for (auto& constraint : penetrations) {
+            constraint.PreSolve(dt);
+        }
+
+        for (int i = 0; i < 8; i++) {
             for (auto& constraint : constraints) {
                 constraint->Solve();
+            }
+
+            for (auto& constraint : penetrations) {
+                constraint.Solve();
             }
         }
 
@@ -152,36 +177,18 @@ namespace Aerolite {
             constraint->PostSolve();
         }
 
+        for (auto& constraint : penetrations) {
+            constraint.PostSolve();
+        }
+
         for (auto& body : bodies) {
             body->IntegrateVelocities(dt);
         }
-
-        CheckCollisions();
 
         for (auto& particle : particles) {
             Aerolite::Vec2 weight = Vec2(0.0, particle->mass * G * PIXELS_PER_METER);
             particle->ApplyForce(weight);
             particle->Integrate(dt);
-        }
-    }
-
-    void AeroWorld2D::CheckCollisions() {
-        for (int i = 0; i < bodies.size(); ++i) {
-            for (int j = i + 1; j < bodies.size(); ++j) {
-                std::unique_ptr<Aerolite::Body2D>& a = bodies[i];
-                std::unique_ptr<Aerolite::Body2D>& b = bodies[j];
-                a->isColliding = false;
-                b->isColliding = false;
-
-                Aerolite::Contact2D contact;
-                if (CollisionDetection2D::IsColliding(*a, *b, contact))
-                {
-                    contacts.emplace_back(contact);
-                    contact.ResolveCollision();
-                    a->isColliding = true;
-                    b->isColliding = true;
-                }
-            }
         }
     }
 }
