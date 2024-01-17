@@ -93,7 +93,16 @@ Aerolite::ShapeType Aerolite::PolygonShape::GetType() const
 
 Aerolite::real Aerolite::PolygonShape::GetMomentOfInertia() const
 {
-    return 5000;
+    real acc0 = 0;
+    real acc1 = 0;
+    for (int i = 0; i < localVertices.size(); i++) {
+        auto a = localVertices[i];
+        auto b = localVertices[(i + 1) % localVertices.size()];
+        auto cross = abs(a.Cross(b));
+        acc0 += cross * (a.Dot(a) + b.Dot(b) + a.Dot(b));
+        acc1 += cross;
+    }
+    return acc0 / 6 / acc1;
 }
 
 Aerolite::PolygonShape* Aerolite::PolygonShape::CreateRegularPolygon(int sides, real sideLength) {
