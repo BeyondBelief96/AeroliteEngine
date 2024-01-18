@@ -85,6 +85,7 @@ namespace Aerolite {
         // Assignment operator to assign the values from another AeroVec2 to this one.
         AeroVec2& operator=(const AeroVec2& v) noexcept = default;
 
+        // Move assignment operator.
         AeroVec2& operator=(AeroVec2&& v) noexcept = default;
 
         // Equality comparison operator to check if two AeroVec2 instances are equal.
