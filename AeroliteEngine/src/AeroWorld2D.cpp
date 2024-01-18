@@ -6,7 +6,7 @@
 
 namespace Aerolite {
 
-    AeroWorld2D::AeroWorld2D() : G(9.8) {}
+    AeroWorld2D::AeroWorld2D() : G(9.8f) {}
 
     AeroWorld2D::AeroWorld2D(Aerolite::real gravity) : G(-gravity) {}
 

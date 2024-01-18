@@ -19,7 +19,7 @@ namespace Aerolite {
         std::vector<Aerolite::Vec2> bodyForces;
         std::vector<Aerolite::real> bodyTorques;
         std::vector<Aerolite::Vec2> particleForces;
-        Aerolite::real G = 9.8;
+        Aerolite::real G = 9.8f;
         std::chrono::high_resolution_clock::time_point lastLogTime;
         std::chrono::duration<double> accumulatedTime = std::chrono::seconds(0);
         int frameCount = 0;

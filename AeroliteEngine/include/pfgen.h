@@ -10,7 +10,7 @@
 
 namespace Aerolite {
 
-    static struct Particle2DForceGenerators {
+	struct Particle2DForceGenerators {
         static Vec2 GenerateDragForce(const Particle2D& particle, real k1, real k2) {
             Vec2 dragForce = Vec2(0, 0);
             // Only apply drag if the particle is moving (velocity magnitude is greater than zero).

@@ -9,7 +9,7 @@
 
 namespace Aerolite {
     /// @brief A static class with a set of utility functions for detecting 2D Collisions between two Body2D's.
-    static class CollisionDetection2D {
+    class CollisionDetection2D {
 
     public:
         /// @brief Detects if two Body2D's are colliding.

@@ -5,12 +5,12 @@
 
 namespace Aerolite {
     // Constructor: Initializes the vector with specified x and y values.
-    Vec2::Vec2(Aerolite::real x, Aerolite::real y) noexcept : x(x), y(y) {}
+    Vec2::Vec2(const real x, const real y) noexcept : x(x), y(y) {}
 
     // Rotate: Rotates the vector by a given angle in radians.
-    Vec2 Vec2::Rotate(const Aerolite::real angle) const noexcept {
+    Vec2 Vec2::Rotate(const real angle) const noexcept {
         // Uses standard 2D rotation formula.
-        if (std::is_same<Aerolite::real, float>::value)
+        if (std::is_same_v<real, float>)
         {
             return Vec2(
                 x * std::cosf(angle) - y * std::sinf(angle), // New x coordinate.
@@ -27,15 +27,14 @@ namespace Aerolite {
     }
 
     // Magnitude: Returns the length of the vector.
-    Aerolite::real Vec2::Magnitude() const noexcept {
+    real Vec2::Magnitude() const noexcept {
         // std::hypot is used for numerical stability.
         return std::hypot(x, y);
     }
 
     // Normalize: Scales the vector to a unit length.
     void Vec2::Normalize() noexcept {
-        Aerolite::real length = Magnitude();
-        if (length != 0.0f) {
+	    if (const real length = Magnitude(); length != 0.0f) {
             x /= length;
             y /= length;
         }
@@ -57,17 +56,17 @@ namespace Aerolite {
         return result;
     }
 
-    Aerolite::real Vec2::DistanceTo(Vec2 v) const noexcept {
+    real Vec2::DistanceTo(Vec2 v) const noexcept {
         // Calculates the distance between this point and another point represented by vector v.
         // The distance is computed as the square root of the sum of the squares of the differences 
         // in the corresponding components.
         // The std::sqrtf or std::sqrt function is used based on whether Aerolite::real is float or double.
-        Aerolite::real dx = v.x - x;
-        Aerolite::real dy = v.y - y;
-        if (std::is_same<Aerolite::real, float>::value) {
+        const real dx = v.x - x;
+        const real dy = v.y - y;
+        if (std::is_same_v<real, float>) {
             return std::sqrtf(dx * dx + dy * dy);
         }
-        else if (std::is_same<Aerolite::real, double>::value) {
+        else if (std::is_same_v<real, double>) {
             return std::sqrt(dx * dx + dy * dy);
         }
         else {
@@ -78,18 +77,11 @@ namespace Aerolite {
         }
     }
 
-    // Assignment operator.
-    Vec2& Vec2::operator=(const Vec2& v) noexcept {
-        x = v.x;
-        y = v.y;
-        return *this;
-    }
-
     // Equality comparison operator.
     bool Vec2::operator==(const Vec2& v) const noexcept {
         // Precision comparison to handle floating-point inaccuracies.
-        return Aerolite::AreEqual(x, v.x, Aerolite::epsilon) &&
-            Aerolite::AreEqual(y, v.y, Aerolite::epsilon);
+        return AreEqual(x, v.x, epsilon) &&
+	        AreEqual(y, v.y, epsilon);
     }
 
     // Inequality comparison operator.
@@ -108,13 +100,13 @@ namespace Aerolite {
     }
 
     // Scalar multiplication operator.
-    Vec2 Vec2::operator*(const Aerolite::real n) const noexcept {
+    Vec2 Vec2::operator*(const real n) const noexcept {
         return Vec2(x * n, y * n);
     }
 
     // Scalar division operator.
-    Vec2 Vec2::operator/(const Aerolite::real n) const {
-        if (n == 0) throw std::runtime_error("Division by zero error in Vec2 operator /");
+    Vec2 Vec2::operator/(const real n) const {
+        if (Aerolite::AreEqual(n, 0.0, epsilon)) throw std::runtime_error("Division by zero error in Vec2 operator /");
         return Vec2(x / n, y / n);
     }
 
@@ -136,14 +128,14 @@ namespace Aerolite {
     }
 
     // Scalar multiplication assignment operator.
-    Vec2& Vec2::operator*=(const Aerolite::real n) noexcept {
+    Vec2& Vec2::operator*=(const real n) noexcept {
         Scale(n);
         return *this;
     }
 
     // Scalar division assignment operator.
-    Vec2& Vec2::operator/=(const Aerolite::real n) {
-        if (n == 0) throw std::runtime_error("Division by zero error in Vec2 operator /=");
+    Vec2& Vec2::operator/=(const real n) {
+        if (AreEqual(n, 0.0, epsilon)) throw std::runtime_error("Division by zero error in Vec2 operator /=");
         x /= n;
         y /= n;
         return *this;
