@@ -160,7 +160,7 @@
     <ClInclude Include="include\Precision.h" />
     <ClInclude Include="include\Shape.h" />
     <ClInclude Include="include\AeroVec2.h" />
-    <ClInclude Include="include\Vec3.h" />
+    <ClInclude Include="include\AeroVec3.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\AeroWorld2D.cpp" />
@@ -173,7 +173,7 @@
     <ClCompile Include="src\Particle.cpp" />
     <ClCompile Include="src\Shape.cpp" />
     <ClCompile Include="src\AeroVec2.cpp" />
-    <ClCompile Include="src\Vec3.cpp" />
+    <ClCompile Include="src\AeroVec3.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -2,7 +2,7 @@
 #define MATRIX3X3_H
 
 #include "Precision.h"
-#include "Vec3.h"
+#include "AeroVec3.h"
 
 class Matrix3x3
 {
@@ -39,7 +39,7 @@ public:
     Matrix3x3 Identity() const;
 
     // Transforms the given vector by this matrix.
-    Aerolite::Vec3 operator*(const Aerolite::Vec3 &vector) const;
+    Aerolite::AeroVec3 operator*(const Aerolite::AeroVec3 &vector) const;
 
     /// Returns a matrix which is this one multiplied by the given matrix.
     /// @param o The matrix to multiply this matrix by.

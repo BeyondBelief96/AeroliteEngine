@@ -52,9 +52,9 @@ void Matrix3x4::SetElement(int row, int column, Aerolite::real value)
     }
 }
 
-Aerolite::Vec3 Matrix3x4::operator*(const Aerolite::Vec3& vector) const
+Aerolite::AeroVec3 Matrix3x4::operator*(const Aerolite::AeroVec3& vector) const
 {
-    return Aerolite::Vec3(
+    return Aerolite::AeroVec3(
         vector.x * data[0] + vector.y * data[1] + vector.z * data[2] + data[3],
         vector.x * data[4] + vector.y * data[5] + vector.z * data[6] + data[7],
         vector.x * data[8] + vector.y * data[9] + vector.z * data[10] + data[11]
@@ -125,28 +125,29 @@ void Matrix3x4::operator*=(const Matrix3x4& o)
     determinant = CalcDeterminant();
 }
 
-Aerolite::Vec3 Matrix3x4::Transform(const Aerolite::Vec3& vector) const
+Aerolite::AeroVec3 Matrix3x4::Transform(const Aerolite::AeroVec3& vector) const
 {
     return (*this) * vector;
 }
 
-Aerolite::Vec3 Matrix3x4::TransformInverse(const Aerolite::Vec3& vector) const
+Aerolite::AeroVec3 Matrix3x4::TransformInverse(const Aerolite::AeroVec3& vector) const
 {
-    Aerolite::Vec3 tmp = vector; 
+    Aerolite::AeroVec3 tmp;
+    tmp = vector;
     tmp.x -= data[3];
     tmp.y -= data[7];
     tmp.z -= data[11]; 
     
-    return Aerolite::Vec3(
+    return Aerolite::AeroVec3(
     tmp.x * data[0] + tmp.y * data[4] + tmp.z * data[8],
     tmp.x * data[1] + tmp.y * data[5] + tmp.z * data[9],
     tmp.x * data[2] + tmp.y * data[6] + tmp.z * data[10]
     );
 }
 
-Aerolite::Vec3 Matrix3x4::TransformDirection(const Aerolite::Vec3& direction) const
+Aerolite::AeroVec3 Matrix3x4::TransformDirection(const Aerolite::AeroVec3& direction) const
 {
-    return Aerolite::Vec3(
+    return Aerolite::AeroVec3(
         direction.x * data[0] +
         direction.y * data[1] + 
         direction.z * data[2],
@@ -161,9 +162,9 @@ Aerolite::Vec3 Matrix3x4::TransformDirection(const Aerolite::Vec3& direction) co
     );
 }
 
-Aerolite::Vec3 Matrix3x4::TransformInverseDirection(const Aerolite::Vec3& direction) const
+Aerolite::AeroVec3 Matrix3x4::TransformInverseDirection(const Aerolite::AeroVec3& direction) const
 {
-    return Aerolite::Vec3(
+    return Aerolite::AeroVec3(
         direction.x * data[0] +
         direction.y * data[4] + 
         direction.z * data[8],
@@ -230,23 +231,23 @@ bool Matrix3x4::Invert()
     return SetInverse(*this);
 }
 
-Aerolite::Vec3 Matrix3x4::LocalToWorld(const Aerolite::Vec3& local, const Matrix3x4& transform)
+Aerolite::AeroVec3 Matrix3x4::LocalToWorld(const Aerolite::AeroVec3& local, const Matrix3x4& transform)
 {
     return transform.Transform(local);
 }
 
 
-Aerolite::Vec3 Matrix3x4::WorldToLocal(const Aerolite::Vec3 &world, const Matrix3x4 &transform)
+Aerolite::AeroVec3 Matrix3x4::WorldToLocal(const Aerolite::AeroVec3 &world, const Matrix3x4 &transform)
 {
     return transform.TransformInverse(world);
 }
 
-Aerolite::Vec3 Matrix3x4::LocalToWorldDirection(const Aerolite::Vec3& localDirection, const Matrix3x4& transform)
+Aerolite::AeroVec3 Matrix3x4::LocalToWorldDirection(const Aerolite::AeroVec3& localDirection, const Matrix3x4& transform)
 {
     return transform.TransformDirection(localDirection);
 }
 
-Aerolite::Vec3 Matrix3x4::WorldToLocalDirection(const Aerolite::Vec3& worldDirection, const Matrix3x4& transform)
+Aerolite::AeroVec3 Matrix3x4::WorldToLocalDirection(const Aerolite::AeroVec3& worldDirection, const Matrix3x4& transform)
 {
     return transform.TransformInverseDirection(worldDirection);
 }

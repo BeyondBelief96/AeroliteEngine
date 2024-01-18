@@ -2,7 +2,7 @@
 #define MATRIX3X4_H
 
 #include "Precision.h"
-#include "Vec3.h"
+#include "AeroVec3.h"
 
 /// @brief Represents a 3x4 matrix with an implicit 4th row containg [0, 0, 0, 1] for computational effeciency.
 /// Used to represent both a rotation and translation.
@@ -39,7 +39,7 @@ public:
     /// @brief Operator overload for *. Performs both rotation and translations of the given vector by this matrix.
     /// @param vector the vector to transform.
     /// @return the transformed vector.
-    Aerolite::Vec3 operator * (const Aerolite::Vec3& vector) const;
+    Aerolite::AeroVec3 operator * (const Aerolite::AeroVec3& vector) const;
 
     Matrix3x4 operator*(const Matrix3x4 &o) const;
 
@@ -50,26 +50,26 @@ public:
     /// @brief Transforms the given vector by this matrix.
     /// @param vector The vector to transform.
     /// @return The transformed vector.
-    Aerolite::Vec3 Transform(const Aerolite::Vec3& vector) const;
+    Aerolite::AeroVec3 Transform(const Aerolite::AeroVec3& vector) const;
 
     /// @brief Transforms the given vector by the transformational inverse of this matrix.
     /// @param vector The vector to transform.
     /// @return The transformed vector.
-    Aerolite::Vec3 TransformInverse(const Aerolite::Vec3& vector) const;
+    Aerolite::AeroVec3 TransformInverse(const Aerolite::AeroVec3& vector) const;
 
     /// @brief Transforms a direction vector by removing any translational component.
     /// Direction vectors should always remain pointing in the same direction, unless
     /// there is a rotational component to the transformation.
     /// @param direction The direction vector to transform.
     /// @return The transformed direction vector.
-    Aerolite::Vec3 TransformDirection(const Aerolite::Vec3& direction) const;
+    Aerolite::AeroVec3 TransformDirection(const Aerolite::AeroVec3& direction) const;
 
     /// @brief Transform the direction vector by the transformational inverse of this matrix
     /// and removes any translational component. Direction vectors should always remain pointing in the same direction, unless
     /// there is a rotational component to the transformation.
     /// @param direction The direction vector to transform.
     /// @return The transformed direction vector.
-    Aerolite::Vec3 TransformInverseDirection(const Aerolite::Vec3& direction) const;
+    Aerolite::AeroVec3 TransformInverseDirection(const Aerolite::AeroVec3& direction) const;
 
     /// @brief Sets the current matrix to the inverse of the given matrix m.
     /// @param m The matrix to take the inverse of.
@@ -87,23 +87,23 @@ public:
     /// @brief Transform the given local vector by the given transform matrix to world coordinates.
     /// @param local The vector in local coordinates to transform.
     /// @param transform The 3x4 transform matrix to transform the local vector by.
-    /// @return Returns the transformed Vec3.
-    static Aerolite::Vec3 LocalToWorld(const Aerolite::Vec3& local, const Matrix3x4& transform);
+    /// @return Returns the transformed AeroVec3.
+    static Aerolite::AeroVec3 LocalToWorld(const Aerolite::AeroVec3& local, const Matrix3x4& transform);
 
     /// @brief Transform the given world vector by the given transformation to local coordinates.
     /// @param world The vector in world coordinates to transform to local coordinates.
     /// @param transform The 3x4 transform matrix to go from local to world coordinates.
-    static Aerolite::Vec3 WorldToLocal(const Aerolite::Vec3& world, const Matrix3x4& transform);
+    static Aerolite::AeroVec3 WorldToLocal(const Aerolite::AeroVec3& world, const Matrix3x4& transform);
 
     /// @brief Transforms the given local direction vector by given the world transform matrix with translation removed.
     /// @param localDirection The local direction vector to transform.
     /// @return Return the transformed direction vector.
-    static Aerolite::Vec3 LocalToWorldDirection(const Aerolite::Vec3& localDirection, const Matrix3x4& transform);
+    static Aerolite::AeroVec3 LocalToWorldDirection(const Aerolite::AeroVec3& localDirection, const Matrix3x4& transform);
 
     /// @brief Transforms the given world direction vector by given the local transform matrix with translation removed.
     /// @param localDirection The world direction vector to transform.
     /// @return Return the transformed direction vector.
-    static Aerolite::Vec3 WorldToLocalDirection(const Aerolite::Vec3& worldDirection, const Matrix3x4& transform);
+    static Aerolite::AeroVec3 WorldToLocalDirection(const Aerolite::AeroVec3& worldDirection, const Matrix3x4& transform);
 };
 
 #endif

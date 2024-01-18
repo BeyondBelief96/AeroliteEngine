@@ -71,9 +71,9 @@ Matrix3x3 Matrix3x3::Identity() const
 }
 
 // Transforms the given vector by this matrix.
-Aerolite::Vec3 Matrix3x3::operator*(const Aerolite::Vec3 &vector) const
+Aerolite::AeroVec3 Matrix3x3::operator*(const Aerolite::AeroVec3 &vector) const
 {
-    return Aerolite::Vec3(vector.x * data[0] + vector.y * data[1] + vector.z * data[2],
+    return Aerolite::AeroVec3(vector.x * data[0] + vector.y * data[1] + vector.z * data[2],
                           vector.x * data[3] + vector.y * data[4] + vector.z * data[5],
                           vector.x * data[6] + vector.y * data[7] + vector.z * data[8]);
 }
