@@ -24,6 +24,7 @@
     <ProjectGuid>{273c3bc5-a37b-4e0b-a628-460abcc4f05a}</ProjectGuid>
     <RootNamespace>AeroliteEngineVisualizer</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>AeroliteEngine2DVisualizer</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
