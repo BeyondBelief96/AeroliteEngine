@@ -1,7 +1,7 @@
 #ifndef CONTACT2D_H
 #define CONTACT2D_H
 
-#include "Vec2.h"
+#include "AeroVec2.h"
 #include "Body2D.h"
 #include "Precision.h"
 
@@ -19,14 +19,14 @@ namespace Aerolite {
         Aerolite::Body2D* b = nullptr;
 
         // The start point of the contact in world coordinates.
-        Aerolite::Vec2 start;
+        Aerolite::AeroVec2 start;
 
         // The end point of the contact in world coordinates. 
-        Aerolite::Vec2 end;
+        Aerolite::AeroVec2 end;
 
         // A normalized vector representing the collision normal.
         // This vector points in the direction of the collision and is typically used to resolve the collision.
-        Aerolite::Vec2 normal;
+        Aerolite::AeroVec2 normal;
 
         // The depth of penetration between the two bodies.
         // A positive value typically indicates the amount by which the bodies are overlapping.

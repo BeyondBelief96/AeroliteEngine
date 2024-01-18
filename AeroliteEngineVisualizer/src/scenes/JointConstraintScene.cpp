@@ -107,8 +107,8 @@ void JointConstraintScene::Render() {
     Graphics::ClearScreen(0xFF000000);
 
     //for (auto& joint : world->GetConstraints()) {
-    //    const Vec2 pa = joint->a.LocalSpaceToWorldSpace(joint->aPoint);
-    //    const Vec2 pb = joint->b.LocalSpaceToWorldSpace(joint->bPoint);
+    //    const AeroVec2 pa = joint->a.LocalSpaceToWorldSpace(joint->aPoint);
+    //    const AeroVec2 pb = joint->b.LocalSpaceToWorldSpace(joint->bPoint);
     //    Graphics::DrawLine(pa.x, pa.y, pb.x, pb.y, 0xFFFFFFFF);
     //}
 

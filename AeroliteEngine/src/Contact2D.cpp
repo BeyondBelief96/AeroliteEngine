@@ -40,18 +40,18 @@ namespace Aerolite {
 
     //    // Calculate the radius vectors from the center of mass of each object to the contact point.
     //    // These vectors are used in the torque calculations.
-    //    Vec2 ra = end - a->position;
-    //    Vec2 rb = start - b->position;
+    //    AeroVec2 ra = end - a->position;
+    //    AeroVec2 rb = start - b->position;
 
     //    // Calculate the velocities at the point of contact for each object.
     //    // This includes both linear and angular contributions.
     //    // The formula is: velocity = linear_velocity + angular_velocity cross radius_vector
-    //    Vec2 va = a->velocity + Vec2(-a->angularVelocity * ra.y, a->angularVelocity * ra.x);
-    //    Vec2 vb = b->velocity + Vec2(-b->angularVelocity * rb.y, b->angularVelocity * rb.x);
+    //    AeroVec2 va = a->velocity + AeroVec2(-a->angularVelocity * ra.y, a->angularVelocity * ra.x);
+    //    AeroVec2 vb = b->velocity + AeroVec2(-b->angularVelocity * rb.y, b->angularVelocity * rb.x);
 
     //    // Compute the relative velocity at the point of contact.
     //    // This is the velocity of object A relative to object B at the contact point.
-    //    const Vec2 vrel = va - vb;
+    //    const AeroVec2 vrel = va - vb;
 
     //    // Calculate the dot product of the relative velocity and the collision normal.
     //    // This value is a component of the relative velocity along the normal direction,
@@ -71,12 +71,12 @@ namespace Aerolite {
     //    // Calculate the normal component of the impulse.
     //    // jN is the impulse vector along the collision normal.
     //    // impulseMagnitudeN is the magnitude of the impulse calculated earlier, presumably using the collision normal.
-    //    Vec2 jN = normal * impulseMagnitudeN;
+    //    AeroVec2 jN = normal * impulseMagnitudeN;
 
     //    // Calculate the tangential component of the impulse, which is perpendicular to the normal.
     //    // This is used to simulate frictional effects at the point of collision.
     //    // First, obtain the tangent vector, which is perpendicular to the collision normal.
-    //    const Vec2 tangent = normal.Normal();
+    //    const AeroVec2 tangent = normal.Normal();
 
     //    // Calculate the dot product of the relative velocity and the tangent vector.
     //    // This represents the component of the relative velocity in the direction of the tangent.
@@ -92,12 +92,12 @@ namespace Aerolite {
 
     //    // Calculate the tangential impulse vector.
     //    // This is the impulse due to friction, acting along the tangent at the point of contact.
-    //    Vec2 jT = tangent * impulseMagnitudeT;
+    //    AeroVec2 jT = tangent * impulseMagnitudeT;
 
     //    // Combine the normal and tangential impulses to get the total impulse to be applied.
     //    // This total impulse j is what will be applied to the objects to resolve the collision,
     //    // taking into account both collision response (normal impulse) and friction (tangential impulse).
-    //    Vec2 j = jN + jT;
+    //    AeroVec2 j = jN + jT;
 
     //    a->ApplyImpulseAtPoint(j, ra);  // Apply impulse to object A
     //    b->ApplyImpulseAtPoint(-j, rb); // Apply opposite impulse to object B

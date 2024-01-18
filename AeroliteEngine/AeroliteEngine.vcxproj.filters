@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\Vec2.h">
+    <ClInclude Include="include\AeroVec2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Vec3.h">
@@ -71,7 +71,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Vec2.cpp">
+    <ClCompile Include="src\AeroVec2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Vec3.cpp">

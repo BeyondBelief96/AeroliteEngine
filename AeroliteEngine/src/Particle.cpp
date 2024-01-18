@@ -5,9 +5,9 @@ using namespace Aerolite;
 Particle2D::Particle2D(real x, real y, real mass) : position(x, y), mass(mass)
 {
 	radius = 4.0;
-	velocity = Vec2(0.0, 0.0);
-	acceleration = Vec2(0.0, 0.0);
-	netForces = Vec2(0.0, 0.0);
+	velocity = AeroVec2(0.0, 0.0);
+	acceleration = AeroVec2(0.0, 0.0);
+	netForces = AeroVec2(0.0, 0.0);
 	if (mass != 0.0)
 		invMass = 1.0 / mass;
 	else
@@ -24,7 +24,7 @@ Particle2D::Particle2D(const Particle2D& other)
     mass(other.mass),
     invMass(other.invMass)
 {
-    // No need to copy Vec2 objects explicitly as their copy constructors will be called.
+    // No need to copy AeroVec2 objects explicitly as their copy constructors will be called.
 }
 
 // Move constructor
@@ -37,7 +37,7 @@ Particle2D::Particle2D(Particle2D&& other) noexcept
     mass(std::exchange(other.mass, 0)),
     invMass(std::exchange(other.invMass, 0))
 {
-    // No need to move Vec2 objects explicitly as their move constructors will be called.
+    // No need to move AeroVec2 objects explicitly as their move constructors will be called.
 }
 
 // Copy assignment operator
@@ -50,7 +50,7 @@ Particle2D& Particle2D::operator=(const Particle2D& other) {
         netForces = other.netForces;
         mass = other.mass;
         invMass = other.invMass;
-        // No need to copy Vec2 objects explicitly as their copy assignment operators will be called.
+        // No need to copy AeroVec2 objects explicitly as their copy assignment operators will be called.
     }
     return *this;
 }
@@ -65,7 +65,7 @@ Particle2D& Particle2D::operator=(Particle2D&& other) noexcept {
         netForces = std::move(other.netForces);
         mass = std::exchange(other.mass, 0);
         invMass = std::exchange(other.invMass, 0);
-        // No need to move Vec2 objects explicitly as their move assignment operators will be called.
+        // No need to move AeroVec2 objects explicitly as their move assignment operators will be called.
     }
     return *this;
 }
@@ -74,14 +74,14 @@ Particle2D::~Particle2D()
 {
 }
 
-void Particle2D::ApplyForce(const Vec2& force)
+void Particle2D::ApplyForce(const AeroVec2& force)
 {
 	netForces += force;
 }
 
 void Particle2D::ClearForces()
 {
-	netForces = Vec2(0.0f, 0.0f);
+	netForces = AeroVec2(0.0f, 0.0f);
 }
 
 bool Aerolite::Particle2D::HasFiniteMass(void)

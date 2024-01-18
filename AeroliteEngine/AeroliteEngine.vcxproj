@@ -159,7 +159,7 @@
     <ClInclude Include="include\pfgen.h" />
     <ClInclude Include="include\Precision.h" />
     <ClInclude Include="include\Shape.h" />
-    <ClInclude Include="include\Vec2.h" />
+    <ClInclude Include="include\AeroVec2.h" />
     <ClInclude Include="include\Vec3.h" />
   </ItemGroup>
   <ItemGroup>
@@ -172,7 +172,7 @@
     <ClCompile Include="src\Matrix3x4.cpp" />
     <ClCompile Include="src\Particle.cpp" />
     <ClCompile Include="src\Shape.cpp" />
-    <ClCompile Include="src\Vec2.cpp" />
+    <ClCompile Include="src\AeroVec2.cpp" />
     <ClCompile Include="src\Vec3.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

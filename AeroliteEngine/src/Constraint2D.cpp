@@ -47,7 +47,7 @@ namespace Aerolite {
 		return v;
 	}
 
-	JointConstraint::JointConstraint(Aerolite::Body2D& a, Aerolite::Body2D& b, const Vec2& anchorPoint) : Constraint2D(a, b)
+	JointConstraint::JointConstraint(Aerolite::Body2D& a, Aerolite::Body2D& b, const AeroVec2& anchorPoint) : Constraint2D(a, b)
 	{
 		this->aPoint = a.WorldSpaceToLocalSpace(anchorPoint);
 		this->bPoint = b.WorldSpaceToLocalSpace(anchorPoint);
@@ -59,21 +59,21 @@ namespace Aerolite {
 	void JointConstraint::PreSolve(const real dt)
 	{
 		// Get the anchor points in world space.
-		const Vec2 pa = a.LocalSpaceToWorldSpace(aPoint);
-		const Vec2 pb = b.LocalSpaceToWorldSpace(bPoint);
+		const AeroVec2 pa = a.LocalSpaceToWorldSpace(aPoint);
+		const AeroVec2 pb = b.LocalSpaceToWorldSpace(bPoint);
 
-		const Vec2 ra = pa - a.position; // vector from center of mass of body "a" to the anchor point in world space.
-		const Vec2 rb = pb - b.position; // vector from center of mass of body "b" to the anchor point in world space.
+		const AeroVec2 ra = pa - a.position; // vector from center of mass of body "a" to the anchor point in world space.
+		const AeroVec2 rb = pb - b.position; // vector from center of mass of body "b" to the anchor point in world space.
 		jacobian.Zero();
 		// Load the joint constraint jacobian matrix.
-		Vec2 J1 = (pa - pb) * 2.0;
+		AeroVec2 J1 = (pa - pb) * 2.0;
 		jacobian[0][0] = J1.x; // coefficient for body "a" linear velocity.x;
 		jacobian[0][1] = J1.y; // coefficient for body "a" linear velocity.y;
 
 		real J2 = 2.0 * (ra.Cross(pa - pb));
 		jacobian[0][2] = J2; // coefficient for body "a" angular velocity.
 
-		Vec2 J3 = (pb - pa) * 2.0;
+		AeroVec2 J3 = (pb - pa) * 2.0;
 		jacobian[0][3] = J3.x; // coefficient for body "b" linear velocity.x;
 		jacobian[0][4] = J3.y; // coefficient for body "b" linear velocity.y;
 
@@ -82,10 +82,10 @@ namespace Aerolite {
 
 		auto impulses = jacobian.Transpose() * cachedLambda;
 
-		a.ApplyImpulseLinear(Vec2(impulses[0][0], impulses[1][0]));
+		a.ApplyImpulseLinear(AeroVec2(impulses[0][0], impulses[1][0]));
 		a.ApplyImpulseAngular(impulses[2][0]);
 
-		b.ApplyImpulseLinear(Vec2(impulses[3][0], impulses[4][0]));
+		b.ApplyImpulseLinear(AeroVec2(impulses[3][0], impulses[4][0]));
 		b.ApplyImpulseAngular(impulses[5][0]);
 
 		// Compute the bias factor (baumgarte stabilization)
@@ -120,10 +120,10 @@ namespace Aerolite {
 		auto impulses = Jt * lambda[0];
 
 		// Apply the impulses to bodies a and b
-		a.ApplyImpulseLinear(Vec2(impulses[0][0], impulses[1][0]));
+		a.ApplyImpulseLinear(AeroVec2(impulses[0][0], impulses[1][0]));
 		a.ApplyImpulseAngular(impulses[2][0]);
 
-		b.ApplyImpulseLinear(Vec2(impulses[3][0], impulses[4][0]));
+		b.ApplyImpulseLinear(AeroVec2(impulses[3][0], impulses[4][0]));
 		b.ApplyImpulseAngular(impulses[5][0]);
 	}
 
@@ -135,8 +135,8 @@ namespace Aerolite {
 	PenetrationConstraint::PenetrationConstraint(
 		Aerolite::Body2D& a,
 		Aerolite::Body2D& b,
-		const Vec2& aCollisionPoint, const Vec2& bCollisionPoint,
-		const Vec2& collisionNormal) : Constraint2D(a, b)
+		const AeroVec2& aCollisionPoint, const AeroVec2& bCollisionPoint,
+		const AeroVec2& collisionNormal) : Constraint2D(a, b)
 	{
 		this->jacobian = MatrixMxN<2, 6>();
 		this->bias = 0.0;
@@ -149,25 +149,25 @@ namespace Aerolite {
 
 	void PenetrationConstraint::PreSolve(const real dt) {
 		// Get the collision points in world space
-		const Vec2 pa = a.LocalSpaceToWorldSpace(aPoint);
-		const Vec2 pb = b.LocalSpaceToWorldSpace(bPoint);
-		Vec2 n = a.LocalSpaceToWorldSpace(normal).UnitVector();
+		const AeroVec2 pa = a.LocalSpaceToWorldSpace(aPoint);
+		const AeroVec2 pb = b.LocalSpaceToWorldSpace(bPoint);
+		AeroVec2 n = a.LocalSpaceToWorldSpace(normal).UnitVector();
 
-		const Vec2 ra = pa - a.position; // vector from center of mass of body "a" to the anchor point in world space.
-		const Vec2 rb = pb - b.position; // vector from center of mass of body "b" to the anchor point in world space.
+		const AeroVec2 ra = pa - a.position; // vector from center of mass of body "a" to the anchor point in world space.
+		const AeroVec2 rb = pb - b.position; // vector from center of mass of body "b" to the anchor point in world space.
 
 		jacobian.Zero();
 		// Load the joint constraint jacobian matrix.
 
 		// Load the normal vector components of the jacobian for impulse application.
-		Vec2 J1 = -n;
+		AeroVec2 J1 = -n;
 		jacobian[0][0] = J1.x; // coefficient for body "a" linear velocity.x;
 		jacobian[0][1] = J1.y; // coefficient for body "a" linear velocity.y;
 
 		real J2 = -ra.Cross(n);
 		jacobian[0][2] = J2; // coefficient for body "a" angular velocity.
 
-		Vec2 J3 = n;
+		AeroVec2 J3 = n;
 		jacobian[0][3] = J3.x; // coefficient for body "b" linear velocity.x;
 		jacobian[0][4] = J3.y; // coefficient for body "b" linear velocity.y;
 
@@ -177,7 +177,7 @@ namespace Aerolite {
 		// Populate the tangent vector components of the jacobian for friction application.
 		friction = std::max(a.friction, b.friction);
 		if (friction > 0.0) {
-			Vec2 t = n.Normal();
+			AeroVec2 t = n.Normal();
 
 			J1 = -t;
 			jacobian[1][0] = J1.x; // coefficient for body "a" linear velocity.x;
@@ -197,10 +197,10 @@ namespace Aerolite {
 		auto impulses = jacobian.Transpose() * cachedLambda;
 
 		// Apply warm starting.
-		a.ApplyImpulseLinear(Vec2(impulses[0], impulses[1]));
+		a.ApplyImpulseLinear(AeroVec2(impulses[0], impulses[1]));
 		a.ApplyImpulseAngular(impulses[2]);
 
-		b.ApplyImpulseLinear(Vec2(impulses[3], impulses[4]));
+		b.ApplyImpulseLinear(AeroVec2(impulses[3], impulses[4]));
 		b.ApplyImpulseAngular(impulses[5]);
 
 		// Compute the bias factor (baumgarte stabilization)
@@ -210,8 +210,8 @@ namespace Aerolite {
 		C = std::min(0.0f, C + 0.01f);
 		
 		// Calculate the relative velocity pre-impuse normal to computse elasticity.
-		Vec2 va = a.velocity + Vec2(-a.angularVelocity * ra.y, a.angularVelocity * ra.x);
-		Vec2 vb = b.velocity + Vec2(-b.angularVelocity * rb.y, a.angularVelocity * rb.x);
+		AeroVec2 va = a.velocity + AeroVec2(-a.angularVelocity * ra.y, a.angularVelocity * ra.x);
+		AeroVec2 vb = b.velocity + AeroVec2(-b.angularVelocity * rb.y, a.angularVelocity * rb.x);
 		real vrelDotNormal = (va - vb).Dot(n);
 		real e = std::min(a.restitution, b.restitution);
 		bias = (beta / dt) * C + (e * vrelDotNormal);
@@ -249,10 +249,10 @@ namespace Aerolite {
 		auto impulses = Jt * lambda;
 
 		// Apply the impulses to bodies a and b
-		a.ApplyImpulseLinear(Vec2(impulses[0], impulses[1]));
+		a.ApplyImpulseLinear(AeroVec2(impulses[0], impulses[1]));
 		a.ApplyImpulseAngular(impulses[2]);
 
-		b.ApplyImpulseLinear(Vec2(impulses[3], impulses[4]));
+		b.ApplyImpulseLinear(AeroVec2(impulses[3], impulses[4]));
 		b.ApplyImpulseAngular(impulses[5]);
 	}
 

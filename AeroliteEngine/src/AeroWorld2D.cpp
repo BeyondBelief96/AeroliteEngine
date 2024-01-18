@@ -96,11 +96,11 @@ namespace Aerolite {
         return contactsList;
     }
 
-    void AeroWorld2D::AddForceBody(const Aerolite::Vec2& force) {
+    void AeroWorld2D::AddForceBody(const Aerolite::AeroVec2& force) {
         bodyForces.push_back(force);
     }
 
-    void AeroWorld2D::AddForceParticle2D(const Aerolite::Vec2& force)
+    void AeroWorld2D::AddForceParticle2D(const Aerolite::AeroVec2& force)
     {
         particleForces.push_back(force);
     }
@@ -116,7 +116,7 @@ namespace Aerolite {
 
         contactsList.clear();
         for (auto& body : bodies) {
-            Aerolite::Vec2 weight = Vec2(0.0, body->mass * G * PIXELS_PER_METER);
+            Aerolite::AeroVec2 weight = AeroVec2(0.0, body->mass * G * PIXELS_PER_METER);
             body->AddForce(weight);
 
             for (auto& force : bodyForces) {
@@ -182,7 +182,7 @@ namespace Aerolite {
         }
 
         for (auto& particle : particles) {
-            Aerolite::Vec2 weight = Vec2(0.0, particle->mass * G * PIXELS_PER_METER);
+            Aerolite::AeroVec2 weight = AeroVec2(0.0, particle->mass * G * PIXELS_PER_METER);
             particle->ApplyForce(weight);
             particle->Integrate(dt);
         }

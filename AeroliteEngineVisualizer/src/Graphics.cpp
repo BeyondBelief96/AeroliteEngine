@@ -69,7 +69,7 @@ void Graphics::DrawFillRect(int x, int y, int width, int height, Uint32 color) {
     boxColor(renderer, x - width / 2.0, y - height / 2.0, x + width / 2.0, y + height / 2.0, color);
 }
 
-void Graphics::DrawPolygon(int x, int y, const std::vector<Vec2>& vertices, Uint32 color) {
+void Graphics::DrawPolygon(int x, int y, const std::vector<Aerolite::AeroVec2>& vertices, Uint32 color) {
     for (int i = 0; i < vertices.size(); i++) {
         int currIndex = i;
         int nextIndex = (i + 1) % vertices.size();
@@ -78,7 +78,7 @@ void Graphics::DrawPolygon(int x, int y, const std::vector<Vec2>& vertices, Uint
     filledCircleColor(renderer, x, y, 1, color);
 }
 
-void Graphics::DrawFillPolygon(int x, int y, const std::vector<Vec2>& vertices, Uint32 color) {
+void Graphics::DrawFillPolygon(int x, int y, const std::vector<Aerolite::AeroVec2>& vertices, Uint32 color) {
     std::vector<short> vx;
     std::vector<short> vy;
     for (int i = 0; i < vertices.size(); i++) {

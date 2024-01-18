@@ -16,9 +16,9 @@ namespace Aerolite {
         std::vector<std::unique_ptr<Aerolite::Particle2D>> particles;
         std::vector<std::unique_ptr<Aerolite::Constraint2D>> constraints;
         std::vector<Aerolite::Contact2D> contactsList;
-        std::vector<Aerolite::Vec2> bodyForces;
+        std::vector<Aerolite::AeroVec2> bodyForces;
         std::vector<Aerolite::real> bodyTorques;
-        std::vector<Aerolite::Vec2> particleForces;
+        std::vector<Aerolite::AeroVec2> particleForces;
         Aerolite::real G = 9.8f;
         std::chrono::high_resolution_clock::time_point lastLogTime;
         std::chrono::duration<double> accumulatedTime = std::chrono::seconds(0);
@@ -42,8 +42,8 @@ namespace Aerolite {
         void AddParticle2Ds(std::vector<std::unique_ptr<Aerolite::Particle2D>> particles);
         std::vector<Aerolite::Particle2D*> GetParticle2Ds();
 
-        void AddForceBody(const Aerolite::Vec2& force);
-        void AddForceParticle2D(const Aerolite::Vec2& force);
+        void AddForceBody(const Aerolite::AeroVec2& force);
+        void AddForceParticle2D(const Aerolite::AeroVec2& force);
         void AddTorque(const Aerolite::real torque);
 
         void Update(Aerolite::real dt);

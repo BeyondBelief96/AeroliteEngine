@@ -11,14 +11,14 @@ namespace Aerolite {
     Body2D::Body2D(Shape* shape, const Aerolite::real x, const Aerolite::real y, const Aerolite::real mass)
     {
         this->shape = shape;
-        this->position = Vec2(x, y);
-        this->velocity = Vec2(0.0f, 0.0f);
-        this->acceleration = Vec2(0.0f, 0.0f);
+        this->position = AeroVec2(x, y);
+        this->velocity = AeroVec2(0.0f, 0.0f);
+        this->acceleration = AeroVec2(0.0f, 0.0f);
         this->mass = mass;
         this->rotation = 0.0f;
         this->angularVelocity = 0.0f;
         this->angularAcceleration = 0.0f;
-        this->sumForces = Vec2(0.0f, 0.0f);
+        this->sumForces = AeroVec2(0.0f, 0.0f);
         this->sumTorque = 0.0f;
         this->restitution = 0.5;
         this->friction = 0.7;
@@ -47,15 +47,15 @@ namespace Aerolite {
         {
             CircleShape* circleShape = dynamic_cast<CircleShape*>(shape);
             Aerolite::real radius = circleShape->radius;
-            aabb.min = position - Vec2(radius, radius);
-            aabb.max = position + Vec2(radius, radius);
+            aabb.min = position - AeroVec2(radius, radius);
+            aabb.max = position + AeroVec2(radius, radius);
 
         }
         else if (shape->GetType() == ShapeType::Box || shape->GetType() == ShapeType::Polygon)
         {
             PolygonShape* polygon = dynamic_cast<PolygonShape*>(shape);
-            aabb.min = Vec2(std::numeric_limits<Aerolite::real>::max(), std::numeric_limits<Aerolite::real>::max());
-            aabb.max = Vec2(std::numeric_limits<Aerolite::real>::lowest(), std::numeric_limits<Aerolite::real>::lowest());
+            aabb.min = AeroVec2(std::numeric_limits<Aerolite::real>::max(), std::numeric_limits<Aerolite::real>::max());
+            aabb.max = AeroVec2(std::numeric_limits<Aerolite::real>::lowest(), std::numeric_limits<Aerolite::real>::lowest());
 
             for (const auto& vertex : polygon->worldVertices)
             {
@@ -117,7 +117,7 @@ namespace Aerolite {
     }
 
     // Method to add a force vector to the body.
-    void Body2D::AddForce(const Vec2 &force)
+    void Body2D::AddForce(const AeroVec2 &force)
     {
         sumForces += force;
     }
@@ -128,7 +128,7 @@ namespace Aerolite {
         sumTorque += torque;
     }
 
-    void Body2D::ApplyImpulseLinear(const Vec2& j)
+    void Body2D::ApplyImpulseLinear(const AeroVec2& j)
     {
         if (IsStatic()) return;
         velocity += j * invMass;
@@ -140,7 +140,7 @@ namespace Aerolite {
         angularVelocity += j * invI;
     }
 
-    void Body2D::ApplyImpulseAtPoint(const Vec2& j, const Vec2& r)
+    void Body2D::ApplyImpulseAtPoint(const AeroVec2& j, const AeroVec2& r)
     {
         if (IsStatic()) return;
 
@@ -151,7 +151,7 @@ namespace Aerolite {
     // Method to clear all forces acting on the body.
     void Body2D::ClearForces(void)
     {
-        sumForces = Vec2(0, 0);
+        sumForces = AeroVec2(0, 0);
     }
 
     // Method to clear all torques acting on the body.
@@ -160,18 +160,18 @@ namespace Aerolite {
         sumTorque = 0;
     }
 
-    Aerolite::Vec2 Body2D::LocalSpaceToWorldSpace(const Vec2& point)
+    Aerolite::AeroVec2 Body2D::LocalSpaceToWorldSpace(const AeroVec2& point)
     {
-        Vec2 rotated = point.Rotate(rotation);
+        AeroVec2 rotated = point.Rotate(rotation);
         return rotated + position;
     }
 
-    Aerolite::Vec2 Body2D::WorldSpaceToLocalSpace(const Vec2& point)
+    Aerolite::AeroVec2 Body2D::WorldSpaceToLocalSpace(const AeroVec2& point)
     {
         real translatedX = point.x - position.x;
         real translatedY = point.y - position.y;
         real rotatedX = cos(-rotation) * translatedX - sin(-rotation) * translatedY;
         real rotatedY = cos(-rotation) * translatedY + sin(-rotation) * translatedX;
-        return Vec2(rotatedX, rotatedY);
+        return AeroVec2(rotatedX, rotatedY);
     }
 }

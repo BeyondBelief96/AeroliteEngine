@@ -3,14 +3,14 @@
 #define BODY2D_H
 
 #include <memory>
-#include "Vec2.h" 
+#include "AeroVec2.h" 
 #include "Shape.h"
 #include "Precision.h"
 #include "AABB2D.h"
 
 // Using the Aerolite namespace throughout this file.
 // Note: Using a whole namespace in a header can sometimes lead to conflicts in large projects.
-using Vec2 = Aerolite::Vec2;
+using Vec2 = Aerolite::AeroVec2;
 using Shape = Aerolite::Shape;
 using real = Aerolite::real;
 
@@ -20,14 +20,14 @@ namespace Aerolite {
     // Define a struct Body2D representing a 2D physical body.
     struct Body2D 
     {
-        Vec2 position; // Position of the body in 2D space.
-        Vec2 velocity; // Velocity of the body.
-        Vec2 acceleration; // Acceleration of the body.
+        AeroVec2 position; // Position of the body in 2D space.
+        AeroVec2 velocity; // Velocity of the body.
+        AeroVec2 acceleration; // Acceleration of the body.
 
         real rotation; // Rotation angle of the body.
         real angularVelocity; // Angular velocity of the body.
         real angularAcceleration; // Angular acceleration of the body.
-        Vec2 sumForces; // Sum of forces currently applied to the body.
+        AeroVec2 sumForces; // Sum of forces currently applied to the body.
         real sumTorque; // Sum of all torques currently being applied to the body.
 
         real mass = 0.0f; // Mass of the body. Initialized to 0.0.
@@ -72,7 +72,7 @@ namespace Aerolite {
         bool IsStatic(void) const;
         
         // Method to add a force vector to the body.
-        void AddForce(const Vec2& force);
+        void AddForce(const AeroVec2& force);
 
         // Method to add a torque to the body.
         void AddTorque(const real torque);
@@ -81,7 +81,7 @@ namespace Aerolite {
         /// Applies a linear impulse to the body at the center of mass.
         /// </summary>
         /// <param name="j">The impulse vector to apply.</param>
-        void ApplyImpulseLinear(const Vec2& j);
+        void ApplyImpulseLinear(const AeroVec2& j);
 
         /// <summary>
         /// Applies an angular impulse to the body at the center of mass.
@@ -94,7 +94,7 @@ namespace Aerolite {
         /// </summary>
         /// <param name="j">The impulse vector to apply.</param>
         /// <param name="r">The point on the body to apply the impulse.</param>
-        void ApplyImpulseAtPoint(const Vec2& j, const Vec2& r);
+        void ApplyImpulseAtPoint(const AeroVec2& j, const AeroVec2& r);
 
         // Method to clear all forces acting on the body.
         void ClearForces(void);
@@ -108,7 +108,7 @@ namespace Aerolite {
         /// </summary>
         /// <param name="point">The point in local space with respect to the body.</param>
         /// <returns>A point in world space with respect to the body.</returns>
-        Vec2 LocalSpaceToWorldSpace(const Vec2& point);
+        AeroVec2 LocalSpaceToWorldSpace(const AeroVec2& point);
 
         /// <summary>
         /// Converts a given point defined in world space of this body to local space coordinates
@@ -116,7 +116,7 @@ namespace Aerolite {
         /// </summary>
         /// <param name="point">The point in world space with respect to the body.</param>
         /// <returns>A point in local space with respect to the body.</returns>
-        Vec2 WorldSpaceToLocalSpace(const Vec2& point);
+        AeroVec2 WorldSpaceToLocalSpace(const AeroVec2& point);
     };
 }
 

@@ -1,7 +1,7 @@
 #ifndef PARTICLE_H
 #define PARTICLE_H
 
-#include "Vec2.h"
+#include "AeroVec2.h"
 #include "Precision.h"
 
 using namespace Aerolite;
@@ -13,10 +13,10 @@ namespace Aerolite {
     struct Particle2D {
         int radius;          // The radius of the particle. Useful for rendering or collision detection.
 
-        Vec2 position;       // The current position of the particle in 2D space.
-        Vec2 velocity;       // The current velocity of the particle. Determines how fast and in what direction it moves.
-        Vec2 acceleration;   // The current acceleration of the particle. Influences the change in velocity.
-        Vec2 netForces;      // The current sum of all forces acting on this particle. Influences the acceleration of the particle.
+        AeroVec2 position;       // The current position of the particle in 2D space.
+        AeroVec2 velocity;       // The current velocity of the particle. Determines how fast and in what direction it moves.
+        AeroVec2 acceleration;   // The current acceleration of the particle. Influences the change in velocity.
+        AeroVec2 netForces;      // The current sum of all forces acting on this particle. Influences the acceleration of the particle.
         // Useful for applying multiple forces and calculating the resulting acceleration.
 
         real mass;          // The mass of the particle. This can be used to influence the motion in a physical simulation (e.g., under gravity).
@@ -48,7 +48,7 @@ namespace Aerolite {
         /// Function used to apply forces to this particle to change its acceleration.
         /// </summary>
         /// <param name="force">The force to be applied to the particle.</param>
-        void ApplyForce(const Vec2& force);
+        void ApplyForce(const AeroVec2& force);
 
         // Clears all forces that were applied to the particle for the current frame.
         void ClearForces();

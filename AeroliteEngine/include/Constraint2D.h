@@ -11,8 +11,8 @@ namespace Aerolite {
 		Aerolite::Body2D& a; 
 		Aerolite::Body2D& b;
 
-		Vec2 aPoint; // Constraint specific point in A's local space.
-		Vec2 bPoint; // Constraint specific point in B's local space.
+		AeroVec2 aPoint; // Constraint specific point in A's local space.
+		AeroVec2 bPoint; // Constraint specific point in B's local space.
 
 		Constraint2D(Aerolite::Body2D& a, Aerolite::Body2D& b);
 		virtual ~Constraint2D() = default;
@@ -48,7 +48,7 @@ namespace Aerolite {
 	public:
 
 		JointConstraint() = default;
-		JointConstraint(Aerolite::Body2D& a, Aerolite::Body2D& b, const Vec2& anchorPoint);
+		JointConstraint(Aerolite::Body2D& a, Aerolite::Body2D& b, const AeroVec2& anchorPoint);
 
 		void PreSolve(const real dt) override;
 		void Solve(void) override;
@@ -60,16 +60,16 @@ namespace Aerolite {
 		MatrixMxN<2,6> jacobian;
 		VecN<2> cachedLambda;
 		real bias;
-		Vec2 normal; // Collision normal in A's local space.
+		AeroVec2 normal; // Collision normal in A's local space.
 		real friction; // Friction coefficient between the two bodies.
 	public:
 		PenetrationConstraint() = default;
 		PenetrationConstraint(
 			Aerolite::Body2D& a,
 			Aerolite::Body2D& b,
-			const Vec2& aCollisionPoint,
-			const Vec2& bCollisionPoint, 
-			const Vec2& collisionNormal);
+			const AeroVec2& aCollisionPoint,
+			const AeroVec2& bCollisionPoint, 
+			const AeroVec2& collisionNormal);
 		void PreSolve(const real dt) override;
 		void Solve(void) override;
 		void PostSolve(void) override;

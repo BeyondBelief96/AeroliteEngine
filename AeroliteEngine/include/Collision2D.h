@@ -5,7 +5,7 @@
 #include "Contact2D.h"
 #include "Precision.h"
 #include "Shape.h"
-#include "Vec2.h"
+#include "AeroVec2.h"
 
 namespace Aerolite {
     /// @brief A static class with a set of utility functions for detecting 2D Collisions between two Body2D's.
@@ -56,18 +56,18 @@ namespace Aerolite {
         /// <summary>
         /// Helper function for setting the contact details of the circle polygon collision detection algorithm for regions A and B.
         /// </summary>
-        static void SetContactDetails(Aerolite::Contact2D& contact, Aerolite::Body2D& polygon, Aerolite::Body2D& circle, Aerolite::Vec2& v1, Aerolite::real radius);
+        static void SetContactDetails(Aerolite::Contact2D& contact, Aerolite::Body2D& polygon, Aerolite::Body2D& circle, Aerolite::AeroVec2& v1, Aerolite::real radius);
 
         /// <summary>
         /// Helper function for setting the contact details of the circle polygon collision detection algorithm for region C.
         /// </summary>
-        static void SetContactDetailsForRegionC(Aerolite::Contact2D& contact, Aerolite::Body2D& polygon, Aerolite::Body2D& circle, Aerolite::Vec2& minCurrVertex, Aerolite::Vec2& minNextVertex, Aerolite::real radius, Aerolite::real distanceToCircleEdge);
+        static void SetContactDetailsForRegionC(Aerolite::Contact2D& contact, Aerolite::Body2D& polygon, Aerolite::Body2D& circle, Aerolite::AeroVec2& minCurrVertex, Aerolite::AeroVec2& minNextVertex, Aerolite::real radius, Aerolite::real distanceToCircleEdge);
 
         /// <summary>
         /// Helper function for setting the contact details of the cirlce polygon collision detection algorithm for when the 
         /// circle center is inside the polygon.
         /// </summary>
-        static void SetContactDetailsForInsideCollision(Aerolite::Contact2D& contact, Aerolite::Body2D& polygon, Aerolite::Body2D& circle, Aerolite::Vec2& minCurrVertex, Aerolite::Vec2& minNextVertex, Aerolite::real radius, Aerolite::real distanceToCircleEdge);
+        static void SetContactDetailsForInsideCollision(Aerolite::Contact2D& contact, Aerolite::Body2D& polygon, Aerolite::Body2D& circle, Aerolite::AeroVec2& minCurrVertex, Aerolite::AeroVec2& minNextVertex, Aerolite::real radius, Aerolite::real distanceToCircleEdge);
 
         /// <summary>
         /// Uses a naive SAT algorithm approach to determine if two polygons are colliding.
@@ -95,7 +95,7 @@ namespace Aerolite {
         /// <param name="axis">The axis to project the vertices on.</param>
         /// <param name="min">The value to store the minimum projection value in.</param>
         /// <param name="max">The value to store the maximum projection value in.</param>
-        static void FindMinMaxProjections(std::vector<Aerolite::Vec2> vertices, Aerolite::Vec2 axis, Aerolite::real& min, Aerolite::real& max);
+        static void FindMinMaxProjections(std::vector<Aerolite::AeroVec2> vertices, Aerolite::AeroVec2 axis, Aerolite::real& min, Aerolite::real& max);
 
         /// <summary>
         /// Finds the distance between a point p and the closest point on a line defined
@@ -106,7 +106,7 @@ namespace Aerolite {
         /// <param name="linePointB">The second endpoing of the line segment.</param>
         /// <param name="distance">Output parameter for the distance from p to the cloesestPoint.</param>
         /// <param name="closestPoint">The closest point on the line segment from the point p.</param>
-        static void PointLineSegmentDistance(Aerolite::Vec2 p, Aerolite::Vec2 linePointA, Aerolite::Vec2 linePointB, Aerolite::real& distance, Aerolite::Vec2& closestPoint);
+        static void PointLineSegmentDistance(Aerolite::AeroVec2 p, Aerolite::AeroVec2 linePointA, Aerolite::AeroVec2 linePointB, Aerolite::real& distance, Aerolite::AeroVec2& closestPoint);
 
         /// <summary>
         /// Finds all contact points if any exist between two polygons.
