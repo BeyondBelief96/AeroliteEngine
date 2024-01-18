@@ -17,7 +17,7 @@ Aerolite Physics Engine is a comprehensive, efficient 2D physics library with pl
 ## Algorithms and Techniques
 - **Numerical Integration**: Utilizes Euler and Runge-Kutta integration methods for precise motion calculation.
 - **Broad and Narrow Phase Collision Detection**: Efficiently detects collisions using AABB for broad phase and SAT for narrow phase.
-- **Force-Based Dynamics**: Applies realistic forces to bodies for authentic movement.
+- **Impulse-Based Dynamics**: Applies realistic forces to bodies for authentic movement.
 - **Constraint Solving**: Simulates complex joint behavior with constraints.
 - **Particle Dynamics**: Manages large numbers of particles effectively for simulations like smoke or liquid.
 
