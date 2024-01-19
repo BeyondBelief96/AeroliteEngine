@@ -11,14 +11,14 @@
 namespace Aerolite {
     class AeroWorld2D {
     private:
-        std::vector<std::unique_ptr<Aerolite::Body2D>> m_bodies;
-        std::vector<std::unique_ptr<Aerolite::Particle2D>> m_particles;
-        std::vector<std::unique_ptr<Aerolite::Constraint2D>> m_constraints;
-        std::vector<Aerolite::Contact2D> m_contactsList;
-        std::vector<Aerolite::AeroVec2> m_bodyForces;
-        std::vector<Aerolite::real> m_bodyTorques;
-        std::vector<Aerolite::AeroVec2> m_particleForces;
-        Aerolite::real m_g = 9.8f;
+        std::vector<std::unique_ptr<Body2D>> m_bodies;
+        std::vector<std::unique_ptr<Particle2D>> m_particles;
+        std::vector<std::unique_ptr<Constraint2D>> m_constraints;
+        std::vector<Contact2D> m_contactsList;
+        std::vector<AeroVec2> m_bodyForces;
+        std::vector<real> m_bodyTorques;
+        std::vector<AeroVec2> m_particleForces;
+        real m_g = 9.8f;
 
         std::chrono::high_resolution_clock::time_point m_lastLogTime;
         std::chrono::duration<double> m_accumulatedTime = std::chrono::seconds(0);
@@ -28,31 +28,31 @@ namespace Aerolite {
         AeroWorld2D(AeroWorld2D& world) = default;
 
         AeroWorld2D(AeroWorld2D&& world) noexcept;
-        explicit AeroWorld2D(Aerolite::real gravity);
+        explicit AeroWorld2D(real gravity);
         ~AeroWorld2D() = default;
 
         AeroWorld2D& operator=(AeroWorld2D&& world) noexcept = default;
         AeroWorld2D& operator=(const AeroWorld2D& world) = default;
 
-        void AddBody2D(std::unique_ptr<Aerolite::Body2D> body);
-        std::vector<std::unique_ptr<Aerolite::Body2D>>& GetBodies();
+        void AddBody2D(std::unique_ptr<Body2D> body);
+        std::vector<std::unique_ptr<Body2D>>& GetBodies();
         void RemoveBody2D(int index);
         void RemoveBody2D(Body2D* bodyToRemove);
 
         void AddConstraint(std::unique_ptr<Constraint2D> constraint);
-        std::vector<std::unique_ptr<Aerolite::Constraint2D>>& GetConstraints(void);
+        std::vector<std::unique_ptr<Constraint2D>>& GetConstraints(void);
 
-        void AddParticle2D(std::unique_ptr<Aerolite::Particle2D> particle);
-        void AddParticle2Ds(std::vector<std::unique_ptr<Aerolite::Particle2D>> particles);
-        std::vector<Aerolite::Particle2D*> GetParticle2Ds() const;
+        void AddParticle2D(std::unique_ptr<Particle2D> particle);
+        void AddParticle2Ds(std::vector<std::unique_ptr<Particle2D>> particles);
+        std::vector<Particle2D*> GetParticle2Ds() const;
 
-        void AddForceBody(const Aerolite::AeroVec2& force);
-        void AddForceParticle2D(const Aerolite::AeroVec2& force);
-        void AddTorque(const Aerolite::real torque);
+        void AddForceBody(const AeroVec2& force);
+        void AddForceParticle2D(const AeroVec2& force);
+        void AddTorque(const real torque);
 
-        void Update(Aerolite::real dt);
+        void Update(real dt);
 
-        [[nodiscard]] const std::vector<Aerolite::Contact2D> GetContacts(void) const;
+        [[nodiscard]] const std::vector<Contact2D> GetContacts(void) const;
     };
 }
 

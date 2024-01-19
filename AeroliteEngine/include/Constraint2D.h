@@ -8,20 +8,20 @@
 namespace Aerolite {
 	class Constraint2D {
 	public:
-		Aerolite::Body2D& a; 
-		Aerolite::Body2D& b;
+		Body2D& a;
+		Body2D& b;
 
 		AeroVec2 aPoint; // Constraint specific point in A's local space.
 		AeroVec2 bPoint; // Constraint specific point in B's local space.
 
-		Constraint2D(Aerolite::Body2D& a, Aerolite::Body2D& b);
+		Constraint2D(Body2D& a, Body2D& b);
 		virtual ~Constraint2D() = default;
 
 		/// <summary>
 		/// Creates inverse mass/moment matrix for constraint solving.
 		/// </summary>
 		/// <returns>matrix of inverse mass and inverse moment of inertia for bodies "a" and "b".</returns>
-		Aerolite::MatrixMxN<6,6> GetInvM() const;
+		MatrixMxN<6, 6> GetInvM() const;
 
 		/// <summary>
 		/// Creates linear and angular velocity vector for constraint solving.
@@ -48,7 +48,7 @@ namespace Aerolite {
 	public:
 
 		JointConstraint() = default;
-		JointConstraint(Aerolite::Body2D& a, Aerolite::Body2D& b, const AeroVec2& anchorPoint);
+		JointConstraint(Body2D& a, Body2D& b, const AeroVec2& anchorPoint);
 
 		void PreSolve(const real dt) override;
 		void Solve(void) override;
@@ -65,8 +65,8 @@ namespace Aerolite {
 	public:
 		PenetrationConstraint() = default;
 		PenetrationConstraint(
-			Aerolite::Body2D& a,
-			Aerolite::Body2D& b,
+			Body2D& a,
+			Body2D& b,
 			const AeroVec2& aCollisionPoint,
 			const AeroVec2& bCollisionPoint, 
 			const AeroVec2& collisionNormal);

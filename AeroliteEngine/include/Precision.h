@@ -11,11 +11,11 @@ namespace Aerolite {
 
     const real epsilon = 0.005f;
 
-    inline bool AreEqual(Aerolite::real a, Aerolite::real b, Aerolite::real epsilon)
+    inline bool AreEqual(real a, real b, real epsilon)
     {
-        if (std::is_same<Aerolite::real, float>::value)
+        if (std::is_same<real, float>::value)
             return std::fabs(a - b) < epsilon;
-        else if (std::is_same<Aerolite::real, double>::value)
+        else if (std::is_same<real, double>::value)
             return std::abs(a - b) < epsilon;
     }
 

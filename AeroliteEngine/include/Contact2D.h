@@ -15,22 +15,22 @@ namespace Aerolite {
         // Pointers to the bodies involved in the contact.
         // These are raw pointers because Contact2D does not own the bodies.
         // The bodies are presumably managed elsewhere in your physics engine.
-        Aerolite::Body2D* a = nullptr;
-        Aerolite::Body2D* b = nullptr;
+        Body2D* a = nullptr;
+        Body2D* b = nullptr;
 
         // The start point of the contact in world coordinates.
-        Aerolite::AeroVec2 start;
+        AeroVec2 start;
 
         // The end point of the contact in world coordinates. 
-        Aerolite::AeroVec2 end;
+        AeroVec2 end;
 
         // A normalized vector representing the collision normal.
         // This vector points in the direction of the collision and is typically used to resolve the collision.
-        Aerolite::AeroVec2 normal;
+        AeroVec2 normal;
 
         // The depth of penetration between the two bodies.
         // A positive value typically indicates the amount by which the bodies are overlapping.
-        Aerolite::real depth = 0;
+        real depth = 0;
 
         // Default constructor.
         Contact2D() = default;

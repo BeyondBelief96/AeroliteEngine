@@ -8,14 +8,14 @@ namespace Aerolite {
 
     struct AABB2D
     {
-        Aerolite::AeroVec2 min; // Minimum coordinate of the box (bottom-left corner)
-        Aerolite::AeroVec2 max; // Maximum coordinate of the box (top-right corner)
+	    AeroVec2 min; // Minimum coordinate of the box (bottom-left corner)
+	    AeroVec2 max; // Maximum coordinate of the box (top-right corner)
 
         // Default constructor
         AABB2D() = default;
 
         // Constructor with parameters
-        AABB2D(const Aerolite::AeroVec2& min, const Aerolite::AeroVec2& max)
+        AABB2D(const AeroVec2& min, const AeroVec2& max)
             : min(min), max(max) {}
 
         // Check if this AABB intersects with another AABB
@@ -30,33 +30,33 @@ namespace Aerolite {
         }
 
         // Compute the center of the AABB
-        Aerolite::AeroVec2 Center() const
+	    AeroVec2 Center() const
         {
             return (min + max) * 0.5;
         }
 
         // Compute the dimensions of the AABB (width and height)
-        Aerolite::AeroVec2 Size() const
+	    AeroVec2 Size() const
         {
             return max - min;
         }
 
         // Expand the AABB by a given amount in all directions
-        void Expand(const Aerolite::AeroVec2& amount)
+        void Expand(const AeroVec2& amount)
         {
             min -= amount;
             max += amount;
         }
 
         // Check if the AABB contains a point
-        bool Contains(const Aerolite::AeroVec2& point) const
+        bool Contains(const AeroVec2& point) const
         {
             return (point.x >= min.x && point.x <= max.x) &&
                 (point.y >= min.y && point.y <= max.y);
         }
 
         // Enlarge the AABB to include a given point
-        void Enclose(const Aerolite::AeroVec2& point)
+        void Enclose(const AeroVec2& point)
         {
             min.x = std::min(min.x, point.x);
             min.y = std::min(min.y, point.y);
