@@ -5,7 +5,7 @@ Aerolite Physics Engine is a comprehensive, efficient 2D physics library with pl
 
 ## Features
 - **2D and Planned 3D Support**: Robust support for 2D physics and a roadmap for 3D simulation capabilities.
-- - **AeroWorld2D**: A dedicated 2D world manager for handling physics simulations.
+- **AeroWorld2D**: A dedicated 2D world manager for handling physics simulations.
 - **Collision Detection and Response**: Advanced algorithms for detecting and responding to collisions between various shapes (circles, polygons, boxes) using methods like AABB and SAT (Separating Axis Theorem).
 - **Rigid Body Dynamics**: Simulates realistic rigid body dynamics, including rotation and translation.
 - **Impulse Resolution**: Implements impulse resolution for accurate collision responses.
@@ -14,12 +14,10 @@ Aerolite Physics Engine is a comprehensive, efficient 2D physics library with pl
 - **Particle Systems**: Efficient particle system for simulating large numbers of interacting objects.
 - **Material Properties**: Customize friction and restitution for different materials for varied interaction effects.
 
-- 
-
 ## Algorithms and Techniques
 - **Numerical Integration**: Utilizes Euler and Runge-Kutta integration methods for precise motion calculation.
 - **Broad and Narrow Phase Collision Detection**: Efficiently detects collisions using AABB for broad phase and SAT for narrow phase.
-- **Force-Based Dynamics**: Applies realistic forces to bodies for authentic movement.
+- **Impulse-Based Dynamics**: Applies realistic impulses to bodies for authentic movement.
 - **Constraint Solving**: Simulates complex joint behavior with constraints.
 - **Particle Dynamics**: Manages large numbers of particles effectively for simulations like smoke or liquid.
 
