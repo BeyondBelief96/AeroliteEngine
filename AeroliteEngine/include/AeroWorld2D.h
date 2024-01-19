@@ -6,29 +6,33 @@
 #include "Body2D.h"
 #include "Contact2D.h"
 #include "Particle2D.h"
-#include "pfgen.h"
 #include "Constraint2D.h"
 
 namespace Aerolite {
     class AeroWorld2D {
     private:
-        std::vector<std::unique_ptr<Aerolite::Body2D>> bodies;
-        std::vector<std::unique_ptr<Aerolite::Particle2D>> particles;
-        std::vector<std::unique_ptr<Aerolite::Constraint2D>> constraints;
-        std::vector<Aerolite::Contact2D> contactsList;
-        std::vector<Aerolite::AeroVec2> bodyForces;
-        std::vector<Aerolite::real> bodyTorques;
-        std::vector<Aerolite::AeroVec2> particleForces;
-        Aerolite::real G = 9.8f;
-        std::chrono::high_resolution_clock::time_point lastLogTime;
-        std::chrono::duration<double> accumulatedTime = std::chrono::seconds(0);
-        int frameCount = 0;
+        std::vector<std::unique_ptr<Aerolite::Body2D>> m_bodies;
+        std::vector<std::unique_ptr<Aerolite::Particle2D>> m_particles;
+        std::vector<std::unique_ptr<Aerolite::Constraint2D>> m_constraints;
+        std::vector<Aerolite::Contact2D> m_contactsList;
+        std::vector<Aerolite::AeroVec2> m_bodyForces;
+        std::vector<Aerolite::real> m_bodyTorques;
+        std::vector<Aerolite::AeroVec2> m_particleForces;
+        Aerolite::real m_g = 9.8f;
+
+        std::chrono::high_resolution_clock::time_point m_lastLogTime;
+        std::chrono::duration<double> m_accumulatedTime = std::chrono::seconds(0);
+        int m_frameCount = 0;
     public:
-        AeroWorld2D();
-        AeroWorld2D(Aerolite::real gravity);
-        ~AeroWorld2D();
-        AeroWorld2D(AeroWorld2D&& other) noexcept;
-        AeroWorld2D& operator=(AeroWorld2D&& other) noexcept;
+        AeroWorld2D() = default;
+        AeroWorld2D(AeroWorld2D& world) = default;
+
+        AeroWorld2D(AeroWorld2D&& world) noexcept;
+        explicit AeroWorld2D(Aerolite::real gravity);
+        ~AeroWorld2D() = default;
+
+        AeroWorld2D& operator=(AeroWorld2D&& world) noexcept = default;
+        AeroWorld2D& operator=(const AeroWorld2D& world) = default;
 
         void AddBody2D(std::unique_ptr<Aerolite::Body2D> body);
         std::vector<std::unique_ptr<Aerolite::Body2D>>& GetBodies();
@@ -40,7 +44,7 @@ namespace Aerolite {
 
         void AddParticle2D(std::unique_ptr<Aerolite::Particle2D> particle);
         void AddParticle2Ds(std::vector<std::unique_ptr<Aerolite::Particle2D>> particles);
-        std::vector<Aerolite::Particle2D*> GetParticle2Ds();
+        std::vector<Aerolite::Particle2D*> GetParticle2Ds() const;
 
         void AddForceBody(const Aerolite::AeroVec2& force);
         void AddForceParticle2D(const Aerolite::AeroVec2& force);
@@ -48,7 +52,7 @@ namespace Aerolite {
 
         void Update(Aerolite::real dt);
 
-        const std::vector<Aerolite::Contact2D> GetContacts(void) const;
+        [[nodiscard]] const std::vector<Aerolite::Contact2D> GetContacts(void) const;
     };
 }
 
