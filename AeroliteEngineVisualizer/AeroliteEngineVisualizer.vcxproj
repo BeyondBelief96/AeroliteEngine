@@ -83,6 +83,7 @@
     </ExternalIncludePath>
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>C:\Users\brand\source\repos\AeroliteEngine\AeroliteEngine\include;$(IncludePath)</IncludePath>
+    <IntDir>$(Platform)\$(Configuration)\AeroliteEngine2DVisualizer\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>C:\Users\brand\Code\cpp\Aerolite\AeroliteEngine\AeroliteEngine\src\Physics;$(IncludePath)</IncludePath>

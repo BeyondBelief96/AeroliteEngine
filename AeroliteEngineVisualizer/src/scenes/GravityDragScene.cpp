@@ -16,7 +16,6 @@ void GravityDragScene::Setup() {
 
     for (int i = 0; i < 500; i++)
     {
-        int x, y;
         std::random_device rd;
         std::mt19937 gen(rd()); // Mersenne Twister engine
 

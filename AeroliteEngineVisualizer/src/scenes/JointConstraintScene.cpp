@@ -19,7 +19,7 @@ void JointConstraintScene::Setup() {
 
     const int NUM_BODIES = 10;
     for (int i = 0; i < NUM_BODIES; i++) {
-        real mass = (i == 0) ? 0.0 : 1.0;
+        real mass = (i == 0) ? 0.0f : 1.0f;
         auto body = std::make_unique<Body2D>(new BoxShape(30, 30), Graphics::Width() / 2.0 - (i * 40), 100, mass);
         world->AddBody2D(std::move(body));
     }

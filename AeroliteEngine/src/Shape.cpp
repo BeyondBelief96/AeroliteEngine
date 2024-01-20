@@ -24,7 +24,7 @@ Aerolite::real Aerolite::CircleShape::GetMomentOfInertia() const
 {
     // This still needs to be multiplied by the rigid bodies mass.
     // Only returns partial equation based on the geometric quantities.
-    return (0.5) * (radius * radius);
+    return 0.5f * (radius * radius);
 }
 
 void Aerolite::CircleShape::UpdateVertices(Aerolite::real angle, const Aerolite::AeroVec2& position)

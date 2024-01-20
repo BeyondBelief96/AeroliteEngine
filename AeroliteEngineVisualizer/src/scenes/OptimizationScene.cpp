@@ -22,7 +22,7 @@ void OptimizationScene::Setup() {
     auto bird = std::make_unique<Body2D>(new CircleShape(45), 100, Graphics::Height() / 2.0 + 220, 3.0);
     world->AddBody2D(std::move(bird));
 
-    // Add a floor and walls to contain objects objects
+    // Add a floor and walls to contain objects
     auto floor = std::make_unique<Body2D>(new BoxShape(Graphics::Width() - 50, 50),
         Graphics::Width() / 2.0, Graphics::Height() / 2.0 + 290, 0.0);
     auto leftFence = std::make_unique<Body2D>(new BoxShape(50, Graphics::Height() - 200), 0, Graphics::Height() / 2.0 - 35, 0.0);
@@ -32,10 +32,10 @@ void OptimizationScene::Setup() {
 
     // Add a stack of boxes
     for (int i = 1; i <= 4; i++) {
-        float mass = 10.0 / (float)i;
+        float mass = 10.0f / static_cast<real>(i);
         auto box = std::make_unique<Body2D>(new BoxShape(50, 50), 600, floor->position.y - i * 55, mass);
-        box->friction = 0.9;
-        box->restitution = 0.1;
+        box->friction = 0.9f;
+        box->restitution = 0.1f;
         world->AddBody2D(std::move(box));
     }
 
@@ -64,14 +64,14 @@ void OptimizationScene::Setup() {
     }
 
     // Add a bridge of connected steps and joints
-    int numSteps = 10;
-    int spacing = 33;
+    const int numSteps = 10;
     auto startStep = std::make_unique<Body2D>(new BoxShape(80, 20), 200, 200, 0.0);
     Body2D* last = floor.get();
     for (int i = 1; i <= numSteps; i++) {
-        float x = startStep->position.x + 30 + (i * spacing);
+	    constexpr int spacing = 33;
+	    float x = startStep->position.x + 30 + i * spacing;
         float y = startStep->position.y + 20;
-        float mass = (i == numSteps) ? 0.0 : 3.0;
+        float mass = (i == numSteps) ? 0.0f : 3.0f;
         auto step = std::make_unique<Body2D>(new CircleShape(15), x, y, mass);
         auto joint = std::make_unique<JointConstraint>(*last, *step, step->position);
         last = step.get();
@@ -79,7 +79,7 @@ void OptimizationScene::Setup() {
         world->AddBody2D(std::move(step));
     }
 
-    auto endStep = std::make_unique<Body2D>(new BoxShape(80, 20), last->position.x + 60, last->position.y - 20, 0.0);
+    auto end_step = std::make_unique<Body2D>(new BoxShape(80, 20), last->position.x + 60, last->position.y - 20, 0.0);
 
     auto pig1 = std::make_unique<Body2D>(new CircleShape(30), plank1->position.x + 80, floor->position.y - 50, 3.0);
     auto pig2 = std::make_unique<Body2D>(new CircleShape(30), plank2->position.x + 400, floor->position.y - 50, 3.0);
@@ -89,7 +89,7 @@ void OptimizationScene::Setup() {
 
     world->AddBody2D(std::move(triangle));
     world->AddBody2D(std::move(startStep));
-    world->AddBody2D(std::move(endStep));
+    world->AddBody2D(std::move(end_step));
     world->AddBody2D(std::move(floor));
     world->AddBody2D(std::move(leftFence));
     world->AddBody2D(std::move(rightFence));
@@ -157,21 +157,21 @@ void OptimizationScene::Input() {
 void OptimizationScene::Update() {
     // Check if we are too fast, and if so, waste some milliseconds until we reach
     // MILLISECONDS_PER_FRAME.
-    int timeToWait = MILLISECS_PER_FRAME - (SDL_GetTicks() - timePreviousFrame);
-    if (timeToWait > 0) {
-        SDL_Delay(timeToWait);
+    const int time_to_wait = MILLISECS_PER_FRAME - (SDL_GetTicks() - timePreviousFrame);
+    if (time_to_wait > 0) {
+        SDL_Delay(time_to_wait);
     }
 
     // Calculate the delta time factor in seconds to be used when we update objects
-    float deltaTime = (SDL_GetTicks() - timePreviousFrame) / 1000.0f;
-    if (deltaTime > 0.016) {
-        deltaTime = 0.016;
+    real delta_time = (SDL_GetTicks() - timePreviousFrame) / 1000.0f;
+    if (delta_time > 0.016f) {
+        delta_time = 0.016f;
     }
 
     // Set the time of the current frame to be used in the next one.
     timePreviousFrame = SDL_GetTicks();
 
-    world->Update(deltaTime);
+    world->Update(delta_time);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

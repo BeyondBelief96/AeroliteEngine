@@ -15,11 +15,11 @@ namespace Aerolite {
         AABB2D() = default;
 
         // Constructor with parameters
-        AABB2D(const AeroVec2& min, const AeroVec2& max)
-            : min(min), max(max) {}
+        AABB2D(AeroVec2 min, AeroVec2 max)
+            : min(std::move(min)), max(std::move(max)) {}
 
         // Check if this AABB intersects with another AABB
-        bool Intersects(const AABB2D& other) const
+	    [[nodiscard]] bool Intersects(const AABB2D& other) const
         {
             // No overlap if one box is on the left side of the other box's right side
             // or one box is above the other box's bottom side
@@ -30,13 +30,13 @@ namespace Aerolite {
         }
 
         // Compute the center of the AABB
-	    AeroVec2 Center() const
+	    [[nodiscard]] AeroVec2 Center() const
         {
             return (min + max) * 0.5;
         }
 
         // Compute the dimensions of the AABB (width and height)
-	    AeroVec2 Size() const
+	    [[nodiscard]] AeroVec2 Size() const
         {
             return max - min;
         }
@@ -49,7 +49,7 @@ namespace Aerolite {
         }
 
         // Check if the AABB contains a point
-        bool Contains(const AeroVec2& point) const
+	    [[nodiscard]] bool Contains(const AeroVec2& point) const
         {
             return (point.x >= min.x && point.x <= max.x) &&
                 (point.y >= min.y && point.y <= max.y);

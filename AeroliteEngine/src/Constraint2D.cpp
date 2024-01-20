@@ -89,11 +89,11 @@ namespace Aerolite {
 		b.ApplyImpulseAngular(impulses[5][0]);
 
 		// Compute the bias factor (baumgarte stabilization)
-		const real beta = 0.1;
+		constexpr real beta = 0.1f;
 		// Compute the positional error
-		real C = (pb - pa).Dot(pb - pa);
-		C = std::max(0.0f, C - 0.01f);
-		bias = (beta / dt) * C;
+		real c = (pb - pa).Dot(pb - pa);
+		c = std::max(0.0f, c - 0.01f);
+		bias = (beta / dt) * c;
 	}
 
 	void JointConstraint::Solve(void)
@@ -204,7 +204,7 @@ namespace Aerolite {
 		b.ApplyImpulseAngular(impulses[5]);
 
 		// Compute the bias factor (baumgarte stabilization)
-		const real beta = 0.2;
+		constexpr real beta = 0.2f;
 		// Compute the positional error
 		real C = (pb - pa).Dot(-n);
 		C = std::min(0.0f, C + 0.01f);
