@@ -8,13 +8,9 @@ Aerolite::CircleShape::CircleShape(const real radius)
     this->radius = radius;
 }
 
-Aerolite::CircleShape::~CircleShape()
-{
-}
-
 Aerolite::ShapeType Aerolite::CircleShape::GetType() const
 {
-    return ShapeType::Circle;
+    return Circle;
 }
 
 // For solid circles, the moment of inertia is 1/2 * r^2 * mass
@@ -27,7 +23,7 @@ Aerolite::real Aerolite::CircleShape::GetMomentOfInertia() const
     return 0.5f * (radius * radius);
 }
 
-void Aerolite::CircleShape::UpdateVertices(Aerolite::real angle, const Aerolite::AeroVec2& position)
+void Aerolite::CircleShape::UpdateVertices(real angle, const AeroVec2& position)
 {   
     return; // Circles don't have vertices, so nothing to do here.
 }
@@ -38,24 +34,20 @@ Aerolite::BoxShape::BoxShape(const real width, const real height)
     this->height = height;
 
     // Initializing the local and world vertices too the same set. 
-    this->localVertices.push_back(AeroVec2(-width / 2.0, -height / 2.0));
-    this->localVertices.push_back(AeroVec2(width / 2.0, -height / 2.0));
-    this->localVertices.push_back(AeroVec2(width / 2.0, height / 2.0));
-    this->localVertices.push_back(AeroVec2(-width / 2.0, height / 2.0));
+    this->localVertices.emplace_back(-width / 2.0, -height / 2.0);
+    this->localVertices.emplace_back(width / 2.0, -height / 2.0);
+    this->localVertices.emplace_back(width / 2.0, height / 2.0);
+    this->localVertices.emplace_back(-width / 2.0, height / 2.0);
 
-    this->worldVertices.push_back(AeroVec2(-width / 2.0, -height / 2.0));
-    this->worldVertices.push_back(AeroVec2(width / 2.0, -height / 2.0));
-    this->worldVertices.push_back(AeroVec2(width / 2.0, height / 2.0));
-    this->worldVertices.push_back(AeroVec2(-width / 2.0, height / 2.0));
-}
-
-Aerolite::BoxShape::~BoxShape()
-{
+    this->worldVertices.emplace_back(-width / 2.0, -height / 2.0);
+    this->worldVertices.emplace_back(width / 2.0, -height / 2.0);
+    this->worldVertices.emplace_back(width / 2.0, height / 2.0);
+    this->worldVertices.emplace_back(-width / 2.0, height / 2.0);
 }
 
 Aerolite::ShapeType Aerolite::BoxShape::GetType() const
 {
-    return Aerolite::ShapeType::Box;
+    return Box;
 }
 
 // The moment of inertia of a rectangle is 1/12 * width^2 + height^2
@@ -75,13 +67,9 @@ Aerolite::PolygonShape::PolygonShape(const std::vector<AeroVec2>& vertices)
     }
 }
 
-Aerolite::PolygonShape::~PolygonShape()
-{
-}
-
 Aerolite::ShapeType Aerolite::PolygonShape::GetType() const
 {
-    return ShapeType::Polygon;
+    return Polygon;
 }
 
 Aerolite::real Aerolite::PolygonShape::GetMomentOfInertia() const
@@ -91,7 +79,7 @@ Aerolite::real Aerolite::PolygonShape::GetMomentOfInertia() const
     for (int i = 0; i < localVertices.size(); i++) {
         auto a = localVertices[i];
         auto b = localVertices[(i + 1) % localVertices.size()];
-        auto cross = abs(a.Cross(b));
+        const auto cross = abs(a.Cross(b));
         acc0 += cross * (a.Dot(a) + b.Dot(b) + a.Dot(b));
         acc1 += cross;
     }
@@ -108,7 +96,7 @@ Aerolite::PolygonShape* Aerolite::PolygonShape::CreateRegularPolygon(int sides, 
     const real radius = sideLength / (2 * std::sin(centralAngle / 2));
 
     for (int i = 0; i < sides; ++i) {
-        real angle = i * centralAngle;
+	    const real angle = i * centralAngle;
         real x = std::cos(angle) * radius;
         real y = std::sin(angle) * radius;
         vertices.emplace_back(x, y);
@@ -119,35 +107,34 @@ Aerolite::PolygonShape* Aerolite::PolygonShape::CreateRegularPolygon(int sides, 
 
 Aerolite::AeroVec2 Aerolite::PolygonShape::EdgeAt(int index) const
 {
-    int curVertex = index;
-    int nextVertex = (index + 1) % worldVertices.size();
+	const int curVertex = index;
+	const int nextVertex = (index + 1) % worldVertices.size();
     return (worldVertices[nextVertex] - worldVertices[curVertex]);
 }
 
 Aerolite::AeroVec2 Aerolite::PolygonShape::GeometricCenter(void) const
 {
-    Aerolite::real sumX = 0.0f;
-    Aerolite::real sumY = 0.0f;
+	real sumX = 0.0f;
+	real sumY = 0.0f;
 
-    for (int i = 0; i < worldVertices.size(); i++)
+    for (const auto v : worldVertices)
     {
-        Aerolite::AeroVec2 v = worldVertices[i];
-        sumX += v.x;
+	    sumX += v.x;
         sumY += v.y;
     }
 
-    return Aerolite::AeroVec2(sumX / (Aerolite::real)worldVertices.size(),
-        sumY / (Aerolite::real)worldVertices.size());
+    return AeroVec2(sumX / static_cast<real>(worldVertices.size()),
+                    sumY / static_cast<real>(worldVertices.size()));
 }
 
-int Aerolite::PolygonShape::FindIncidentEdgeIndex(const Aerolite::AeroVec2& referenceEdgeNormal)
+int Aerolite::PolygonShape::FindIncidentEdgeIndex(const AeroVec2& referenceEdgeNormal) const
 {
     int indexIncidentEdge = 0;
     real minProj = std::numeric_limits<real>::max();
     for (int i = 0; i < this->worldVertices.size(); i++)
     {
         auto edgeNormal = EdgeAt(i).Normal();
-        auto proj = edgeNormal.Dot(referenceEdgeNormal);
+        const auto proj = edgeNormal.Dot(referenceEdgeNormal);
         if (proj < minProj) {
             minProj = proj;
             indexIncidentEdge = i;
@@ -157,15 +144,15 @@ int Aerolite::PolygonShape::FindIncidentEdgeIndex(const Aerolite::AeroVec2& refe
     return indexIncidentEdge;
 }
 
-int Aerolite::PolygonShape::ClipLineSegmentToLine(const std::vector<AeroVec2>& contactsIn, std::vector<AeroVec2>& contactsOut, const AeroVec2& c0, const AeroVec2& c1) const
+int Aerolite::PolygonShape::ClipLineSegmentToLine(const std::vector<AeroVec2>& contactsIn, std::vector<AeroVec2>& contactsOut, const AeroVec2& c0, const AeroVec2& c1)
 {
     // Start with no output points.
     int numOut = 0;
 
     // Calculate the distance of end points to the line.
-    AeroVec2 normal = (c1 - c0).UnitVector();
-    real dist0 = (contactsIn[0] - c0).Cross(normal);
-    real dist1 = (contactsIn[1] - c0).Cross(normal);
+    const AeroVec2 normal = (c1 - c0).UnitVector();
+    const real dist0 = (contactsIn[0] - c0).Cross(normal);
+    const real dist1 = (contactsIn[1] - c0).Cross(normal);
 
     // If the points are behind the plane
     if (dist0 <= 0)
@@ -175,11 +162,11 @@ int Aerolite::PolygonShape::ClipLineSegmentToLine(const std::vector<AeroVec2>& c
 
     // If the points are on different sides of the plane (one distance is negative and other is positive)
     if (dist0 * dist1 < 0) {
-        real totalDist = dist0 - dist1;
+	    const real totalDist = dist0 - dist1;
 
-        // Find the intersection using linear interopolation
+        // Find the intersection using linear interpolation
         real t = dist0 / (totalDist);
-        AeroVec2 contact = contactsIn[0] + (contactsIn[1] - contactsIn[0]) * t;
+	    const AeroVec2 contact = contactsIn[0] + (contactsIn[1] - contactsIn[0]) * t;
         contactsOut[numOut] = contact;
         numOut++;
     }
@@ -187,21 +174,20 @@ int Aerolite::PolygonShape::ClipLineSegmentToLine(const std::vector<AeroVec2>& c
     return numOut;
 }
 
-Aerolite::real Aerolite::PolygonShape::FindMinimumSeparation(const Aerolite::PolygonShape& other, int& indexReferenceEdge, AeroVec2& supportPoint) const
+Aerolite::real Aerolite::PolygonShape::FindMinimumSeparation(const PolygonShape& other, int& indexReferenceEdge, AeroVec2& supportPoint) const
 {
-    Aerolite::real separation = std::numeric_limits<Aerolite::real>::lowest();
+	real separation = std::numeric_limits<real>::lowest();
 
     for (int i = 0; i < worldVertices.size(); i++)
     {
-        Aerolite::AeroVec2 va = worldVertices[i];
-        Aerolite::AeroVec2 normal = EdgeAt(i).Normal().UnitVector();
+	    AeroVec2 va = worldVertices[i];
+	    AeroVec2 normal = EdgeAt(i).Normal().UnitVector();
 
-        Aerolite::real minSep = std::numeric_limits < Aerolite::real>::max();
+	    real minSep = std::numeric_limits <real>::max();
         AeroVec2 minVertex;
-        for (int j = 0; j < other.worldVertices.size(); j++)
+        for (auto vb : other.worldVertices)
         {
-            Aerolite::AeroVec2 vb = other.worldVertices[j];
-            Aerolite::real projection = (vb - va).Dot(normal);
+	        const real projection = (vb - va).Dot(normal);
             if (projection < minSep) {
                 minSep = projection;
                 minVertex = vb;
