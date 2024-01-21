@@ -7,6 +7,8 @@
 #include "pfgen.h"
 #include "Scene.h"
 
+#pragma warning(disable : 4244)
+
 // Generates a solar system layout with planets in orbit around a central sun.
 void SolarSystemScene::GenerateSolarSystem(
     std::vector<std::unique_ptr<Particle2D>>& planets,

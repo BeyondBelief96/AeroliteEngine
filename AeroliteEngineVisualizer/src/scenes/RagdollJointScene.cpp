@@ -18,13 +18,13 @@ void RagdollJointScene::Setup() {
     world = std::make_unique<Aerolite::AeroWorld2D>();
 
     // Add ragdoll parts (rigid bodies)
-    auto bob = std::make_unique<Body2D>(new CircleShape(5), Graphics::Width() / 2.0, Graphics::Height() / 2.0 - 200, 0.0);
-    auto head = std::make_unique<Body2D>(new CircleShape(25), bob->position.x, bob->position.y + 70, 5.0);
-    auto torso = std::make_unique<Body2D>(new BoxShape(50, 100), head->position.x, head->position.y + 80, 3.0);
-    auto leftArm = std::make_unique<Body2D>(new BoxShape(15, 70), torso->position.x - 32, torso->position.y -10, 1.0);
-    auto rightArm = std::make_unique<Body2D>(new BoxShape(15, 70), torso->position.x + 32, torso->position.y - 10, 1.0);
-    auto leftLeg = std::make_unique<Body2D>(new BoxShape(20, 90), torso->position.x - 20, torso->position.y + 97, 1.0);
-    auto rightLeg = std::make_unique<Body2D>(new BoxShape(20, 90), torso->position.x + 20, torso->position.y + 97, 1.0);
+    auto bob = std::make_unique<Body2D>(new CircleShape(5), Graphics::Width() / make_real<real>(2.0), Graphics::Height() / make_real<real>(2.0) - 200, make_real<real>(0.0));
+    auto head = std::make_unique<Body2D>(new CircleShape(25), bob->position.x, bob->position.y + 70, make_real<real>(5.0));
+    auto torso = std::make_unique<Body2D>(new BoxShape(50, 100), head->position.x, head->position.y + 80, make_real<real>(3.0));
+    auto leftArm = std::make_unique<Body2D>(new BoxShape(15, 70), torso->position.x - 32, torso->position.y -10, make_real<real>(1.0));
+    auto rightArm = std::make_unique<Body2D>(new BoxShape(15, 70), torso->position.x + 32, torso->position.y - 10, make_real<real>(1.0));
+    auto leftLeg = std::make_unique<Body2D>(new BoxShape(20, 90), torso->position.x - 20, torso->position.y + 97, make_real<real>(1.0));
+    auto rightLeg = std::make_unique<Body2D>(new BoxShape(20, 90), torso->position.x + 20, torso->position.y + 97, make_real<real>(1.0));
 
     auto string = std::make_unique<JointConstraint>(*bob, *head, bob->position);
     auto neck = std::make_unique<JointConstraint>(*head, *torso, head->position + Vec2(0, 25));
@@ -49,16 +49,16 @@ void RagdollJointScene::Setup() {
     world->AddConstraint(std::move(rightHip));
 
     auto floor = std::make_unique<Aerolite::Body2D>(new BoxShape(Graphics::Width() - 50, 50),
-        Graphics::Width() / 2.0, Graphics::Height() - 50, 0.0);
-    floor->restitution = 0.1;
+        Graphics::Width() / make_real<real>(2.0), Graphics::Height() - 50, make_real<real>(0.0));
+    floor->restitution = make_real<real>(0.1);
 
     auto leftWall = std::make_unique<Aerolite::Body2D>(new BoxShape(50, Graphics::Height() - 50),
-        0, Graphics::Height() / 2.0, 0.0);
-    leftWall->restitution = 0.1;
+        0, Graphics::Height() / make_real<real>(2.0), make_real<real>(0.0));
+    leftWall->restitution = make_real<real>(0.1);
 
     auto rightWall = std::make_unique<Aerolite::Body2D>(new BoxShape(50, Graphics::Height() - 50),
-        Graphics::Width(), Graphics::Height() / 2.0, 0.0);
-    rightWall->restitution = 0.1;
+        Graphics::Width(), Graphics::Height() / make_real<real>(2.0), make_real<real>(0.0));
+    rightWall->restitution = make_real<real>(0.1);
 
     world->AddBody2D(std::move(floor));
     world->AddBody2D(std::move(leftWall));
@@ -91,18 +91,18 @@ void RagdollJointScene::Input() {
                 int x, y;
                 SDL_GetMouseState(&x, &y);
                 // Create and add a new BoxShape at the mouse location
-                auto circle = std::make_unique<Body2D>(new CircleShape(50), x, y, 2.0);
-                circle->restitution = 1.0;
-                circle->friction = 0.4;
+                auto circle = std::make_unique<Body2D>(new CircleShape(50), x, y, make_real<real>(2.0));
+                circle->restitution = make_real<real>(1.0);
+                circle->friction = make_real<real>(0.4);
                 world->AddBody2D(std::move(circle));
             }
             else if (event.button.button == SDL_BUTTON_RIGHT) {
                 int x, y;
                 SDL_GetMouseState(&x, &y);
                 // Create and add a new CircleShape at the mouse location
-                auto circle = std::make_unique<Body2D>(PolygonShape::CreateRegularPolygon(5, 50), x, y, 1.0); // Assuming radius 25 for the circle
-                circle->restitution = 1.0;
-                circle->friction = 0.4;
+                auto circle = std::make_unique<Body2D>(PolygonShape::CreateRegularPolygon(5, 50), x, y, make_real<real>(1.0)); // Assuming radius 25 for the circle
+                circle->restitution = make_real<real>(1.0);
+                circle->friction = make_real<real>(0.4);
                 world->AddBody2D(std::move(circle));
             }
             break;
@@ -112,7 +112,7 @@ void RagdollJointScene::Input() {
             Vec2 mouse = Vec2(x, y);
             Aerolite::Body2D* bob = world->GetBodies()[0].get();
             Vec2 direction = (mouse - bob->position).UnitVector();
-            real speed = 5.0;
+            real speed = make_real<real>(5.0);
             bob->position += direction * speed;
         }
     }

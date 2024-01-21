@@ -59,14 +59,14 @@ void Graphics::DrawFillCircle(int x, int y, int radius, Uint32 color) {
 }
 
 void Graphics::DrawRect(int x, int y, int width, int height, Uint32 color) {
-    lineColor(renderer, x - width / 2.0, y - height / 2.0, x + width / 2.0, y - height / 2.0, color);
-    lineColor(renderer, x + width / 2.0, y - height / 2.0, x + width / 2.0, y + height / 2.0, color);
-    lineColor(renderer, x + width / 2.0, y + height / 2.0, x - width / 2.0, y + height / 2.0, color);
-    lineColor(renderer, x - width / 2.0, y + height / 2.0, x - width / 2.0, y - height / 2.0, color);
+    lineColor(renderer, x - width / Aerolite::make_real<Aerolite::real>(2.0), y - height / Aerolite::make_real<Aerolite::real>(2.0), x + width / Aerolite::make_real<Aerolite::real>(2.0), y - height / Aerolite::make_real<Aerolite::real>(2.0), color);
+    lineColor(renderer, x + width / Aerolite::make_real<Aerolite::real>(2.0), y - height / Aerolite::make_real<Aerolite::real>(2.0), x + width / Aerolite::make_real<Aerolite::real>(2.0), y + height / Aerolite::make_real<Aerolite::real>(2.0), color);
+    lineColor(renderer, x + width / Aerolite::make_real<Aerolite::real>(2.0), y + height / Aerolite::make_real<Aerolite::real>(2.0), x - width / Aerolite::make_real<Aerolite::real>(2.0), y + height / Aerolite::make_real<Aerolite::real>(2.0), color);
+    lineColor(renderer, x - width / Aerolite::make_real<Aerolite::real>(2.0), y + height / Aerolite::make_real<Aerolite::real>(2.0), x - width / Aerolite::make_real<Aerolite::real>(2.0), y - height / Aerolite::make_real<Aerolite::real>(2.0), color);
 }
 
 void Graphics::DrawFillRect(int x, int y, int width, int height, Uint32 color) {
-    boxColor(renderer, x - width / 2.0, y - height / 2.0, x + width / 2.0, y + height / 2.0, color);
+    boxColor(renderer, x - width / Aerolite::make_real<Aerolite::real>(2.0), y - height / Aerolite::make_real<Aerolite::real>(2.0), x + width / Aerolite::make_real<Aerolite::real>(2.0), y + height / Aerolite::make_real<Aerolite::real>(2.0), color);
 }
 
 void Graphics::DrawPolygon(int x, int y, const std::vector<Aerolite::AeroVec2>& vertices, Uint32 color) {

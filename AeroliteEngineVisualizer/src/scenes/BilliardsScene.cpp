@@ -3,13 +3,15 @@
 #include "pfgen.h"
 #include "Scene.h"
 
+#pragma warning(disable : 4244)
+
 ///////////////////////////////////////////////////////////////////////////////
 // Setup function (executed once in the beginning of the simulation)
 ///////////////////////////////////////////////////////////////////////////////
 void BilliardScene::Setup() {
     running = Graphics::OpenWindow();
     world = std::make_unique<AeroWorld2D>(0);
-    auto smallBall = std::make_unique<Particle2D>(50, 100, 1.0);
+    auto smallBall = std::make_unique<Particle2D>(50, 100, make_real<real>(1.0));
     world->AddParticle2D(std::move(smallBall));
 }
 
@@ -65,7 +67,7 @@ void BilliardScene::Input() {
                 leftMouseButtonDown = false;
                 auto particles = world->GetParticle2Ds();
                 Vec2 impulseDirection = (particles[0]->position - mouseCursor).UnitVector();
-                float impulseMagnitude = (particles[0]->position - mouseCursor).Magnitude() * 5.0;
+                float impulseMagnitude = (particles[0]->position - mouseCursor).Magnitude() * make_real<real>(5.0);
                 particles[0]->velocity = impulseDirection * impulseMagnitude;
             }
             break;

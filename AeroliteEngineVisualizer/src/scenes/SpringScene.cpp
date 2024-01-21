@@ -4,13 +4,15 @@
 #include "Constants.h"
 #include "Scene.h"
 
+#pragma warning(disable : 4244)
+
 void GenerateParticle2DsInLine(std::vector<std::unique_ptr<Particle2D>>& particles,
-        int numParticle2Ds, float verticalSeparation, const Vec2& anchor,
-        float width, float mass) 
+        int numParticle2Ds, real verticalSeparation, const Vec2& anchor,
+        real width, real mass) 
     {
         for (int i = 0; i < numParticle2Ds; i++) {
-            float xPosition = width / 2.0;
-            float yPosition = anchor.y + ((i+1) * verticalSeparation);
+            real xPosition = width / make_real<real>(2.0);
+            real yPosition = anchor.y + ((i+1) * verticalSeparation);
             auto particle = std::make_unique<Particle2D>(xPosition, yPosition, mass);
             particles.push_back(std::move(particle));
         }
@@ -80,7 +82,7 @@ void SpringScene::Input() {
                 leftMouseButtonDown = false;
                 auto particles = world->GetParticle2Ds();
                 Vec2 impulseDirection = (particles[particles.size() - 1]->position - mouseCursor).UnitVector();
-                float impulseMagnitude = -(particles[particles.size() - 1]->position - mouseCursor).Magnitude() * 6.0;
+                real impulseMagnitude = -(particles[particles.size() - 1]->position - mouseCursor).Magnitude() * make_real<real>(6.0);
                 particles[particles.size() - 1]->velocity = impulseDirection * impulseMagnitude;
             }
             break;
@@ -100,7 +102,7 @@ void SpringScene::Update() {
     }
 
     // Calculate the delta time factor in seconds to be used when we update objects
-    float deltaTime = (SDL_GetTicks() - timePreviousFrame) / 1000.0f;
+    real deltaTime = (SDL_GetTicks() - timePreviousFrame) / 1000.0f;
     if (deltaTime > 0.016) {
         deltaTime = 0.016;
     }
@@ -119,7 +121,7 @@ void SpringScene::Update() {
             *particles[prevParticle2D], restLength, k);
         // Apply drag force to each particle.
         particles[i]->ApplyForce(pushForce);
-        particles[i]->ApplyForce(Particle2DForceGenerators::GenerateDragForce(*particles[i], 0.1, 0.002));
+        particles[i]->ApplyForce(Particle2DForceGenerators::GenerateDragForce(*particles[i], make_real<real>(0.1), 0.002));
         particles[currParticle2D]->ApplyForce(springForce);
         particles[prevParticle2D]->ApplyForce(-springForce);
     }

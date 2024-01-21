@@ -96,7 +96,7 @@ private:
     float k = 150;
     float restLength = 20;
     int NUM_PARTICLES = 30;
-    float PARTICLE_MASS = 1.0;
+    float PARTICLE_MASS = make_real<real>(1.0);
 
 public:
     void Setup() override;

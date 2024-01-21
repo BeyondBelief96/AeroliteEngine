@@ -24,7 +24,7 @@ namespace Aerolite {
         this->friction = 0.7;
 
         if(mass != 0.0) {
-            this-> invMass = 1.0 / mass;
+            this-> invMass = make_real<real>(1.0) / mass;
         } else {
             this->invMass = 0.0;
         }
@@ -32,7 +32,7 @@ namespace Aerolite {
         this->I = shape->GetMomentOfInertia() * this->mass;
 
         if(I != 0.0) {
-            this-> invI = 1.0 / I;
+            this-> invI = make_real<real>(1.0) / I;
         } else {
             invI = 0.0;
         }

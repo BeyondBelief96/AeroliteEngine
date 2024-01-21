@@ -9,7 +9,7 @@ Particle2D::Particle2D(real x, real y, real mass) : position(x, y), mass(mass)
 	acceleration = AeroVec2(0.0, 0.0);
 	netForces = AeroVec2(0.0, 0.0);
 	if (mass != 0.0)
-		invMass = 1.0 / mass;
+		invMass = make_real<real>(1.0) / mass;
 	else
 		invMass = 0.0;
 }
@@ -34,8 +34,8 @@ Particle2D::Particle2D(Particle2D&& other) noexcept
     velocity(std::move(other.velocity)),
     acceleration(std::move(other.acceleration)),
     netForces(std::move(other.netForces)),
-    mass(std::exchange(other.mass, 0)),
-    invMass(std::exchange(other.invMass, 0))
+    mass(std::exchange(other.mass, make_real<real>(0.0))),
+    invMass(std::exchange(other.invMass, make_real<real>(0.0)))
 {
     // No need to move AeroVec2 objects explicitly as their move constructors will be called.
 }

@@ -16,18 +16,18 @@ void OptimizationScene::Setup() {
 
     running = Graphics::OpenWindow();
 
-    world = std::make_unique<Aerolite::AeroWorld2D>(-9.8);
+    world = std::make_unique<Aerolite::AeroWorld2D>(-9.8f);
 
     // Add bird
-    auto bird = std::make_unique<Body2D>(new CircleShape(45), 100, Graphics::Height() / 2.0 + 220, 3.0);
+    auto bird = std::make_unique<Body2D>(new CircleShape(45), 100, Graphics::Height() / make_real<real>(2.0) + 220, make_real<real>(3.0));
     world->AddBody2D(std::move(bird));
 
     // Add a floor and walls to contain objects
     auto floor = std::make_unique<Body2D>(new BoxShape(Graphics::Width() - 50, 50),
-        Graphics::Width() / 2.0, Graphics::Height() / 2.0 + 290, 0.0);
-    auto leftFence = std::make_unique<Body2D>(new BoxShape(50, Graphics::Height() - 200), 0, Graphics::Height() / 2.0 - 35, 0.0);
+        Graphics::Width() / make_real<real>(2.0), Graphics::Height() / make_real<real>(2.0) + 290, make_real<real>(0.0));
+    auto leftFence = std::make_unique<Body2D>(new BoxShape(50, Graphics::Height() - 200), 0, Graphics::Height() / make_real<real>(2.0) - 35, make_real<real>(0.0));
     auto rightFence = std::make_unique<Body2D>(new BoxShape(50, Graphics::Height() - 200), Graphics::Width(),
-        Graphics::Height() / 2.0 - 35, 0.0);
+        Graphics::Height() / make_real<real>(2.0) - 35, make_real<real>(0.0));
     
 
     // Add a stack of boxes
@@ -40,14 +40,14 @@ void OptimizationScene::Setup() {
     }
 
     // Add structure with blocks
-    auto plank1 = std::make_unique<Body2D>(new BoxShape(50, 150), Graphics::Width() / 2.0 + 20, floor->position.y - 100, 5.0);
-    auto plank2 = std::make_unique<Body2D>(new BoxShape(50, 150), Graphics::Width() / 2.0 + 180, floor->position.y - 100, 5.0);
-    auto plank3 = std::make_unique<Body2D>(new BoxShape(250, 25), Graphics::Width() / 2.0 + 100.0f, floor->position.y - 200, 2.0);
+    auto plank1 = std::make_unique<Body2D>(new BoxShape(50, 150), Graphics::Width() / make_real<real>(2.0) + 20, floor->position.y - 100, make_real<real>(5.0));
+    auto plank2 = std::make_unique<Body2D>(new BoxShape(50, 150), Graphics::Width() / make_real<real>(2.0) + 180, floor->position.y - 100, make_real<real>(5.0));
+    auto plank3 = std::make_unique<Body2D>(new BoxShape(250, 25), Graphics::Width() / make_real<real>(2.0) + 100.0f, floor->position.y - 200, make_real<real>(2.0));
    
 
     // Add a triangle polygon
     std::vector<Vec2> triangleVertices = { Vec2(30, 30), Vec2(-30, 30), Vec2(0, -30) };
-    auto triangle = std::make_unique<Body2D> (new PolygonShape(triangleVertices), plank3->position.x, plank3->position.y - 50, 0.5);
+    auto triangle = std::make_unique<Body2D> (new PolygonShape(triangleVertices), plank3->position.x, plank3->position.y - 50, make_real<real>(0.5));
 
     // Add a pyramid of boxes
     int numRows = 5;
@@ -57,15 +57,15 @@ void OptimizationScene::Setup() {
             float y = (floor->position.y - 50.0f) - row * 52.0f;
             float mass = (5.0f / (row + 1.0f));
             auto box = std::make_unique<Body2D>(new BoxShape(50, 50), x, y, mass);
-            box->friction = 0.9;
-            box->restitution = 0.0;
+            box->friction = make_real<real>(0.9);
+            box->restitution = make_real<real>(0.0);
             world->AddBody2D(std::move(box));
         }
     }
 
     // Add a bridge of connected steps and joints
     const int numSteps = 10;
-    auto startStep = std::make_unique<Body2D>(new BoxShape(80, 20), 200, 200, 0.0);
+    auto startStep = std::make_unique<Body2D>(new BoxShape(80, 20), 200, 200, make_real<real>(0.0));
     Body2D* last = floor.get();
     for (int i = 1; i <= numSteps; i++) {
 	    constexpr int spacing = 33;
@@ -79,12 +79,12 @@ void OptimizationScene::Setup() {
         world->AddBody2D(std::move(step));
     }
 
-    auto end_step = std::make_unique<Body2D>(new BoxShape(80, 20), last->position.x + 60, last->position.y - 20, 0.0);
+    auto end_step = std::make_unique<Body2D>(new BoxShape(80, 20), last->position.x + 60, last->position.y - 20, make_real<real>(0.0));
 
-    auto pig1 = std::make_unique<Body2D>(new CircleShape(30), plank1->position.x + 80, floor->position.y - 50, 3.0);
-    auto pig2 = std::make_unique<Body2D>(new CircleShape(30), plank2->position.x + 400, floor->position.y - 50, 3.0);
-    auto pig3 = std::make_unique<Body2D>(new CircleShape(30), plank2->position.x + 460, floor->position.y - 50, 3.0);
-    auto pig4 = std::make_unique<Body2D>(new CircleShape(30), 220, 130, 1.0);
+    auto pig1 = std::make_unique<Body2D>(new CircleShape(30), plank1->position.x + 80, floor->position.y - 50, make_real<real>(3.0));
+    auto pig2 = std::make_unique<Body2D>(new CircleShape(30), plank2->position.x + 400, floor->position.y - 50, make_real<real>(3.0));
+    auto pig3 = std::make_unique<Body2D>(new CircleShape(30), plank2->position.x + 460, floor->position.y - 50, make_real<real>(3.0));
+    auto pig4 = std::make_unique<Body2D>(new CircleShape(30), 220, 130, make_real<real>(1.0));
 
 
     world->AddBody2D(std::move(triangle));
@@ -121,29 +121,29 @@ void OptimizationScene::Input() {
                 debug = !debug;
             }
             if (event.key.keysym.sym == SDLK_UP)
-                world->GetBodies()[0]->ApplyImpulseLinear(Vec2(0.0, -600.0));
+                world->GetBodies()[0]->ApplyImpulseLinear(Vec2(make_real<real>(0.0), -make_real<real>(600.0)));
             if (event.key.keysym.sym == SDLK_LEFT)
-                world->GetBodies()[0]->ApplyImpulseLinear(Vec2(-400.0, 0.0));
+                world->GetBodies()[0]->ApplyImpulseLinear(Vec2(-make_real<real>(400.0), make_real<real>(0.0)));
             if (event.key.keysym.sym == SDLK_RIGHT)
-                world->GetBodies()[0]->ApplyImpulseLinear(Vec2(+400.0, 0.0));
+                world->GetBodies()[0]->ApplyImpulseLinear(Vec2(+make_real<real>(400.0), make_real<real>(0.0)));
             break;
         case SDL_MOUSEBUTTONDOWN:
             if (event.button.button == SDL_BUTTON_LEFT) {
                 int x, y;
                 SDL_GetMouseState(&x, &y);
                 // Create and add a new BoxShape at the mouse location
-                auto circle = std::make_unique<Body2D>(new CircleShape(50), x, y, 2.0);
+                auto circle = std::make_unique<Body2D>(new CircleShape(50), x, y, make_real<real>(2.0));
                 circle->restitution = 0;
-                circle->friction = 0.4;
+                circle->friction = make_real<real>(0.4);
                 world->AddBody2D(std::move(circle));
             }
             else if (event.button.button == SDL_BUTTON_RIGHT) {
                 int x, y;
                 SDL_GetMouseState(&x, &y);
                 // Create and add a new CircleShape at the mouse location
-                auto circle = std::make_unique<Body2D>(new BoxShape(50,50), x, y, 1.0); // Assuming radius 25 for the circle
+                auto circle = std::make_unique<Body2D>(new BoxShape(50,50), x, y, make_real<real>(1.0)); // Assuming radius 25 for the circle
                 circle->restitution = 0;
-                circle->friction = 0.4;
+                circle->friction =make_real<real>(0.4);
                 world->AddBody2D(std::move(circle));
             }
             break;

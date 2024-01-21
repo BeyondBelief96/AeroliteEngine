@@ -20,7 +20,7 @@ void JointConstraintScene::Setup() {
     const int NUM_BODIES = 10;
     for (int i = 0; i < NUM_BODIES; i++) {
         real mass = (i == 0) ? 0.0f : 1.0f;
-        auto body = std::make_unique<Body2D>(new BoxShape(30, 30), Graphics::Width() / 2.0 - (i * 40), 100, mass);
+        auto body = std::make_unique<Body2D>(new BoxShape(30, 30), Graphics::Width() / make_real<real>(2.0) - (i * 40), 100, mass);
         world->AddBody2D(std::move(body));
     }
 
@@ -58,18 +58,18 @@ void JointConstraintScene::Input() {
                 int x, y;
                 SDL_GetMouseState(&x, &y);
                 // Create and add a new BoxShape at the mouse location
-                auto circle = std::make_unique<Body2D>(new CircleShape(50), x, y, 2.0);
-                circle->restitution = 1.0;
-                circle->friction = 0.4;
+                auto circle = std::make_unique<Body2D>(new CircleShape(50), x, y, make_real<real>(2.0));
+                circle->restitution = make_real<real>(1.0);
+                circle->friction = make_real<real>(0.4);
                 world->AddBody2D(std::move(circle));
             }
             else if (event.button.button == SDL_BUTTON_RIGHT) {
                 int x, y;
                 SDL_GetMouseState(&x, &y);
                 // Create and add a new CircleShape at the mouse location
-                auto circle = std::make_unique<Body2D>(PolygonShape::CreateRegularPolygon(5, 50), x, y, 1.0); // Assuming radius 25 for the circle
-                circle->restitution = 1.0;
-                circle->friction = 0.4;
+                auto circle = std::make_unique<Body2D>(PolygonShape::CreateRegularPolygon(5, 50), x, y, make_real<real>(1.0)); // Assuming radius 25 for the circle
+                circle->restitution = make_real<real>(1.0);
+                circle->friction = make_real<real>(0.4);
                 world->AddBody2D(std::move(circle));
             }
             break;

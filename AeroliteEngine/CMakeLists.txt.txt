@@ -1,0 +1,2 @@
+cmake_minimum_required(VERISON 3.28.1)
+project(AeroliteEngine VERSION 1.0.0)

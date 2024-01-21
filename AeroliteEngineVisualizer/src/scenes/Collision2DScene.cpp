@@ -6,6 +6,8 @@
 #include "pfgen.h"
 #include "Scene.h"
 
+#pragma warning(disable : 4244)
+
 // GLOBAL VARIABLES
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -14,8 +16,8 @@
 void Collision2DScene::Setup() {
     running = Graphics::OpenWindow();
     world = std::make_unique<AeroWorld2D>(0);
-    auto smallBox = std::make_unique<Body2D>(new BoxShape(100, 100), 100, 100, 5.0);
-    auto bigBox = std::make_unique<Body2D>(new BoxShape(200, 200), Graphics::Width() / 2.0, Graphics::Height() / 2.0, 0.0);
+    auto smallBox = std::make_unique<Body2D>(new BoxShape(100, 100), 100, 100, make_real<real>(5.0));
+    auto bigBox = std::make_unique<Body2D>(new BoxShape(200, 200), Graphics::Width() / make_real<real>(2.0), Graphics::Height() / make_real<real>(2.0), make_real<real>(0.0));
 
     world->AddBody2D(std::move(smallBox));
     world->AddBody2D(std::move(bigBox));
@@ -91,8 +93,8 @@ void Collision2DScene::Render() {
 
         for (auto& contact : contacts)
         {
-            Graphics::DrawCircle(contact.start.x, contact.start.y, 5, 0.0, 0xFF00FFFF);
-            Graphics::DrawCircle(contact.end.x, contact.end.y, 2, 0.0, 0xFF00FFFF);
+            Graphics::DrawCircle(contact.start.x, contact.start.y, 5, make_real<real>(0.0), 0xFF00FFFF);
+            Graphics::DrawCircle(contact.end.x, contact.end.y, 2, make_real<real>(0.0), 0xFF00FFFF);
         }
     }
 

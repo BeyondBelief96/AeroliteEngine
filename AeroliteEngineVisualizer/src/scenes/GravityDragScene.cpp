@@ -4,8 +4,10 @@
 #include "pfgen.h"
 #include "Scene.h"
 
+#pragma warning(disable : 4244)
+
 // GLOBAL VARIABLES
-Vec2 gravity(0.0, 9.8 * PIXELS_PER_METER);
+Vec2 gravity(make_real<real>(0.0), make_real<real>(9.8) * PIXELS_PER_METER);
 
 ///////////////////////////////////////////////////////////////////////////////
 // Setup function (executed once in the beginning of the simulation)
@@ -20,14 +22,14 @@ void GravityDragScene::Setup() {
         std::mt19937 gen(rd()); // Mersenne Twister engine
 
         // Define the range
-        int lower_boundx = 0;
-        int upper_boundx = Graphics::Width();
-        int lower_boundy = 0;
-        int upper_boundy = Graphics::Height();
+        const int lower_bound_x = 0;
+        const int upper_bound_x = Graphics::Width();
+        const int lower_bound_y = 0;
+        const int upper_bound_y = Graphics::Height();
 
-        std::uniform_int_distribution<int> distx(lower_boundx, upper_boundx);
-        std::uniform_int_distribution<int> disty(lower_boundy, upper_boundy);
-        auto smallBall = std::make_unique<Particle2D>(distx(gen), disty(gen), 1.0);
+        std::uniform_int_distribution dist_x(lower_bound_x, upper_bound_x);
+        std::uniform_int_distribution dist_y(lower_bound_y, upper_bound_y);
+        auto smallBall = std::make_unique<Particle2D>(dist_x(gen), dist_y(gen), 1.0f);
         world->AddParticle2D(std::move(smallBall));
     }
     // Initializing liquid object to simulate drag forces.
@@ -76,11 +78,12 @@ void GravityDragScene::Input() {
                 {
                     int x, y;
                     SDL_GetMouseState(&x, &y);
-                    auto particle = std::make_unique<Particle2D>(x, y, 1.0);
+                    auto particle = std::make_unique<Particle2D>(x, y, 1.0f);
                     particle->radius = 5;
                     world->AddParticle2D(std::move(particle));
                 }
                 break;
+			default: ;
         }
     }
 }
@@ -91,7 +94,7 @@ void GravityDragScene::Input() {
 void GravityDragScene::Update() {
     // Check if we are too fast, and if so, waste some milliseconds until we reach
     // MILLISECONDS_PER_FRAME.
-    int timeToWait = MILLISECS_PER_FRAME - (SDL_GetTicks() - timePreviousFrame);
+    const int timeToWait = MILLISECS_PER_FRAME - (SDL_GetTicks() - timePreviousFrame);
     if (timeToWait > 0) {
         SDL_Delay(timeToWait);
     }

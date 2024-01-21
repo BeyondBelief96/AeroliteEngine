@@ -1,0 +1,2 @@
+#define REAL_TYPE_FLOAT
+// #define REAL_TYPE_DOUBLE
