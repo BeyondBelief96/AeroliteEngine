@@ -66,7 +66,7 @@ namespace Aerolite {
                                                 AeroVec2& minNextVertex, real radius, real distanceToCircleEdge);
 
         /// <summary>
-        /// Helper function for setting the contact details of the cirlce polygon collision detection algorithm for when the 
+        /// Helper function for setting the contact details of the circle polygon collision detection algorithm for when the 
         /// circle center is inside the polygon.
         /// </summary>
         static void SetContactDetailsForInsideCollision(Contact2D& contact, Body2D& polygon, Body2D& circle, AeroVec2& minCurrVertex,
