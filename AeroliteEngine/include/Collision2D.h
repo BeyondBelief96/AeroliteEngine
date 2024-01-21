@@ -15,7 +15,7 @@ namespace Aerolite {
         /// @brief Detects if two Body2D's are colliding.
         /// @param a The first Body2D for detection.
         /// @param b The second Body2D for detection.
-        /// @param contact A contact2D object to store colission information if one is detected.
+        /// @param contacts A vector of contact2D object to store collision information if one is detected.
         /// @return Returns true if collision is detected, false if not.
         static bool IsColliding(Body2D& a, Body2D& b, std::vector<Contact2D>& contacts);
 
@@ -32,7 +32,7 @@ namespace Aerolite {
         /// @brief Detects if two circle Body2D's are colliding.
         /// @param a The first circle body for detection.
         /// @param b The second circle body for detection.
-        /// @param contact A contact2D object to store colission information if one is detected.
+        /// @param contacts A vector of contact2D object to store collision information if one is detected.
         /// @return Returns true if the two circles are colliding, false if not.
         static bool IsCollidingCircleCircle(Body2D& a, Body2D& b, std::vector<Contact2D>& contacts);
 
@@ -40,7 +40,8 @@ namespace Aerolite {
         /// Detects if two polygons are colliding.
         /// </summary>
         /// <param name="a">The first polygon body for detection.</param>
-        /// <param name="b">The second polygon body for detection.</param>
+        /// <param name="b">The second polygon body for detection.</param>\
+        /// <param name="contacts"> contacts A vector of contact2D object to store collision information if one is detected.
         /// <returns>Returns true if the two polygons are colliding, false if not.</returns>
         static bool IsCollidingPolygonPolygon(Body2D& a, Body2D& b, std::vector<Contact2D>& contacts);
 
@@ -49,7 +50,7 @@ namespace Aerolite {
         /// </summary>
         /// <param name="polygon">The polygon body for detection.</param>
         /// <param name="circle">The circle body for detection.</param>
-        /// <param name="contact">A reference parameter to store collision and contact information.</param>
+        /// <param name="contacts">A reference parameter to store collision and contact information.</param>
         /// <returns>Returns true if the polygon and circle are colliding, false if not.</returns>
         static bool IsCollidingCirclePolygon(Body2D& polygon, Body2D& circle, std::vector<Contact2D>& contacts);
 
@@ -85,13 +86,13 @@ namespace Aerolite {
         /// </summary>
         /// <param name="a">The first polygon for collision detection.</param>
         /// <param name="b">The second polygon for collision detection.</param>
-        /// <param name="contact">A reference parameter to store collision and contact information.</param>
+         /// <param name="contacts">A reference parameter to store collision and contact information.</param>
         /// <returns></returns>
         static bool IsCollidingSATOptimized(Body2D& a, Body2D& b, std::vector<Contact2D>& contacts);
 
         /// <summary>
         /// Projects the given vertices onto the given axis and find the minimum and maximum projections
-        /// of the vertics onto the axis. Stores the min/max in the pass by reference values.
+        /// of the vertices onto the axis. Stores the min/max in the pass by reference values.
         /// </summary>
         /// <param name="vertices">The vertices to project</param>
         /// <param name="axis">The axis to project the vertices on.</param>
@@ -105,8 +106,8 @@ namespace Aerolite {
         /// </summary>
         /// <param name="p">The point to compute the distance from.</param>
         /// <param name="linePointA">The first endpoint of the line segment.</param>
-        /// <param name="linePointB">The second endpoing of the line segment.</param>
-        /// <param name="distance">Output parameter for the distance from p to the cloesestPoint.</param>
+        /// <param name="linePointB">The second endpoint of the line segment.</param>
+        /// <param name="distance">Output parameter for the distance from p to the closestPoint.</param>
         /// <param name="closestPoint">The closest point on the line segment from the point p.</param>
         static void PointLineSegmentDistance(AeroVec2 p, AeroVec2 linePointA, AeroVec2 linePointB, real& distance,
                                              AeroVec2& closestPoint);
