@@ -94,7 +94,7 @@ namespace Aerolite {
         m_bodyTorques.push_back(torque);
     }
 
-    void AeroWorld2D::Update(real dt) {
+    void AeroWorld2D::Update(const real dt) {
 	    const auto startTime = std::chrono::high_resolution_clock::now();
         // Create a vector of penetration constraint to be solved per frame
         std::vector<PenetrationConstraint> penetrations;

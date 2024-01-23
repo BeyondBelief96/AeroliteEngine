@@ -57,20 +57,20 @@ namespace Aerolite {
         /// <summary>
         /// Helper function for setting the contact details of the circle polygon collision detection algorithm for regions A and B.
         /// </summary>
-        static void SetContactDetails(Contact2D& contact, AeroBody2D& polygon, AeroBody2D& circle, AeroVec2& v1, real radius);
+        static void SetContactDetails(Contact2D& contact, AeroBody2D& polygon, AeroBody2D& circle, const AeroVec2& v1, real radius);
 
         /// <summary>
         /// Helper function for setting the contact details of the circle polygon collision detection algorithm for region C.
         /// </summary>
-        static void SetContactDetailsForRegionC(Contact2D& contact, AeroBody2D& polygon, AeroBody2D& circle, AeroVec2& minCurrVertex,
-                                                AeroVec2& minNextVertex, real radius, real distanceToCircleEdge);
+        static void SetContactDetailsForRegionC(Contact2D& contact, AeroBody2D& polygon, AeroBody2D& circle, const AeroVec2& minCurrVertex,
+                                                const AeroVec2& minNextVertex, real radius, real distanceToCircleEdge);
 
         /// <summary>
         /// Helper function for setting the contact details of the circle polygon collision detection algorithm for when the 
         /// circle center is inside the polygon.
         /// </summary>
-        static void SetContactDetailsForInsideCollision(Contact2D& contact, AeroBody2D& polygon, AeroBody2D& circle, AeroVec2& minCurrVertex,
-                                                        AeroVec2& minNextVertex, real radius, real distanceToCircleEdge);
+        static void SetContactDetailsForInsideCollision(Contact2D& contact, AeroBody2D& polygon, AeroBody2D& circle, const AeroVec2& minCurrVertex,
+                                                        const AeroVec2& minNextVertex, real radius, real distanceToCircleEdge);
 
         /// <summary>
         /// Uses a naive SAT algorithm approach to determine if two polygons are colliding.
@@ -98,7 +98,7 @@ namespace Aerolite {
         /// <param name="axis">The axis to project the vertices on.</param>
         /// <param name="min">The value to store the minimum projection value in.</param>
         /// <param name="max">The value to store the maximum projection value in.</param>
-        static void FindMinMaxProjections(std::vector<AeroVec2> vertices, AeroVec2 axis, real& min, real& max);
+        static void FindMinMaxProjections(const std::vector<AeroVec2>& vertices, const AeroVec2& axis, real& min, real& max);
 
         /// <summary>
         /// Finds the distance between a point p and the closest point on a line defined
@@ -109,7 +109,7 @@ namespace Aerolite {
         /// <param name="linePointB">The second endpoint of the line segment.</param>
         /// <param name="distance">Output parameter for the distance from p to the closestPoint.</param>
         /// <param name="closestPoint">The closest point on the line segment from the point p.</param>
-        static void PointLineSegmentDistance(AeroVec2 p, AeroVec2 linePointA, AeroVec2 linePointB, real& distance,
+        static void PointLineSegmentDistance(AeroVec2 p, const AeroVec2& linePointA, const AeroVec2& linePointB, real& distance,
                                              AeroVec2& closestPoint);
 
         /// <summary>

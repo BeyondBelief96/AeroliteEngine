@@ -1,5 +1,5 @@
-#include <iostream>
 #include <limits>
+#include <complex>
 #include "Collision2D.h"
 #include "Precision.h"
 #include "Shape.h"
@@ -17,8 +17,8 @@ namespace Aerolite
     bool CollisionDetection2D::IsColliding(AeroBody2D& a, AeroBody2D& b, std::vector<Contact2D>& contacts)
     {
         if (a.IsStatic() && b.IsStatic()) return false;
-        bool aIsCircle = a.shape->GetType() == Circle;
-        bool bIsCircle = b.shape->GetType() == Circle;
+        const bool aIsCircle = a.shape->GetType() == Circle;
+        const bool bIsCircle = b.shape->GetType() == Circle;
 
         if (aIsCircle && bIsCircle)
         {
@@ -96,8 +96,8 @@ namespace Aerolite
     bool CollisionDetection2D::IsCollidingSATBruteForce(AeroBody2D& a, AeroBody2D& b, Contact2D& contact)
     {
         // Casting the shape of each body to a PolygonShape to access polygon-specific properties.
-        auto aPolygonShape = dynamic_cast<PolygonShape*>(a.shape);
-        auto bPolygonShape = dynamic_cast<PolygonShape*>(b.shape);
+        const auto aPolygonShape = dynamic_cast<PolygonShape*>(a.shape);
+        const auto bPolygonShape = dynamic_cast<PolygonShape*>(b.shape);
         auto contactDepth = std::numeric_limits<real>::max();
         auto contactNormal = AeroVec2();
 
@@ -120,7 +120,7 @@ namespace Aerolite
             // If projections do not overlap, there is a separating axis, so no collision.
             if (minA >= maxB || minB >= maxA) return false;
 
-            auto axisDepth = std::min(maxB - minA, maxA - minB);
+            const auto axisDepth = std::min(maxB - minA, maxA - minB);
 
             if (axisDepth < contactDepth)
             {
@@ -144,7 +144,7 @@ namespace Aerolite
 
             if (minA >= maxB || minB >= maxA) return false;
 
-            auto axisDepth = std::min(maxB - minA, maxA - minB);
+	        const auto axisDepth = std::min(maxB - minA, maxA - minB);
 
             if (axisDepth < contactDepth)
             {
@@ -154,10 +154,10 @@ namespace Aerolite
         }
 
         // Ensuring that the normal of the contact points from body A to body B.
-        AeroVec2 centerA = aPolygonShape->GeometricCenter();
-        AeroVec2 centerB = bPolygonShape->GeometricCenter();
+        const AeroVec2 centerA = aPolygonShape->GeometricCenter();
+        const AeroVec2 centerB = bPolygonShape->GeometricCenter();
 
-        AeroVec2 direction = centerB - centerA;
+        const AeroVec2 direction = centerB - centerA;
         if (direction.Dot(contactNormal) < 0.0f)
             contactNormal *= -1;
 
@@ -179,17 +179,17 @@ namespace Aerolite
     bool CollisionDetection2D::IsCollidingSATOptimized(AeroBody2D& a, AeroBody2D& b, std::vector<Contact2D>& contacts)
     {
         // Cast the shapes of the bodies to polygon shapes
-        auto polygonShapeA = dynamic_cast<PolygonShape*>(a.shape);
-        auto polygonShapeB = dynamic_cast<PolygonShape*>(b.shape);
+        const auto polygonShapeA = dynamic_cast<PolygonShape*>(a.shape);
+        const auto polygonShapeB = dynamic_cast<PolygonShape*>(b.shape);
 
         // Variables to store the axis of minimum separation and the corresponding points
         int aIndexReferenceEdge, bIndexReferenceEdge;
         AeroVec2 aSupportPoint, bSupportPoint;
 
         // Find the minimum separation from A to B, along with the separation axis and point
-        real abSeparation = polygonShapeA->FindMinimumSeparation(*polygonShapeB, aIndexReferenceEdge, aSupportPoint);
+        const real abSeparation = polygonShapeA->FindMinimumSeparation(*polygonShapeB, aIndexReferenceEdge, aSupportPoint);
         // Find the minimum separation from B to A, along with the separation axis and point
-        real baSeparation = polygonShapeB->FindMinimumSeparation(*polygonShapeA, bIndexReferenceEdge, bSupportPoint);
+        const real baSeparation = polygonShapeB->FindMinimumSeparation(*polygonShapeA, bIndexReferenceEdge, bSupportPoint);
 
         // If either separation is non-negative, no overlap occurs, thus no collision
         if (abSeparation >= 0) return false;
@@ -211,13 +211,13 @@ namespace Aerolite
             indexReferenceEdge = bIndexReferenceEdge;
         }
 
-        AeroVec2 referenceEdge = referenceShape->EdgeAt(indexReferenceEdge);
+        const AeroVec2 referenceEdge = referenceShape->EdgeAt(indexReferenceEdge);
         
         // Clipping
-        int incidentIndex = incidentShape->FindIncidentEdgeIndex(referenceEdge.Normal());
-        int incidentNextIndex = (incidentIndex + 1) % incidentShape->worldVertices.size();
-        AeroVec2 v0 = incidentShape->worldVertices[incidentIndex];
-        AeroVec2 v1 = incidentShape->worldVertices[incidentNextIndex];
+        const int incidentIndex = incidentShape->FindIncidentEdgeIndex(referenceEdge.Normal());
+        const int incidentNextIndex = (incidentIndex + 1) % incidentShape->worldVertices.size();
+        const AeroVec2 v0 = incidentShape->worldVertices[incidentIndex];
+        const AeroVec2 v1 = incidentShape->worldVertices[incidentNextIndex];
         std::vector<AeroVec2> contactPoints = { v0, v1 };
         std::vector<AeroVec2> clippedPoints = contactPoints;
         for (int i = 0; i < referenceShape->worldVertices.size(); i++) {
@@ -225,7 +225,7 @@ namespace Aerolite
 
             AeroVec2 c0 = referenceShape->worldVertices[i];
             AeroVec2 c1 = referenceShape->worldVertices[(i + 1) % referenceShape->worldVertices.size()];
-            int numClipped = referenceShape->ClipLineSegmentToLine(contactPoints, clippedPoints, c0, c1);
+            const int numClipped = Aerolite::PolygonShape::ClipLineSegmentToLine(contactPoints, clippedPoints, c0, c1);
             if(numClipped < 2) {
                 break;
             }
@@ -233,10 +233,10 @@ namespace Aerolite
             contactPoints = clippedPoints; // Make the next contact points the ones that were just clipped.
         }
 
-        auto vref = referenceShape->worldVertices[indexReferenceEdge];
+        const auto vref = referenceShape->worldVertices[indexReferenceEdge];
 
         for (auto& vclip : clippedPoints) {
-            real separation = (vclip - vref).Dot(referenceEdge.Normal());
+	        const real separation = (vclip - vref).Dot(referenceEdge.Normal());
             if (separation <= 0) {
                 Contact2D contact;
                 contact.a = &a;
@@ -272,8 +272,8 @@ namespace Aerolite
         // Iterate over each edge of the polygon
         for (int i = 0; i < polygonShape->worldVertices.size(); i++)
         {
-            int currVertex = i;
-            int nextVertex = (i + 1) % polygonShape->worldVertices.size();
+	        const int currVertex = i;
+	        const int nextVertex = (i + 1) % polygonShape->worldVertices.size();
             AeroVec2 edge = polygonShape->EdgeAt(currVertex);
             AeroVec2 normal = edge.Normal();
 
@@ -281,7 +281,7 @@ namespace Aerolite
             AeroVec2 vertexToCircleCenter = circle.position - polygonShape->worldVertices[currVertex];
 
             // Project the vertex-to-center vector onto the edge's normal
-            real projection = vertexToCircleCenter.Dot(normal);
+	        const real projection = vertexToCircleCenter.Dot(normal);
 
             // Determine if the circle is outside the polygon and find the closest edge
             if (projection > 0) {
@@ -350,8 +350,8 @@ namespace Aerolite
     }
 
     // Helper functions for setting contact details (to avoid code repetition)
-    void CollisionDetection2D::SetContactDetails(Contact2D& contact, AeroBody2D& polygon, AeroBody2D& circle, AeroVec2& v1,
-                                                 real radius) {
+    void CollisionDetection2D::SetContactDetails(Contact2D& contact, AeroBody2D& polygon, AeroBody2D& circle, const AeroVec2& v1,
+                                                 const real radius) {
         contact.a = &polygon;
         contact.b = &circle;
         contact.depth = radius - v1.Magnitude();
@@ -361,8 +361,8 @@ namespace Aerolite
     }
 
     void CollisionDetection2D::SetContactDetailsForRegionC(Contact2D& contact, AeroBody2D& polygon, AeroBody2D& circle,
-                                                           AeroVec2& minCurrVertex, AeroVec2& minNextVertex, real radius,
-                                                           real distanceToCircleEdge) {
+                                                           const AeroVec2& minCurrVertex, const AeroVec2& minNextVertex, const real radius,
+                                                           const real distanceToCircleEdge) {
         contact.a = &polygon;
         contact.b = &circle;
         contact.depth = radius - distanceToCircleEdge;
@@ -372,8 +372,8 @@ namespace Aerolite
     }
 
     void CollisionDetection2D::SetContactDetailsForInsideCollision(Contact2D& contact, AeroBody2D& polygon, AeroBody2D& circle,
-                                                                   AeroVec2& minCurrVertex, AeroVec2& minNextVertex,
-                                                                   real radius, real distanceToCircleEdge) {
+                                                                   const AeroVec2& minCurrVertex, const AeroVec2& minNextVertex,
+                                                                   const real radius, const real distanceToCircleEdge) {
         contact.a = &polygon;
         contact.b = &circle;
         contact.depth = radius - distanceToCircleEdge;
@@ -391,14 +391,13 @@ namespace Aerolite
     //   - min, max: References to store the minimum and maximum projections.
     // Description: This function is a helper for the Separating Axis Theorem. It projects each vertex onto the axis
     //              and keeps track of the minimum and maximum values of these projections.
-    void CollisionDetection2D::FindMinMaxProjections(std::vector<AeroVec2> vertices, AeroVec2 axis,
+    void CollisionDetection2D::FindMinMaxProjections(const std::vector<AeroVec2>& vertices, const AeroVec2& axis,
                                                      real& min, real& max)
     {
-        for (int j = 0; j < vertices.size(); j++)
+        for (auto currentVertex : vertices)
         {
-            auto currentVertex = vertices[j];
-            // Projecting the vertex onto the axis.
-            auto projection = currentVertex.Dot(axis);
+	        // Projecting the vertex onto the axis.
+            const auto projection = currentVertex.Dot(axis);
 
             // Updating the min and max values based on the projection.
             if (projection < min) {
@@ -419,11 +418,9 @@ namespace Aerolite
 
 	    real minDistance = std::numeric_limits<real>::max();
 
-        for (int i = 0; i < shapeA.worldVertices.size(); i++)
+        for (const auto p : shapeA.worldVertices)
         {
-	        AeroVec2 p = shapeA.worldVertices[i];
-
-            for (int j = 0; j < shapeB.worldVertices.size(); j++)
+	        for (int j = 0; j < shapeB.worldVertices.size(); j++)
             {
 	            AeroVec2 edgePoint1 = shapeB.worldVertices[j];
 	            AeroVec2 edgePoint2 = shapeB.worldVertices[(j + 1) % shapeB.worldVertices.size()];
@@ -448,11 +445,9 @@ namespace Aerolite
             }
         }
 
-        for (int i = 0; i < shapeB.worldVertices.size(); i++)
+        for (const auto p : shapeB.worldVertices)
         {
-	        AeroVec2 p = shapeB.worldVertices[i];
-
-            for (int j = 0; j < shapeA.worldVertices.size(); j++)
+	        for (int j = 0; j < shapeA.worldVertices.size(); j++)
             {
 	            AeroVec2 edgePoint1 = shapeA.worldVertices[j];
 	            AeroVec2 edgePoint2 = shapeA.worldVertices[(j + 1) % shapeA.worldVertices.size()];
@@ -478,15 +473,15 @@ namespace Aerolite
         }
     }
 
-    void CollisionDetection2D::PointLineSegmentDistance(AeroVec2 p, AeroVec2 linePointA, AeroVec2 linePointB, real& distance,
+    void CollisionDetection2D::PointLineSegmentDistance(AeroVec2 p, const AeroVec2& linePointA, const AeroVec2& linePointB, real& distance,
                                                         AeroVec2& closestPoint)
     {
-	    AeroVec2 ab = linePointB - linePointA;
-	    AeroVec2 ap = p - linePointA;
+	    const AeroVec2 ab = linePointB - linePointA;
+	    const AeroVec2 ap = p - linePointA;
 
-        auto proj = ap.Dot(ab);
-        auto abMagSquared = ab.MagnitudeSquared();
-        auto d = proj / abMagSquared;
+	    const auto proj = ap.Dot(ab);
+	    const auto abMagSquared = ab.MagnitudeSquared();
+	    const auto d = proj / abMagSquared;
 
         if (d <= 0)
             closestPoint = linePointA;
