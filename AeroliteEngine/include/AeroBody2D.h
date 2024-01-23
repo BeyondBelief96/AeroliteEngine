@@ -2,23 +2,16 @@
 #ifndef BODY2D_H
 #define BODY2D_H
 
-#include <memory>
 #include "AeroVec2.h" 
 #include "Shape.h"
 #include "Precision.h"
 #include "AABB2D.h"
 
-// Using the Aerolite namespace throughout this file.
-// Note: Using a whole namespace in a header can sometimes lead to conflicts in large projects.
-using Vec2 = Aerolite::AeroVec2;
-using Shape = Aerolite::Shape;
-using real = Aerolite::real;
-
 // Declare everything in this header in the Aerolite namespace.
 namespace Aerolite {
 
-    // Define a struct Body2D representing a 2D physical body.
-    struct Body2D 
+    // Define a struct AeroBody2D representing a 2D physical body.
+    struct AeroBody2D 
     {
         AeroVec2 position; // Position of the body in 2D space.
         AeroVec2 velocity; // Velocity of the body.
@@ -41,17 +34,17 @@ namespace Aerolite {
         
         Shape* shape = nullptr; // Raw pointer to a Shape object. Initialized to nullptr.
 
-        // Constructor for Body2D.
-        Body2D(Shape* shape, const real x, const real y, const real mass);
+        // Constructor for AeroBody2D.
+        AeroBody2D(Shape* shape, const real x, const real y, const real mass);
 
-        // Destructor for Body2D.
-        ~Body2D();
+        // Destructor for AeroBody2D.
+        ~AeroBody2D();
 
         /// <summary>
         /// Returns an AABB surrounding the rigid body for broad phase collision detection.
         /// </summary>
         /// <returns>The AABB for collision detection.</returns>
-        AABB2D GetAABB(void);
+        AABB2D GetAABB(void) const;
 
         /// <summary>
         /// Preforms integration of the forces/torques and linear/angular accelerations to find the new velocities of the current
@@ -67,7 +60,7 @@ namespace Aerolite {
         /// <param name="dt"></param>
         void IntegrateVelocities(real dt);
 
-        /// @brief Determines if the Body2D has an infinite mass.
+        /// @brief Determines if the AeroBody2D has an infinite mass.
         /// @return Returns true if mass is zero, false otherwise.
         bool IsStatic(void) const;
         

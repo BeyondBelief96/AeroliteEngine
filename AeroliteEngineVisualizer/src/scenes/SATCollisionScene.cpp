@@ -14,31 +14,31 @@
 void SATCollisionScene::Setup() {
     running = Graphics::OpenWindow();
     world = std::make_unique<AeroWorld2D>();
-    auto moveableBox = std::make_unique<Aerolite::Body2D>(new BoxShape(100, 100), 0, 0, make_real<real>(1.0));
+    auto moveableBox = std::make_unique<Aerolite::AeroBody2D>(new BoxShape(100, 100), 0, 0, make_real<real>(1.0));
     moveableBox->rotation = make_real<real>(0.3);
-    auto bar1 = std::make_unique<Aerolite::Body2D>(new BoxShape(500, 50),
+    auto bar1 = std::make_unique<Aerolite::AeroBody2D>(new BoxShape(500, 50),
         Graphics::Width() / make_real<real>(2.0) - 600, Graphics::Height() - 500, make_real<real>(0.0));
     bar1->restitution = make_real<real>(0.3);
     bar1->rotation = make_real<real>(0.5);
 
-    auto bar2 = std::make_unique<Aerolite::Body2D>(new BoxShape(500, 50),
+    auto bar2 = std::make_unique<Aerolite::AeroBody2D>(new BoxShape(500, 50),
         Graphics::Width() / make_real<real>(2.0) + 600, Graphics::Height() - 500, make_real<real>(0.0));
     bar2->restitution = make_real<real>(0.3);
     bar2->rotation = -make_real<real>(0.5);
 
-    auto floor = std::make_unique<Aerolite::Body2D>(new BoxShape(Graphics::Width() - 50, 50),
+    auto floor = std::make_unique<Aerolite::AeroBody2D>(new BoxShape(Graphics::Width() - 50, 50),
         Graphics::Width() / make_real<real>(2.0), Graphics::Height() - 50, make_real<real>(0.0));
     floor->restitution = make_real<real>(0.3);
 
-    auto leftWall = std::make_unique<Aerolite::Body2D>(new BoxShape(50, Graphics::Height() - 50),
+    auto leftWall = std::make_unique<Aerolite::AeroBody2D>(new BoxShape(50, Graphics::Height() - 50),
         0, Graphics::Height() / make_real<real>(2.0), make_real<real>(0.0));
     leftWall->restitution = make_real<real>(0.3);
 
-    auto rightWall = std::make_unique<Aerolite::Body2D>(new BoxShape(50, Graphics::Height() - 50),
+    auto rightWall = std::make_unique<Aerolite::AeroBody2D>(new BoxShape(50, Graphics::Height() - 50),
         Graphics::Width(), Graphics::Height() / make_real<real>(2.0), make_real<real>(0.0));
     rightWall->restitution = make_real<real>(0.3);
 
-    auto bigBox = std::make_unique<Aerolite::Body2D>(new BoxShape(200, 200), Graphics::Width() / make_real<real>(2.0),
+    auto bigBox = std::make_unique<Aerolite::AeroBody2D>(new BoxShape(200, 200), Graphics::Width() / make_real<real>(2.0),
         Graphics::Height() / make_real<real>(2.0), make_real<real>(0.0));
     bigBox->restitution = make_real<real>(0.3);
 
@@ -74,7 +74,7 @@ void SATCollisionScene::Input() {
                 int x, y;
                 SDL_GetMouseState(&x, &y);
                 // Create and add a new BoxShape at the mouse location
-                auto polygon = std::make_unique<Body2D>(PolygonShape::CreateRegularPolygon(5, 50), x, y, make_real<real>(2.0));
+                auto polygon = std::make_unique<AeroBody2D>(PolygonShape::CreateRegularPolygon(5, 50), x, y, make_real<real>(2.0));
                 polygon->restitution = make_real<real>(0.1);
                 polygon->friction = make_real<real>(0.4);
                 world->AddBody2D(std::move(polygon));
@@ -83,7 +83,7 @@ void SATCollisionScene::Input() {
                 int x, y;
                 SDL_GetMouseState(&x, &y);
                 // Create and add a new CircleShape at the mouse location
-                auto circle = std::make_unique<Body2D>(new CircleShape(25), x, y, make_real<real>(1.0)); // Assuming radius 25 for the circle
+                auto circle = std::make_unique<AeroBody2D>(new CircleShape(25), x, y, make_real<real>(1.0)); // Assuming radius 25 for the circle
                 circle->restitution = make_real<real>(0.5);
                 circle->friction = make_real<real>(0.4);
                 world->AddBody2D(std::move(circle));
@@ -121,7 +121,7 @@ void SATCollisionScene::Update() {
 ///////////////////////////////////////////////////////////////////////////////
 void SATCollisionScene::Render() {
     Graphics::ClearScreen(0xFF000000);
-    std::vector<std::unique_ptr<Body2D>>& bodies = world->GetBodies();
+    std::vector<std::unique_ptr<AeroBody2D>>& bodies = world->GetBodies();
     for (auto& body : bodies) {
         if (body->shape->GetType() == Circle) {
             auto circleShape = dynamic_cast<CircleShape*>(body->shape);

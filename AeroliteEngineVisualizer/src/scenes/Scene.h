@@ -2,7 +2,7 @@
 #define APPLICATION_H
 
 #include "Particle2D.h"
-#include "Body2D.h"
+#include "AeroBody2D.h"
 #include "pfgen.h"
 #include "Contact2D.h"
 #include "AeroWorld2D.h"

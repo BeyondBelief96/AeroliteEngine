@@ -20,12 +20,12 @@ void JointConstraintScene::Setup() {
     const int NUM_BODIES = 10;
     for (int i = 0; i < NUM_BODIES; i++) {
         real mass = (i == 0) ? 0.0f : 1.0f;
-        auto body = std::make_unique<Body2D>(new BoxShape(30, 30), Graphics::Width() / make_real<real>(2.0) - (i * 40), 100, mass);
+        auto body = std::make_unique<AeroBody2D>(new BoxShape(30, 30), Graphics::Width() / make_real<real>(2.0) - (i * 40), 100, mass);
         world->AddBody2D(std::move(body));
     }
 
     for (int i = 0; i < NUM_BODIES - 1; i++) {
-        std::vector<std::unique_ptr<Body2D>>& bodies = world->GetBodies();
+        std::vector<std::unique_ptr<AeroBody2D>>& bodies = world->GetBodies();
         auto a = bodies[i].get();
         auto b = bodies[i + 1].get();
         auto joint = std::make_unique<JointConstraint>(*a, *b, a->position);
@@ -58,7 +58,7 @@ void JointConstraintScene::Input() {
                 int x, y;
                 SDL_GetMouseState(&x, &y);
                 // Create and add a new BoxShape at the mouse location
-                auto circle = std::make_unique<Body2D>(new CircleShape(50), x, y, make_real<real>(2.0));
+                auto circle = std::make_unique<AeroBody2D>(new CircleShape(50), x, y, make_real<real>(2.0));
                 circle->restitution = make_real<real>(1.0);
                 circle->friction = make_real<real>(0.4);
                 world->AddBody2D(std::move(circle));
@@ -67,7 +67,7 @@ void JointConstraintScene::Input() {
                 int x, y;
                 SDL_GetMouseState(&x, &y);
                 // Create and add a new CircleShape at the mouse location
-                auto circle = std::make_unique<Body2D>(PolygonShape::CreateRegularPolygon(5, 50), x, y, make_real<real>(1.0)); // Assuming radius 25 for the circle
+                auto circle = std::make_unique<AeroBody2D>(PolygonShape::CreateRegularPolygon(5, 50), x, y, make_real<real>(1.0)); // Assuming radius 25 for the circle
                 circle->restitution = make_real<real>(1.0);
                 circle->friction = make_real<real>(0.4);
                 world->AddBody2D(std::move(circle));

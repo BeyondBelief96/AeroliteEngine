@@ -106,7 +106,7 @@ namespace Aerolite {
 
     // Scalar division operator.
     AeroVec2 AeroVec2::operator/(const real n) const {
-        if (Aerolite::AreEqual(n, 0.0, epsilon)) throw std::runtime_error("Division by zero error in AeroVec2 operator /");
+        if (AreEqual(n, 0.0, epsilon)) throw std::runtime_error("Division by zero error in AeroVec2 operator /");
         return AeroVec2(x / n, y / n);
     }
 

@@ -16,8 +16,8 @@
 void Collision2DScene::Setup() {
     running = Graphics::OpenWindow();
     world = std::make_unique<AeroWorld2D>(0);
-    auto smallBox = std::make_unique<Body2D>(new BoxShape(100, 100), 100, 100, make_real<real>(5.0));
-    auto bigBox = std::make_unique<Body2D>(new BoxShape(200, 200), Graphics::Width() / make_real<real>(2.0), Graphics::Height() / make_real<real>(2.0), make_real<real>(0.0));
+    auto smallBox = std::make_unique<AeroBody2D>(new BoxShape(100, 100), 100, 100, make_real<real>(5.0));
+    auto bigBox = std::make_unique<AeroBody2D>(new BoxShape(200, 200), Graphics::Width() / make_real<real>(2.0), Graphics::Height() / make_real<real>(2.0), make_real<real>(0.0));
 
     world->AddBody2D(std::move(smallBox));
     world->AddBody2D(std::move(bigBox));
@@ -40,7 +40,7 @@ void Collision2DScene::Input() {
         case SDL_MOUSEMOTION:
             int x, y;
             SDL_GetMouseState(&x, &y);
-            std::vector<std::unique_ptr<Body2D>>& bodies = world->GetBodies();
+            std::vector<std::unique_ptr<AeroBody2D>>& bodies = world->GetBodies();
             bodies[0]->position.x = x;
             bodies[0]->position.y = y;
             break;
@@ -78,7 +78,7 @@ void Collision2DScene::Update() {
 // Render function (called several times per second to draw objects)
 ///////////////////////////////////////////////////////////////////////////////
 void Collision2DScene::Render() {
-    std::vector<std::unique_ptr<Body2D>>& bodies = world->GetBodies();
+    std::vector<std::unique_ptr<AeroBody2D>>& bodies = world->GetBodies();
     for(auto& body : bodies) {
         if(body->shape->GetType() == Circle) {
             auto circleShape = dynamic_cast<CircleShape*>(body->shape);

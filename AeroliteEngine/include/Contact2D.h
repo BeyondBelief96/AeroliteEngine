@@ -2,7 +2,7 @@
 #define CONTACT2D_H
 
 #include "AeroVec2.h"
-#include "Body2D.h"
+#include "AeroBody2D.h"
 #include "Precision.h"
 
 namespace Aerolite {
@@ -15,8 +15,8 @@ namespace Aerolite {
         // Pointers to the bodies involved in the contact.
         // These are raw pointers because Contact2D does not own the bodies.
         // The bodies are presumably managed elsewhere in your physics engine.
-        Body2D* a = nullptr;
-        Body2D* b = nullptr;
+        AeroBody2D* a = nullptr;
+        AeroBody2D* b = nullptr;
 
         // The start point of the contact in world coordinates.
         AeroVec2 start;

@@ -9,7 +9,7 @@ namespace Aerolite {
 	/// </summary>
 	/// <param name="a">The first body used for the constraint.</param>
 	/// <param name="b">The second body used for the constraint.</param>
-	Constraint2D::Constraint2D(Aerolite::Body2D& a, Aerolite::Body2D& b) : a(a), b(b)
+	Constraint2D::Constraint2D(AeroBody2D& a, AeroBody2D& b) : a(a), b(b)
 	{
 	}
 
@@ -17,7 +17,7 @@ namespace Aerolite {
 	/// Creates inverse mass/moment matrix.
 	/// </summary>
 	/// <returns>Returns a Mat6x6 with all the inverse mass and inverse I of bodies "a" and "b"</returns>
-	Aerolite::MatrixMxN<6,6> Constraint2D::GetInvM() const {
+	MatrixMxN<6, 6> Constraint2D::GetInvM() const {
 		MatrixMxN<6, 6> invM;
 		invM.Zero();
 		invM[0][0] = a.invMass;
@@ -47,7 +47,7 @@ namespace Aerolite {
 		return v;
 	}
 
-	JointConstraint::JointConstraint(Aerolite::Body2D& a, Aerolite::Body2D& b, const AeroVec2& anchorPoint) : Constraint2D(a, b)
+	JointConstraint::JointConstraint(AeroBody2D& a, AeroBody2D& b, const AeroVec2& anchorPoint) : Constraint2D(a, b)
 	{
 		this->aPoint = a.WorldSpaceToLocalSpace(anchorPoint);
 		this->bPoint = b.WorldSpaceToLocalSpace(anchorPoint);
@@ -133,8 +133,8 @@ namespace Aerolite {
 	}
 
 	PenetrationConstraint::PenetrationConstraint(
-		Aerolite::Body2D& a,
-		Aerolite::Body2D& b,
+		AeroBody2D& a,
+		AeroBody2D& b,
 		const AeroVec2& aCollisionPoint, const AeroVec2& bCollisionPoint,
 		const AeroVec2& collisionNormal) : Constraint2D(a, b)
 	{

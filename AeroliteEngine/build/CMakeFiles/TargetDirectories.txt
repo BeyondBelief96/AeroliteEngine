@@ -1,0 +1,3 @@
+C:/Users/brand/source/repos/AeroliteEngine/AeroliteEngine/build/CMakeFiles/AeroliteEngine.dir
+C:/Users/brand/source/repos/AeroliteEngine/AeroliteEngine/build/CMakeFiles/ALL_BUILD.dir
+C:/Users/brand/source/repos/AeroliteEngine/AeroliteEngine/build/CMakeFiles/ZERO_CHECK.dir

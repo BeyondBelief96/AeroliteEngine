@@ -9,12 +9,12 @@ namespace Aerolite
     // Function: IsColliding
     // Purpose: Determines if two 2D bodies are colliding.
     // Parameters:
-    //   - a, b: Pointers to the two Body2D objects being checked for collision.
+    //   - a, b: Pointers to the two AeroBody2D objects being checked for collision.
     //   - contact: A reference to a Contact2D object where collision details will be stored.
     // Description: This function first checks the shape types of the bodies (circle or polygon).
     //              It then delegates the collision detection to the appropriate function based
     //              on the shape types.
-    bool CollisionDetection2D::IsColliding(Body2D& a, Body2D& b, std::vector<Contact2D>& contacts)
+    bool CollisionDetection2D::IsColliding(AeroBody2D& a, AeroBody2D& b, std::vector<Contact2D>& contacts)
     {
         if (a.IsStatic() && b.IsStatic()) return false;
         bool aIsCircle = a.shape->GetType() == Circle;
@@ -52,11 +52,11 @@ namespace Aerolite
     // Function: IsCollidingCircleCircle
     // Purpose: Checks for collision between two circles.
     // Parameters:
-    //   - a, b: Pointers to the circle Body2D objects.
+    //   - a, b: Pointers to the circle AeroBody2D objects.
     //   - contact: A reference to a Contact2D object to store collision details.
     // Description: This function calculates if two circles are colliding by comparing
     //              the distance between their centers to the sum of their radii.
-    bool CollisionDetection2D::IsCollidingCircleCircle(Body2D& a, Body2D& b, std::vector<Contact2D>& contacts)
+    bool CollisionDetection2D::IsCollidingCircleCircle(AeroBody2D& a, AeroBody2D& b, std::vector<Contact2D>& contacts)
     {
 	    const auto aCircleShape = dynamic_cast<CircleShape*>(a.shape);
 	    const auto bCircleShape = dynamic_cast<CircleShape*>(b.shape);
@@ -84,16 +84,16 @@ namespace Aerolite
     // Function: IsCollidingPolygonPolygon
     // Purpose: Checks for collision between two polygons using the Separating Axis Theorem (SAT).
     // Parameters:
-    //   - a, b: Pointers to the polygon Body2D objects.
+    //   - a, b: Pointers to the polygon AeroBody2D objects.
     //   - contact: A reference to a Contact2D object, not used in this function as SAT does not provide contact points.
     // Description: This function checks for overlap along all possible axes formed by the edges of the polygons.
     //              If a separating axis is found (no overlap on an axis), the polygons are not colliding.
-    bool CollisionDetection2D::IsCollidingPolygonPolygon(Body2D& a, Body2D& b, std::vector<Contact2D>& contacts)
+    bool CollisionDetection2D::IsCollidingPolygonPolygon(AeroBody2D& a, AeroBody2D& b, std::vector<Contact2D>& contacts)
     {
         return IsCollidingSATOptimized(a, b, contacts);
     }
 
-    bool CollisionDetection2D::IsCollidingSATBruteForce(Body2D& a, Body2D& b, Contact2D& contact)
+    bool CollisionDetection2D::IsCollidingSATBruteForce(AeroBody2D& a, AeroBody2D& b, Contact2D& contact)
     {
         // Casting the shape of each body to a PolygonShape to access polygon-specific properties.
         auto aPolygonShape = dynamic_cast<PolygonShape*>(a.shape);
@@ -176,7 +176,7 @@ namespace Aerolite
     }
 
     // Check for collision between two polygon shapes using the Separating Axis Theorem (SAT).
-    bool CollisionDetection2D::IsCollidingSATOptimized(Body2D& a, Body2D& b, std::vector<Contact2D>& contacts)
+    bool CollisionDetection2D::IsCollidingSATOptimized(AeroBody2D& a, AeroBody2D& b, std::vector<Contact2D>& contacts)
     {
         // Cast the shapes of the bodies to polygon shapes
         auto polygonShapeA = dynamic_cast<PolygonShape*>(a.shape);
@@ -257,7 +257,7 @@ namespace Aerolite
     }
 
     // Check for collision between a circle and a polygon.
-    bool CollisionDetection2D::IsCollidingCirclePolygon(Body2D& polygon, Body2D& circle, std::vector<Contact2D>& contacts)
+    bool CollisionDetection2D::IsCollidingCirclePolygon(AeroBody2D& polygon, AeroBody2D& circle, std::vector<Contact2D>& contacts)
     {
         // Cast the shapes to their respective types
         const PolygonShape* polygonShape = dynamic_cast<PolygonShape*>(polygon.shape);
@@ -350,7 +350,7 @@ namespace Aerolite
     }
 
     // Helper functions for setting contact details (to avoid code repetition)
-    void CollisionDetection2D::SetContactDetails(Contact2D& contact, Body2D& polygon, Body2D& circle, AeroVec2& v1,
+    void CollisionDetection2D::SetContactDetails(Contact2D& contact, AeroBody2D& polygon, AeroBody2D& circle, AeroVec2& v1,
                                                  real radius) {
         contact.a = &polygon;
         contact.b = &circle;
@@ -360,7 +360,7 @@ namespace Aerolite
         contact.end = contact.start + (contact.normal * contact.depth);
     }
 
-    void CollisionDetection2D::SetContactDetailsForRegionC(Contact2D& contact, Body2D& polygon, Body2D& circle,
+    void CollisionDetection2D::SetContactDetailsForRegionC(Contact2D& contact, AeroBody2D& polygon, AeroBody2D& circle,
                                                            AeroVec2& minCurrVertex, AeroVec2& minNextVertex, real radius,
                                                            real distanceToCircleEdge) {
         contact.a = &polygon;
@@ -371,7 +371,7 @@ namespace Aerolite
         contact.end = contact.start + (contact.normal * contact.depth);
     }
 
-    void CollisionDetection2D::SetContactDetailsForInsideCollision(Contact2D& contact, Body2D& polygon, Body2D& circle,
+    void CollisionDetection2D::SetContactDetailsForInsideCollision(Contact2D& contact, AeroBody2D& polygon, AeroBody2D& circle,
                                                                    AeroVec2& minCurrVertex, AeroVec2& minNextVertex,
                                                                    real radius, real distanceToCircleEdge) {
         contact.a = &polygon;

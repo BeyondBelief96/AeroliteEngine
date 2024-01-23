@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\brand\source\repos\AeroliteEngine\AeroliteEngine\src\AeroVec2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\brand\source\repos\AeroliteEngine\AeroliteEngine\src\AeroVec3.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\brand\source\repos\AeroliteEngine\AeroliteEngine\src\AeroWorld2D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\brand\source\repos\AeroliteEngine\AeroliteEngine\src\Body2D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\brand\source\repos\AeroliteEngine\AeroliteEngine\src\Collision2D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\brand\source\repos\AeroliteEngine\AeroliteEngine\src\Constraint2D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\brand\source\repos\AeroliteEngine\AeroliteEngine\src\Contact2D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\brand\source\repos\AeroliteEngine\AeroliteEngine\src\Matrix3x3.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\brand\source\repos\AeroliteEngine\AeroliteEngine\src\Matrix3x4.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\brand\source\repos\AeroliteEngine\AeroliteEngine\src\Particle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\brand\source\repos\AeroliteEngine\AeroliteEngine\src\Shape.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\brand\source\repos\AeroliteEngine\AeroliteEngine\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{E635808A-A245-37A9-ACDB-3A3AA91A1C5E}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

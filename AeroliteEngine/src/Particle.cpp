@@ -84,7 +84,7 @@ void Particle2D::ClearForces()
 	netForces = AeroVec2(0.0f, 0.0f);
 }
 
-bool Aerolite::Particle2D::HasFiniteMass(void)
+bool Particle2D::HasFiniteMass(void)
 {
 	return invMass != 0.0f;
 }

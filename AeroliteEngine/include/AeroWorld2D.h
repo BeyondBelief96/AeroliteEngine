@@ -3,7 +3,7 @@
 
 #include <chrono>
 #include <vector>
-#include "Body2D.h"
+#include "AeroBody2D.h"
 #include "Contact2D.h"
 #include "Particle2D.h"
 #include "Constraint2D.h"
@@ -11,7 +11,7 @@
 namespace Aerolite {
     class AeroWorld2D {
     private:
-        std::vector<std::unique_ptr<Body2D>> m_bodies;
+        std::vector<std::unique_ptr<AeroBody2D>> m_bodies;
         std::vector<std::unique_ptr<Particle2D>> m_particles;
         std::vector<std::unique_ptr<Constraint2D>> m_constraints;
         std::vector<Contact2D> m_contactsList;
@@ -34,10 +34,10 @@ namespace Aerolite {
         AeroWorld2D& operator=(AeroWorld2D&& world) noexcept = default;
         AeroWorld2D& operator=(const AeroWorld2D& world) = default;
 
-        void AddBody2D(std::unique_ptr<Body2D> body);
-        std::vector<std::unique_ptr<Body2D>>& GetBodies();
+        void AddBody2D(std::unique_ptr<AeroBody2D> body);
+        std::vector<std::unique_ptr<AeroBody2D>>& GetBodies();
         void RemoveBody2D(int index);
-        void RemoveBody2D(Body2D* bodyToRemove);
+        void RemoveBody2D(AeroBody2D* bodyToRemove);
 
         void AddConstraint(std::unique_ptr<Constraint2D> constraint);
         std::vector<std::unique_ptr<Constraint2D>>& GetConstraints(void);

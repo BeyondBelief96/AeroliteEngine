@@ -19,29 +19,29 @@ void AeroWorld2DScene::Setup() {
 
     world = std::make_unique<Aerolite::AeroWorld2D>(-make_real<real>(9.8));
 
-    auto bar1 = std::make_unique<Aerolite::Body2D>(new BoxShape(500, 50),
+    auto bar1 = std::make_unique<Aerolite::AeroBody2D>(new BoxShape(500, 50),
         Graphics::Width() / make_real<real>(2.0) - 600, Graphics::Height() - 500, make_real<real>(0.0));
     bar1->restitution = make_real<real>(0.5);
     bar1->rotation = make_real<real>(0.5);
 
-    auto bar2 = std::make_unique<Aerolite::Body2D>(new BoxShape(500, 50),
+    auto bar2 = std::make_unique<Aerolite::AeroBody2D>(new BoxShape(500, 50),
         Graphics::Width() / make_real<real>(2.0) + 600, Graphics::Height() - 500, make_real<real>(0.0));
     bar2->restitution = make_real<real>(0.5);
     bar2->rotation = -make_real<real>(0.5);
 
-    auto floor = std::make_unique<Aerolite::Body2D>(new BoxShape(Graphics::Width() - 50, 50),
+    auto floor = std::make_unique<Aerolite::AeroBody2D>(new BoxShape(Graphics::Width() - 50, 50),
         Graphics::Width() / make_real<real>(2.0), Graphics::Height() - 50, make_real<real>(0.0));
     floor->restitution = make_real<real>(0.5);
 
-    auto leftWall = std::make_unique<Aerolite::Body2D>(new BoxShape(50, Graphics::Height() - 50),
+    auto leftWall = std::make_unique<Aerolite::AeroBody2D>(new BoxShape(50, Graphics::Height() - 50),
         0, Graphics::Height() / make_real<real>(2.0), make_real<real>(0.0));
     leftWall->restitution = make_real<real>(0.5);
 
-    auto rightWall = std::make_unique<Aerolite::Body2D>(new BoxShape(50, Graphics::Height() - 50),
+    auto rightWall = std::make_unique<Aerolite::AeroBody2D>(new BoxShape(50, Graphics::Height() - 50),
         Graphics::Width(), Graphics::Height() / make_real<real>(2.0), make_real<real>(0.0));
     rightWall->restitution = make_real<real>(0.5);
 
-    auto bigBox = std::make_unique<Aerolite::Body2D>(new BoxShape(200, 200), Graphics::Width() / make_real<real>(2.0),
+    auto bigBox = std::make_unique<Aerolite::AeroBody2D>(new BoxShape(200, 200), Graphics::Width() / make_real<real>(2.0),
         Graphics::Height() / make_real<real>(2.0), make_real<real>(0.0));
     bigBox->restitution = make_real<real>(0.5);
 
@@ -77,7 +77,7 @@ void AeroWorld2DScene::Input() {
                 int x, y;
                 SDL_GetMouseState(&x, &y);
                 // Create and add a new BoxShape at the mouse location
-                auto circle = std::make_unique<Body2D>(new CircleShape(50), x, y, make_real<real>(2.0));
+                auto circle = std::make_unique<AeroBody2D>(new CircleShape(50), x, y, make_real<real>(2.0));
                 circle->restitution = 0;
                 circle->friction = make_real<real>(0.4);
                 world->AddBody2D(std::move(circle));
@@ -86,7 +86,7 @@ void AeroWorld2DScene::Input() {
                 int x, y;
                 SDL_GetMouseState(&x, &y);
                 // Create and add a new CircleShape at the mouse location
-                auto circle = std::make_unique<Body2D>(new BoxShape(50, 50), x, y, make_real<real>(1.0)); // Assuming radius 25 for the circle
+                auto circle = std::make_unique<AeroBody2D>(new BoxShape(50, 50), x, y, make_real<real>(1.0)); // Assuming radius 25 for the circle
                 circle->restitution = 0;
                 circle->friction = make_real<real>(0.4);
                 world->AddBody2D(std::move(circle));

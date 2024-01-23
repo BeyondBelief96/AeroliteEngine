@@ -15,7 +15,7 @@ void CollisionProjectionResolutionScene::Setup() {
     running = Graphics::OpenWindow();
 
     world = std::make_unique<AeroWorld2D>();
-    auto bigBall = std::make_unique<Body2D>(new CircleShape(100), Graphics::Width() / make_real<real>(2.0), Graphics::Height() / make_real<real>(2.0), make_real<real>(0.0));
+    auto bigBall = std::make_unique<AeroBody2D>(new CircleShape(100), Graphics::Width() / make_real<real>(2.0), Graphics::Height() / make_real<real>(2.0), make_real<real>(0.0));
     world->AddBody2D(std::move(bigBall));
 }
 
@@ -37,7 +37,7 @@ void CollisionProjectionResolutionScene::Input() {
             if(event.button.button == SDL_BUTTON_LEFT) {
                 int x, y;
                 SDL_GetMouseState(&x, &y);
-                auto ball = std::make_unique<Body2D>(new CircleShape(50), x, y, make_real<real>(1.0));
+                auto ball = std::make_unique<AeroBody2D>(new CircleShape(50), x, y, make_real<real>(1.0));
                 world->AddBody2D(std::move(ball));
             }
             break;
@@ -74,7 +74,7 @@ void CollisionProjectionResolutionScene::Update() {
 ///////////////////////////////////////////////////////////////////////////////
 void CollisionProjectionResolutionScene::Render() {
     Graphics::ClearScreen(0xFF000000);
-    std::vector<std::unique_ptr<Body2D>>& bodies = world->GetBodies();
+    std::vector<std::unique_ptr<AeroBody2D>>& bodies = world->GetBodies();
     for(auto& body : bodies) {
         if(body->shape->GetType() == Circle) {
             auto circleShape = dynamic_cast<CircleShape*>(body->shape);

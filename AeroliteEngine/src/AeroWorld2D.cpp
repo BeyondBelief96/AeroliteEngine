@@ -13,7 +13,7 @@ namespace Aerolite {
         m_bodyTorques(std::move(world.m_bodyTorques)), m_g(world.m_g) {
     }
 
-    void AeroWorld2D::AddBody2D(std::unique_ptr<Body2D> body) {
+    void AeroWorld2D::AddBody2D(std::unique_ptr<AeroBody2D> body) {
         if (body != nullptr) {
             m_bodies.push_back(std::move(body));
         }
@@ -52,9 +52,9 @@ namespace Aerolite {
         m_bodies.erase(m_bodies.begin() + index);
     }
 
-    void AeroWorld2D::RemoveBody2D(Body2D* bodyToRemove) {
+    void AeroWorld2D::RemoveBody2D(AeroBody2D* bodyToRemove) {
         auto it = std::remove_if(m_bodies.begin(), m_bodies.end(),
-            [bodyToRemove](const std::unique_ptr<Body2D>& body) {
+            [bodyToRemove](const std::unique_ptr<AeroBody2D>& body) {
                 return body.get() == bodyToRemove;
             });
 
@@ -63,7 +63,7 @@ namespace Aerolite {
         }
     }
 
-    std::vector<std::unique_ptr<Body2D>>& AeroWorld2D::GetBodies() {
+    std::vector<std::unique_ptr<AeroBody2D>>& AeroWorld2D::GetBodies() {
         return m_bodies;
     }
 
@@ -120,8 +120,8 @@ namespace Aerolite {
         // Collision Detection and Resolution.
         for (int i = 0; i < m_bodies.size(); ++i) {
             for (int j = i + 1; j < m_bodies.size(); ++j) {
-                std::unique_ptr<Body2D>& a = m_bodies[i];
-                std::unique_ptr<Body2D>& b = m_bodies[j];
+                std::unique_ptr<AeroBody2D>& a = m_bodies[i];
+                std::unique_ptr<AeroBody2D>& b = m_bodies[j];
                 auto aAABB = a->GetAABB();
                 auto bAABB = b->GetAABB();
                 if (!CollisionDetection2D::IntersectAABBs(aAABB, bAABB)) continue;

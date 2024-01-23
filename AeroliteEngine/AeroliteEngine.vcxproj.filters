@@ -30,7 +30,7 @@
     <ClInclude Include="src\Physics\Forces\pfgen.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Body2D.h">
+    <ClInclude Include="include\AeroBody2D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Collision2D.h">
@@ -83,7 +83,7 @@
     <ClCompile Include="src\Particle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Body2D.cpp">
+    <ClCompile Include="src\AeroBody2D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Collision2D.cpp">

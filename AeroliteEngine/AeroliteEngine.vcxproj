@@ -145,7 +145,7 @@
   <ItemGroup>
     <ClInclude Include="include\AABB2D.h" />
     <ClInclude Include="include\AeroWorld2D.h" />
-    <ClInclude Include="include\Body2D.h" />
+    <ClInclude Include="include\AeroBody2D.h" />
     <ClInclude Include="include\Collision2D.h" />
     <ClInclude Include="include\Config.h" />
     <ClInclude Include="include\Constants.h" />
@@ -165,7 +165,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\AeroWorld2D.cpp" />
-    <ClCompile Include="src\Body2D.cpp" />
+    <ClCompile Include="src\AeroBody2D.cpp" />
     <ClCompile Include="src\Collision2D.cpp" />
     <ClCompile Include="src\Constraint2D.cpp" />
     <ClCompile Include="src\Contact2D.cpp" />

@@ -1,20 +1,20 @@
 #ifndef CONSTRAINT2D_H
 #define CONSTRAINT2D_H
 
-#include "Body2D.h"
+#include "AeroBody2D.h"
 #include "MatrixMxN.h"
 #include "VecN.h"
 
 namespace Aerolite {
 	class Constraint2D {
 	public:
-		Body2D& a;
-		Body2D& b;
+		AeroBody2D& a;
+		AeroBody2D& b;
 
 		AeroVec2 aPoint; // Constraint specific point in A's local space.
 		AeroVec2 bPoint; // Constraint specific point in B's local space.
 
-		Constraint2D(Body2D& a, Body2D& b);
+		Constraint2D(AeroBody2D& a, AeroBody2D& b);
 		virtual ~Constraint2D() = default;
 
 		/// <summary>
@@ -48,7 +48,7 @@ namespace Aerolite {
 	public:
 
 		JointConstraint() = default;
-		JointConstraint(Body2D& a, Body2D& b, const AeroVec2& anchorPoint);
+		JointConstraint(AeroBody2D& a, AeroBody2D& b, const AeroVec2& anchorPoint);
 
 		void PreSolve(const real dt) override;
 		void Solve(void) override;
@@ -65,8 +65,8 @@ namespace Aerolite {
 	public:
 		PenetrationConstraint() = default;
 		PenetrationConstraint(
-			Body2D& a,
-			Body2D& b,
+			AeroBody2D& a,
+			AeroBody2D& b,
 			const AeroVec2& aCollisionPoint,
 			const AeroVec2& bCollisionPoint, 
 			const AeroVec2& collisionNormal);
