@@ -2,7 +2,7 @@
 
 
 int main(int argc, char *args[]) {
-    OptimizationScene
+    LargeParticleTestScene
         scene;
 
     scene.Setup();

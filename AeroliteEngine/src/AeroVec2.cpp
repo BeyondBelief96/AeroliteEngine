@@ -80,8 +80,8 @@ namespace Aerolite {
     // Equality comparison operator.
     bool AeroVec2::operator==(const AeroVec2& v) const noexcept {
         // Precision comparison to handle floating-point inaccuracies.
-        return AreEqual(x, v.x, epsilon) &&
-	        AreEqual(y, v.y, epsilon);
+        return AreEqual(x, v.x, EPSILON) &&
+	        AreEqual(y, v.y, EPSILON);
     }
 
     // Inequality comparison operator.
@@ -106,7 +106,7 @@ namespace Aerolite {
 
     // Scalar division operator.
     AeroVec2 AeroVec2::operator/(const real n) const {
-        if (AreEqual(n, 0.0, epsilon)) throw std::runtime_error("Division by zero error in AeroVec2 operator /");
+        if (AreEqual(n, 0.0, EPSILON)) throw std::runtime_error("Division by zero error in AeroVec2 operator /");
         return AeroVec2(x / n, y / n);
     }
 
@@ -135,7 +135,7 @@ namespace Aerolite {
 
     // Scalar division assignment operator.
     AeroVec2& AeroVec2::operator/=(const real n) {
-        if (AreEqual(n, 0.0, epsilon)) throw std::runtime_error("Division by zero error in AeroVec2 operator /=");
+        if (AreEqual(n, 0.0, EPSILON)) throw std::runtime_error("Division by zero error in AeroVec2 operator /=");
         x /= n;
         y /= n;
         return *this;

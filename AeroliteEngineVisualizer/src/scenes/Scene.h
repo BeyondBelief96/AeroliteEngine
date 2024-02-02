@@ -35,11 +35,11 @@ private:
     Vec2 pushForce;
     
 public:
-    void Setup() override;
-    void Input() override;
-    void Update() override;
-    void Render() override;
-    void Destroy()override;
+    virtual void Setup() override;
+    virtual void Input() override;
+    virtual void Update() override;
+    virtual void Render() override;
+    virtual void Destroy()override;
 };
 
 class BilliardScene : public Scene
@@ -51,11 +51,11 @@ private:
     bool leftMouseButtonDown;
 
 public:
-    void Setup() override;
-    void Input() override;
-    void Update() override;
-    void Render() override;
-    void Destroy()override;
+    virtual void Setup() override;
+    virtual void Input() override;
+    virtual void Update() override;
+    virtual void Render() override;
+    virtual void Destroy()override;
 
 };
 
@@ -77,11 +77,11 @@ public:
         real sunMass);
 
 
-    void Setup() override;
-    void Input() override;
-    void Update() override;
-    void Render() override;
-    void Destroy()override;
+    virtual void Setup() override;
+    virtual void Input() override;
+    virtual void Update() override;
+    virtual void Render() override;
+    virtual void Destroy()override;
 };
 
 class SpringScene : public Scene
@@ -99,11 +99,11 @@ private:
     float PARTICLE_MASS = make_real<real>(1.0);
 
 public:
-    void Setup() override;
-    void Input() override;
-    void Update() override;
-    void Render() override;
-    void Destroy()override;
+    virtual void Setup() override;
+    virtual void Input() override;
+    virtual void Update() override;
+    virtual void Render() override;
+    virtual void Destroy()override;
 
 };
 
@@ -115,11 +115,11 @@ private:
     bool leftMouseButtonDown;
 
 public:
-    void Setup() override;
-    void Input() override;
-    void Update() override;
-    void Render() override;
-    void Destroy()override;
+    virtual void Setup() override;
+    virtual void Input() override;
+    virtual void Update() override;
+    virtual void Render() override;
+    virtual void Destroy()override;
 
 };
 
@@ -132,11 +132,11 @@ class CollisionProjectionResolutionScene : public Scene
         bool leftMouseButtonDown;
 
     public:
-        void Setup() override;
-        void Input() override;
-        void Update() override;
-        void Render() override;
-        void Destroy()override;
+        virtual void Setup() override;
+        virtual void Input() override;
+        virtual void Update() override;
+        virtual void Render() override;
+        virtual void Destroy()override;
 };
 
 class SATCollisionScene : public Scene
@@ -149,11 +149,11 @@ private:
     bool debug = false;
 
 public:
-    void Setup() override;
-    void Input() override;
-    void Update() override;
-    void Render() override;
-    void Destroy()override;
+    virtual void Setup() override;
+    virtual void Input() override;
+    virtual void Update() override;
+    virtual void Render() override;
+    virtual void Destroy()override;
 };
 
 class AeroWorld2DScene : public Scene
@@ -162,11 +162,11 @@ private:
     std::unique_ptr<Aerolite::AeroWorld2D> world;
     bool debug;
 public:
-    void Setup() override;
-    void Input() override;
-    void Update() override;
-    void Render() override;
-    void Destroy()override;
+    virtual void Setup() override;
+    virtual void Input() override;
+    virtual void Update() override;
+    virtual void Render() override;
+    virtual void Destroy()override;
 };
 
 class JointConstraintScene : public Scene
@@ -175,11 +175,11 @@ private:
     std::unique_ptr<Aerolite::AeroWorld2D> world;
     bool debug;
 public:
-    void Setup() override;
-    void Input() override;
-    void Update() override;
-    void Render() override;
-    void Destroy()override;
+    virtual void Setup() override;
+    virtual void Input() override;
+    virtual void Update() override;
+    virtual void Render() override;
+    virtual void Destroy()override;
 };
 
 class RagdollJointScene : public Scene
@@ -188,25 +188,37 @@ private:
     std::unique_ptr<Aerolite::AeroWorld2D> world;
     bool debug;
 public:
-    void Setup() override;
-    void Input() override;
-    void Update() override;
-    void Render() override;
-    void Destroy()override;
+    virtual void Setup() override;
+    virtual void Input() override;
+    virtual void Update() override;
+    virtual void Render() override;
+    virtual void Destroy()override;
 };
 
-class OptimizationScene : public Scene
+class Body2DTestScene : public Scene
 {
 private:
-    SDL_Texture* bgTexture;
     std::unique_ptr<Aerolite::AeroWorld2D> world;
     bool debug;
 public:
-    void Setup() override;
-    void Input() override;
-    void Update() override;
-    void Render() override;
-    void Destroy()override;
+    virtual void Setup() override;
+    virtual void Input() override;
+    virtual void Update() override;
+    virtual void Render() override;
+    virtual void Destroy()override;
+};
+
+class LargeParticleTestScene : public Scene
+{
+    std::unique_ptr<Aerolite::AeroWorld2D> world;
+    bool debug;
+	void CreateRandomCircles(int numberOfCircles, real velocityRange, real radius) const;
+public:
+    virtual void Setup() override;
+    virtual void Input() override;
+    virtual void Update() override;
+    virtual void Render() override;
+    virtual void Destroy()override;
 };
 
 #endif

@@ -12,7 +12,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Setup function (executed once in the beginning of the simulation)
 ///////////////////////////////////////////////////////////////////////////////
-void OptimizationScene::Setup() {
+void Body2DTestScene::Setup() {
 
     running = Graphics::OpenWindow();
 
@@ -105,7 +105,7 @@ void OptimizationScene::Setup() {
 ///////////////////////////////////////////////////////////////////////////////
 // Input processing
 ///////////////////////////////////////////////////////////////////////////////
-void OptimizationScene::Input() {
+void Body2DTestScene::Input() {
     SDL_Event event;
     //static std::default_random_engine engine(std::random_device{}()); // Random number engine
     //static std::uniform_int_distribution<int> distribution(0, 1);    // Distribution to generate either 0 or 1
@@ -154,7 +154,7 @@ void OptimizationScene::Input() {
 ///////////////////////////////////////////////////////////////////////////////
 // Update function (called several times per second to update objects)
 ///////////////////////////////////////////////////////////////////////////////
-void OptimizationScene::Update() {
+void Body2DTestScene::Update() {
     // Check if we are too fast, and if so, waste some milliseconds until we reach
     // MILLISECONDS_PER_FRAME.
     const int time_to_wait = MILLISECS_PER_FRAME - (SDL_GetTicks() - timePreviousFrame);
@@ -177,7 +177,7 @@ void OptimizationScene::Update() {
 ///////////////////////////////////////////////////////////////////////////////
 // Render function (called several times per second to draw objects)
 ///////////////////////////////////////////////////////////////////////////////
-void OptimizationScene::Render() {
+void Body2DTestScene::Render() {
     Graphics::ClearScreen(0xFF000000);
     for (auto& body : world->GetBodies()) {
         if (body->shape->GetType() == Circle) {
@@ -210,6 +210,6 @@ void OptimizationScene::Render() {
 ///////////////////////////////////////////////////////////////////////////////
 // Destroy function to delete objects and close the window
 ///////////////////////////////////////////////////////////////////////////////
-void OptimizationScene::Destroy() {
+void Body2DTestScene::Destroy() {
     Graphics::CloseWindow();
 }

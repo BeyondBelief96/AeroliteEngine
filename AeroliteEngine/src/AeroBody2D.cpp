@@ -14,17 +14,17 @@ namespace Aerolite {
         this->acceleration = AeroVec2(0.0f, 0.0f);
         this->mass = mass;
         this->rotation = 0.0f;
-        this->angularVelocity = 0.0f;
-        this->angularAcceleration = 0.0f;
-        this->sumForces = AeroVec2(0.0f, 0.0f);
-        this->sumTorque = 0.0f;
+        this->angular_velocity = 0.0f;
+        this->angular_acceleration = 0.0f;
+        this->sum_forces = AeroVec2(0.0f, 0.0f);
+        this->sum_torque = 0.0f;
         this->restitution = 0.5;
         this->friction = make_real<real>(0.7);
 
         if(mass != 0.0) {
-            this-> invMass = make_real<real>(1.0) / mass;
+            this-> inv_mass = make_real<real>(1.0) / mass;
         } else {
-            this->invMass = 0.0;
+            this->inv_mass = 0.0;
         }
 
         this->I = shape->GetMomentOfInertia() * this->mass;
@@ -72,16 +72,16 @@ namespace Aerolite {
         if (IsStatic()) return;
 
         // Find the acceleration based on the forces that are being applied this frame.
-        acceleration = sumForces * invMass;
+        acceleration = sum_forces * inv_mass;
 
         // Integrate the acceleration to find the new velocity.
         velocity += acceleration * dt;
 
         // Integrate the torques to find the new angular acceleration.
-        angularAcceleration = sumTorque * invI;
+        angular_acceleration = sum_torque * invI;
 
         // Integrate the angular acceleration to find the new angular velocity.
-        angularVelocity += angularAcceleration * dt;
+        angular_velocity += angular_acceleration * dt;
 
         // Clear all forces and torque acting on the body before the next physics simulation frame.
         ClearForces();
@@ -96,7 +96,7 @@ namespace Aerolite {
         position += velocity * dt + (acceleration * dt * dt) / 2.0f;
 
         // Integrate the angular velocity to find the new rotation angle.
-        rotation += angularVelocity * dt;
+        rotation += angular_velocity * dt;
 
         // Update the vertices of the shape based on the position/rotation.
         shape->UpdateVertices(rotation, position);
@@ -111,65 +111,65 @@ namespace Aerolite {
 
     bool AeroBody2D::IsStatic(void) const
     {
-        return AreEqual(mass, 0.0, epsilon);
+        return AreEqual(mass, 0.0, EPSILON);
     }
 
     // Method to add a force vector to the body.
     void AeroBody2D::AddForce(const AeroVec2 &force)
     {
-        sumForces += force;
+        sum_forces += force;
     }
 
     // Method to add a torque to the body.
     void AeroBody2D::AddTorque(const real torque)
     {
-        sumTorque += torque;
+        sum_torque += torque;
     }
 
     void AeroBody2D::ApplyImpulseLinear(const AeroVec2& j)
     {
         if (IsStatic()) return;
-        velocity += j * invMass;
+        velocity += j * inv_mass;
     }
 
     void AeroBody2D::ApplyImpulseAngular(const real j)
     {
         if (IsStatic()) return;
-        angularVelocity += j * invI;
+        angular_velocity += j * invI;
     }
 
     void AeroBody2D::ApplyImpulseAtPoint(const AeroVec2& j, const AeroVec2& r)
     {
         if (IsStatic()) return;
 
-        velocity += j * invMass;
-        angularVelocity += r.Cross(j) * invI;
+        velocity += j * inv_mass;
+        angular_velocity += r.Cross(j) * invI;
     }
 
     // Method to clear all forces acting on the body.
     void AeroBody2D::ClearForces(void)
     {
-        sumForces = AeroVec2(0, 0);
+        sum_forces = AeroVec2(0, 0);
     }
 
     // Method to clear all torques acting on the body.
     void AeroBody2D::ClearTorque(void)
     {
-        sumTorque = 0;
+        sum_torque = 0;
     }
 
-    AeroVec2 AeroBody2D::LocalSpaceToWorldSpace(const AeroVec2& point)
+    AeroVec2 AeroBody2D::LocalSpaceToWorldSpace(const AeroVec2& point) const
     {
-        AeroVec2 rotated = point.Rotate(rotation);
+        const AeroVec2 rotated = point.Rotate(rotation);
         return rotated + position;
     }
 
-    AeroVec2 AeroBody2D::WorldSpaceToLocalSpace(const AeroVec2& point)
+    AeroVec2 AeroBody2D::WorldSpaceToLocalSpace(const AeroVec2& point) const
     {
-        real translatedX = point.x - position.x;
-        real translatedY = point.y - position.y;
-        real rotatedX = cos(-rotation) * translatedX - sin(-rotation) * translatedY;
-        real rotatedY = cos(-rotation) * translatedY + sin(-rotation) * translatedX;
+        const real translatedX = point.x - position.x;
+        const real translatedY = point.y - position.y;
+        const real rotatedX = cos(-rotation) * translatedX - sin(-rotation) * translatedY;
+        const real rotatedY = cos(-rotation) * translatedY + sin(-rotation) * translatedX;
         return AeroVec2(rotatedX, rotatedY);
     }
 }

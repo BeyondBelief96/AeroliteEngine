@@ -20,12 +20,12 @@ namespace Aerolite {
 	MatrixMxN<6, 6> Constraint2D::GetInvM() const {
 		MatrixMxN<6, 6> invM;
 		invM.Zero();
-		invM[0][0] = a.invMass;
-		invM[1][1] = a.invMass;
+		invM[0][0] = a.inv_mass;
+		invM[1][1] = a.inv_mass;
 		invM[2][2] = a.invI;
 
-		invM[3][3] = b.invMass;
-		invM[4][4] = b.invMass;
+		invM[3][3] = b.inv_mass;
+		invM[4][4] = b.inv_mass;
 		invM[5][5] = b.invI;
 		return invM;
 	}
@@ -39,10 +39,10 @@ namespace Aerolite {
 		MatrixMxN<6,1> v;
 		v[0][0] = a.velocity.x;
 		v[1][0] = a.velocity.y;
-		v[2][0] = a.angularVelocity;
+		v[2][0] = a.angular_velocity;
 		v[3][0] = b.velocity.x;
 		v[4][0] = b.velocity.y;
-		v[5][0] = b.angularVelocity;
+		v[5][0] = b.angular_velocity;
 
 		return v;
 	}
@@ -210,8 +210,8 @@ namespace Aerolite {
 		C = std::min(0.0f, C + 0.01f);
 		
 		// Calculate the relative velocity pre-impuse normal to computse elasticity.
-		AeroVec2 va = a.velocity + AeroVec2(-a.angularVelocity * ra.y, a.angularVelocity * ra.x);
-		AeroVec2 vb = b.velocity + AeroVec2(-b.angularVelocity * rb.y, a.angularVelocity * rb.x);
+		AeroVec2 va = a.velocity + AeroVec2(-a.angular_velocity * ra.y, a.angular_velocity * ra.x);
+		AeroVec2 vb = b.velocity + AeroVec2(-b.angular_velocity * rb.y, a.angular_velocity * rb.x);
 		real vrelDotNormal = (va - vb).Dot(n);
 		real e = std::min(a.restitution, b.restitution);
 		bias = (beta / dt) * C + (e * vrelDotNormal);

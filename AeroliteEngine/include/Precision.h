@@ -13,7 +13,7 @@ namespace Aerolite {
     typedef float real;
 #endif
 
-    const real epsilon = 0.005f;
+    const real EPSILON = 0.005f;
 
     inline bool AreEqual(real a, real b, real epsilon)
     {
@@ -30,9 +30,51 @@ namespace Aerolite {
     /// <param name="b">The value to take on the value of a.</param>
     inline void Swap(real a, real b)
     {
-        real t = a;
+        const real t = a;
         a = b;
         b = t;
+    }
+
+    /**
+     * \brief Takes the sqrt of the 'real' typedef depending if it's currently
+     * defined as a float or double.
+     * \param a The value to take the sqrt of.
+     * \return Returns the sqrt of the value of a.
+     */
+    inline real RealSqrt(const real a)
+    {
+        if (std::is_same_v < real, float>)
+            return std::sqrtf(a);
+        else if (std::is_same_v<real, double>)
+            return std::sqrt(a);
+    }
+
+	/**
+    * \brief Takes the sin of the 'real' typedef depending if it's currently
+    * defined as a float or double.
+    * \param a The value to take the sin of.
+    * \return Returns the sin of the value of a.
+    */
+    inline real RealSin(const real a)
+    {
+        if (std::is_same_v < real, float>)
+            return std::sinf(a);
+        else if (std::is_same_v<real, double>)
+            return std::sin(a);
+    }
+
+    /**
+    * \brief Takes the cos of the 'real' typedef depending if it's currently
+    * defined as a float or double.
+    * \param a The value to take the cos of.
+    * \return Returns the cos of the value of a.
+    */
+    inline real RealCos(const real a)
+    {
+        if (std::is_same_v < real, float>)
+            return std::cosf(a);
+        else if (std::is_same_v<real, double>)
+            return std::cos(a);
     }
 
     template<typename T>

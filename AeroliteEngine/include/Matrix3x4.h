@@ -10,12 +10,12 @@ class Matrix3x4
 {
 private:
     /// @brief Holds the matrix elements.
-    Aerolite::real data[12];
+    Aerolite::real m_data[12];
 
     /// @brief The determinant of the matrix. 
-    Aerolite::real determinant;
+    Aerolite::real m_determinant;
 
-    /// @brief Calculates the determinant of the 3x3 submatrix in the upper-left corner.
+    /// @brief Calculates the determinant of the 3x3 sub-matrix in the upper-left corner.
     Aerolite::real CalcDeterminant();
 
 public:
@@ -29,7 +29,15 @@ public:
 
     // Constructs a Matrix3x4 by copying the elements from the passed in array into its internal array structure.
     Matrix3x4(Aerolite::real elements[12]);
-    
+
+    /**
+     * \brief Used to retrieve a specific element by row and column indices.
+     * \param row The row of the element to retrieve.
+     * \param column The column of the element to retrieve.
+     * \return Returns the element at the given row/column indices in the matrix.
+     */
+    Aerolite::real GetElement(int row, int column);
+
     /// @brief Sets the specified element at the given row/column to the passed-in value.
     /// @param row The row to set the value at (0-based index).
     /// @param column The column to set the value at (0-based index).
@@ -41,11 +49,47 @@ public:
     /// @return the transformed vector.
     Aerolite::AeroVec3 operator * (const Aerolite::AeroVec3& vector) const;
 
+    /**
+     * \brief Multiplies the given matrix o by this matrix.
+     * \param o The matrix to be multiplied by this matrix.
+     * \return Returns the result of this * o.
+     */
     Matrix3x4 operator*(const Matrix3x4 &o) const;
 
+    /**
+     * \brief Performs matrix multiplication in the order of this * mat.
+     * \param mat The matrix to be multiplied by this matrix.
+     * \return Returns the result of this * mat.
+     */
     Matrix3x4 MultMat3x4(const Matrix3x4& mat) const;
 
+    /**
+     * \brief Operator overload for *= which multiplies o by this matrix and stores the
+     * result in this matrix.
+     * \param o The matrix that will be multiplied by this matrix.
+     */
     void operator*=(const Matrix3x4 &o);
+
+    /**
+     * \brief Overload operator[] to provide row access
+     * \param row returns a pointer to the beginning of the row, which can be indexed again
+     * to get the column.
+     * \return Returns a pointer to the beginning of the row.
+     */
+    Aerolite::real* operator[](const int row) {
+        // Assuming each row has 4 elements, calculate the index of the first element of the requested row
+        return m_data + row * 4;
+    }
+
+    /**
+    * \brief Constant version of the Overload operator[] to provide row access
+    * \param row returns a pointer to the beginning of the row, which can be indexed again
+    * to get the column.
+    * \return Returns a pointer to the beginning of the row.
+    */
+    const Aerolite::real* operator[](const int row) const {
+        return m_data + row * 4;
+    }
 
     /// @brief Transforms the given vector by this matrix.
     /// @param vector The vector to transform.
@@ -101,7 +145,7 @@ public:
     static Aerolite::AeroVec3 LocalToWorldDirection(const Aerolite::AeroVec3& localDirection, const Matrix3x4& transform);
 
     /// @brief Transforms the given world direction vector by given the local transform matrix with translation removed.
-    /// @param localDirection The world direction vector to transform.
+    /// @param worldDirection The world direction vector to transform.
     /// @return Return the transformed direction vector.
     static Aerolite::AeroVec3 WorldToLocalDirection(const Aerolite::AeroVec3& worldDirection, const Matrix3x4& transform);
 };

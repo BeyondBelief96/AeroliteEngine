@@ -430,7 +430,7 @@ namespace Aerolite
 
                 PointLineSegmentDistance(p, edgePoint1, edgePoint2, distance, closestPoint);
 
-                if (AreEqual(distance, minDistance, epsilon))
+                if (AreEqual(distance, minDistance, EPSILON))
                 {
                     if (closestPoint != contact.start)
                     {
@@ -457,7 +457,7 @@ namespace Aerolite
 
                 PointLineSegmentDistance(p, edgePoint1, edgePoint2, distance, closestPoint);
 
-                if (AreEqual(distance, minDistance, epsilon))
+                if (AreEqual(distance, minDistance, EPSILON))
                 {
                     if (closestPoint != contact.start)
                     {

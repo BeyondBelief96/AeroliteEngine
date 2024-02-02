@@ -4,9 +4,9 @@
 
 Aerolite::real Matrix3x4::CalcDeterminant()
 {
-    Aerolite::real subDet = data[0] * (data[5] * data[10] - data[6] * data[9]) -
-                            data[1] * (data[4] * data[10] - data[6] * data[8]) +
-                            data[2] * (data[4] * data[9] - data[5] * data[8]);
+    Aerolite::real subDet = m_data[0] * (m_data[5] * m_data[10] - m_data[6] * m_data[9]) -
+                            m_data[1] * (m_data[4] * m_data[10] - m_data[6] * m_data[8]) +
+                            m_data[2] * (m_data[4] * m_data[9] - m_data[5] * m_data[8]);
 
     return subDet;
 }
@@ -16,26 +16,31 @@ Matrix3x4::Matrix3x4(
     Aerolite::real e4, Aerolite::real e5, Aerolite::real e6, Aerolite::real e7,
     Aerolite::real e8, Aerolite::real e9, Aerolite::real e10, Aerolite::real e11)
 {
-    data[0] = e0;
-    data[1] = e1;
-    data[2] = e2;
-    data[3] = e3;
-    data[4] = e4;
-    data[5] = e5;
-    data[6] = e6;
-    data[7] = e7;
-    data[8] = e8;
-    data[9] = e9;
-    data[10] = e10;
-    data[11] = e11;
+    m_data[0] = e0;
+    m_data[1] = e1;
+    m_data[2] = e2;
+    m_data[3] = e3;
+    m_data[4] = e4;
+    m_data[5] = e5;
+    m_data[6] = e6;
+    m_data[7] = e7;
+    m_data[8] = e8;
+    m_data[9] = e9;
+    m_data[10] = e10;
+    m_data[11] = e11;
 
-    determinant = CalcDeterminant();
+    m_determinant = CalcDeterminant();
 }
 
 Matrix3x4::Matrix3x4(Aerolite::real elements[12])
 {
-    std::copy(elements, elements + 12, data);
-    determinant = CalcDeterminant();
+    std::copy(elements, elements + 12, m_data);
+    m_determinant = CalcDeterminant();
+}
+
+Aerolite::real Matrix3x4::GetElement(const int row, const int column)
+{
+    return m_data[(row * 4) + column];
 }
 
 void Matrix3x4::SetElement(int row, int column, Aerolite::real value)
@@ -43,8 +48,8 @@ void Matrix3x4::SetElement(int row, int column, Aerolite::real value)
     if (row >= 0 && row < 3 && column >= 0 && column < 4)
     {
         int index = row * 4 + column;
-        data[index] = value;
-        determinant = CalcDeterminant();
+        m_data[index] = value;
+        m_determinant = CalcDeterminant();
     }
     else
     {
@@ -55,9 +60,9 @@ void Matrix3x4::SetElement(int row, int column, Aerolite::real value)
 Aerolite::AeroVec3 Matrix3x4::operator*(const Aerolite::AeroVec3& vector) const
 {
     return Aerolite::AeroVec3(
-        vector.x * data[0] + vector.y * data[1] + vector.z * data[2] + data[3],
-        vector.x * data[4] + vector.y * data[5] + vector.z * data[6] + data[7],
-        vector.x * data[8] + vector.y * data[9] + vector.z * data[10] + data[11]
+        vector.x * m_data[0] + vector.y * m_data[1] + vector.z * m_data[2] + m_data[3],
+        vector.x * m_data[4] + vector.y * m_data[5] + vector.z * m_data[6] + m_data[7],
+        vector.x * m_data[8] + vector.y * m_data[9] + vector.z * m_data[10] + m_data[11]
     );
 }
 
@@ -65,20 +70,20 @@ Matrix3x4 Matrix3x4::operator*(const Matrix3x4& o) const
 {
     Matrix3x4 result;
 
-    result.data[0] = o.data[0] * data[0] + o.data[4] * data[1] + o.data[8] * data[2];
-    result.data[1] = o.data[1] * data[0] + o.data[5] * data[1] + o.data[9] * data[2];
-    result.data[2] = o.data[2] * data[0] + o.data[6] * data[1] + o.data[10] * data[2];
-    result.data[3] = o.data[3] * data[0] + o.data[7] * data[1] + o.data[11] * data[2] + data[3];
+    result.m_data[0] = o.m_data[0] * m_data[0] + o.m_data[4] * m_data[1] + o.m_data[8] * m_data[2];
+    result.m_data[1] = o.m_data[1] * m_data[0] + o.m_data[5] * m_data[1] + o.m_data[9] * m_data[2];
+    result.m_data[2] = o.m_data[2] * m_data[0] + o.m_data[6] * m_data[1] + o.m_data[10] * m_data[2];
+    result.m_data[3] = o.m_data[3] * m_data[0] + o.m_data[7] * m_data[1] + o.m_data[11] * m_data[2] + m_data[3];
 
-    result.data[4] = o.data[0] * data[4] + o.data[4] * data[5] + o.data[8] * data[6];
-    result.data[5] = o.data[1] * data[4] + o.data[5] * data[5] + o.data[9] * data[6];
-    result.data[6] = o.data[2] * data[4] + o.data[6] * data[5] + o.data[10] * data[6];
-    result.data[7] = o.data[3] * data[4] + o.data[7] * data[5] + o.data[11] * data[6] + data[7];
+    result.m_data[4] = o.m_data[0] * m_data[4] + o.m_data[4] * m_data[5] + o.m_data[8] * m_data[6];
+    result.m_data[5] = o.m_data[1] * m_data[4] + o.m_data[5] * m_data[5] + o.m_data[9] * m_data[6];
+    result.m_data[6] = o.m_data[2] * m_data[4] + o.m_data[6] * m_data[5] + o.m_data[10] * m_data[6];
+    result.m_data[7] = o.m_data[3] * m_data[4] + o.m_data[7] * m_data[5] + o.m_data[11] * m_data[6] + m_data[7];
 
-    result.data[8] = o.data[0] * data[8] + o.data[4] * data[9] + o.data[8] * data[10];
-    result.data[9] = o.data[1] * data[8] + o.data[5] * data[9] + o.data[9] * data[10];
-    result.data[10] = o.data[2] * data[8] + o.data[6] * data[9] + o.data[10] * data[10];
-    result.data[11] = o.data[3] * data[8] + o.data[7] * data[9] + o.data[11] * data[10] + data[11];
+    result.m_data[8] = o.m_data[0] * m_data[8] + o.m_data[4] * m_data[9] + o.m_data[8] * m_data[10];
+    result.m_data[9] = o.m_data[1] * m_data[8] + o.m_data[5] * m_data[9] + o.m_data[9] * m_data[10];
+    result.m_data[10] = o.m_data[2] * m_data[8] + o.m_data[6] * m_data[9] + o.m_data[10] * m_data[10];
+    result.m_data[11] = o.m_data[3] * m_data[8] + o.m_data[7] * m_data[9] + o.m_data[11] * m_data[10] + m_data[11];
 
     return result;
 }
@@ -92,37 +97,37 @@ void Matrix3x4::operator*=(const Matrix3x4& o)
 {
     Aerolite::real t1, t2, t3, t4;
 
-    t1 = data[0] * o.data[0] + data[1] * o.data[3] + data[2] * o.data[6];
-    t2 = data[0] * o.data[1] + data[1] * o.data[4] + data[2] * o.data[7];
-    t3 = data[0] * o.data[2] + data[1] * o.data[5] + data[2] * o.data[8];
-    t4 = data[0] * o.data[3] + data[1] * o.data[7] + data[2] * o.data[11];
+    t1 = m_data[0] * o.m_data[0] + m_data[1] * o.m_data[3] + m_data[2] * o.m_data[6];
+    t2 = m_data[0] * o.m_data[1] + m_data[1] * o.m_data[4] + m_data[2] * o.m_data[7];
+    t3 = m_data[0] * o.m_data[2] + m_data[1] * o.m_data[5] + m_data[2] * o.m_data[8];
+    t4 = m_data[0] * o.m_data[3] + m_data[1] * o.m_data[7] + m_data[2] * o.m_data[11];
     
-    data[0] = t1;
-    data[1] = t2;
-    data[2] = t3;
-    data[3] = t4;
+    m_data[0] = t1;
+    m_data[1] = t2;
+    m_data[2] = t3;
+    m_data[3] = t4;
 
-    t1 = data[4] * o.data[0] + data[5] * o.data[3] + data[6] * o.data[6];
-    t2 = data[4] * o.data[1] + data[5] * o.data[4] + data[6] * o.data[7];
-    t3 = data[4] * o.data[2] + data[5] * o.data[5] + data[6] * o.data[8];
-    t4 = data[4] * o.data[3] + data[5] * o.data[7] + data[6] * o.data[11];
+    t1 = m_data[4] * o.m_data[0] + m_data[5] * o.m_data[3] + m_data[6] * o.m_data[6];
+    t2 = m_data[4] * o.m_data[1] + m_data[5] * o.m_data[4] + m_data[6] * o.m_data[7];
+    t3 = m_data[4] * o.m_data[2] + m_data[5] * o.m_data[5] + m_data[6] * o.m_data[8];
+    t4 = m_data[4] * o.m_data[3] + m_data[5] * o.m_data[7] + m_data[6] * o.m_data[11];
     
-    data[4] = t1;
-    data[5] = t2;
-    data[6] = t3;
-    data[7] = t4;
+    m_data[4] = t1;
+    m_data[5] = t2;
+    m_data[6] = t3;
+    m_data[7] = t4;
 
-    t1 = data[8] * o.data[0] + data[9] * o.data[3] + data[10] * o.data[6];
-    t2 = data[8] * o.data[1] + data[9] * o.data[4] + data[10] * o.data[7];
-    t3 = data[8] * o.data[2] + data[9] * o.data[5] + data[10] * o.data[8];
-    t4 = data[8] * o.data[3] + data[9] * o.data[7] + data[10] * o.data[11];
+    t1 = m_data[8] * o.m_data[0] + m_data[9] * o.m_data[3] + m_data[10] * o.m_data[6];
+    t2 = m_data[8] * o.m_data[1] + m_data[9] * o.m_data[4] + m_data[10] * o.m_data[7];
+    t3 = m_data[8] * o.m_data[2] + m_data[9] * o.m_data[5] + m_data[10] * o.m_data[8];
+    t4 = m_data[8] * o.m_data[3] + m_data[9] * o.m_data[7] + m_data[10] * o.m_data[11];
     
-    data[8] = t1;
-    data[9] = t2;
-    data[10] = t3;
-    data[11] = t4;
+    m_data[8] = t1;
+    m_data[9] = t2;
+    m_data[10] = t3;
+    m_data[11] = t4;
 
-    determinant = CalcDeterminant();
+    m_determinant = CalcDeterminant();
 }
 
 Aerolite::AeroVec3 Matrix3x4::Transform(const Aerolite::AeroVec3& vector) const
@@ -134,70 +139,70 @@ Aerolite::AeroVec3 Matrix3x4::TransformInverse(const Aerolite::AeroVec3& vector)
 {
     Aerolite::AeroVec3 tmp;
     tmp = vector;
-    tmp.x -= data[3];
-    tmp.y -= data[7];
-    tmp.z -= data[11]; 
+    tmp.x -= m_data[3];
+    tmp.y -= m_data[7];
+    tmp.z -= m_data[11]; 
     
     return Aerolite::AeroVec3(
-    tmp.x * data[0] + tmp.y * data[4] + tmp.z * data[8],
-    tmp.x * data[1] + tmp.y * data[5] + tmp.z * data[9],
-    tmp.x * data[2] + tmp.y * data[6] + tmp.z * data[10]
+    tmp.x * m_data[0] + tmp.y * m_data[4] + tmp.z * m_data[8],
+    tmp.x * m_data[1] + tmp.y * m_data[5] + tmp.z * m_data[9],
+    tmp.x * m_data[2] + tmp.y * m_data[6] + tmp.z * m_data[10]
     );
 }
 
 Aerolite::AeroVec3 Matrix3x4::TransformDirection(const Aerolite::AeroVec3& direction) const
 {
     return Aerolite::AeroVec3(
-        direction.x * data[0] +
-        direction.y * data[1] + 
-        direction.z * data[2],
+        direction.x * m_data[0] +
+        direction.y * m_data[1] + 
+        direction.z * m_data[2],
 
-        direction.x * data[4] + 
-        direction.y * data[5] + 
-        direction.z * data[6],
+        direction.x * m_data[4] + 
+        direction.y * m_data[5] + 
+        direction.z * m_data[6],
 
-        direction.x * data[8] +
-        direction.y * data[9] +
-        direction.z * data[10]
+        direction.x * m_data[8] +
+        direction.y * m_data[9] +
+        direction.z * m_data[10]
     );
 }
 
 Aerolite::AeroVec3 Matrix3x4::TransformInverseDirection(const Aerolite::AeroVec3& direction) const
 {
     return Aerolite::AeroVec3(
-        direction.x * data[0] +
-        direction.y * data[4] + 
-        direction.z * data[8],
+        direction.x * m_data[0] +
+        direction.y * m_data[4] + 
+        direction.z * m_data[8],
 
-        direction.x * data[1] + 
-        direction.y * data[5] + 
-        direction.z * data[9],
+        direction.x * m_data[1] + 
+        direction.y * m_data[5] + 
+        direction.z * m_data[9],
 
-        direction.x * data[2] +
-        direction.y * data[6] +
-        direction.z * data[10]
+        direction.x * m_data[2] +
+        direction.y * m_data[6] +
+        direction.z * m_data[10]
     );
 }
 
 bool Matrix3x4::SetInverse(const Matrix3x4& m)
 {
-    if (determinant != 0.0f)
+    if (m_determinant != 0.0f)
     {
-        Aerolite::real invDet = 1.0f / determinant;
+        Aerolite::real invDet = 1.0f / m_determinant;
 
-        data[0] = (-m.data[9] * m.data[6] + m.data[5] * m.data[10]) * invDet;
-        data[1] = (m.data[9] * m.data[2] - m.data[1] * m.data[10]) * invDet;
-        data[2] = (-m.data[5] * m.data[2] + m.data[1] * m.data[6]) * invDet;
+        m_data[0] = (-m.m_data[9] * m.m_data[6] + m.m_data[5] * m.m_data[10]) * invDet;
+        m_data[1] = (m.m_data[9] * m.m_data[2] - m.m_data[1] * m.m_data[10]) * invDet;
+        m_data[2] = (-m.m_data[5] * m.m_data[2] + m.m_data[1] * m.m_data[6]) * invDet;
 
-        data[4] = (m.data[8] * m.data[6] - m.data[4] * m.data[10]) * invDet;
-        data[5] = (-m.data[8] * m.data[2] + m.data[0] * m.data[10]) * invDet;
-        data[6] = (m.data[4] * m.data[2] - m.data[0] * m.data[6]) * invDet;
+        m_data[4] = (m.m_data[8] * m.m_data[6] - m.m_data[4] * m.m_data[10]) * invDet;
+        m_data[5] = (-m.m_data[8] * m.m_data[2] + m.m_data[0] * m.m_data[10]) * invDet;
+        m_data[6] = (m.m_data[4] * m.m_data[2] - m.m_data[0] * m.m_data[6]) * invDet;
 
-        data[8] = (-m.data[8] * m.data[5] + m.data[4] * m.data[9]) * invDet;
-        data[9] = (m.data[8] * m.data[1] - m.data[0] * m.data[9]) * invDet;
-        data[10] = (-m.data[4] * m.data[1] + m.data[0] * m.data[5]) * invDet;
+        m_data[8] = (-m.m_data[8] * m.m_data[5] + m.m_data[4] * m.m_data[9]) * invDet;
+        m_data[9] = (m.m_data[8] * m.m_data[1] - m.m_data[0] * m.m_data[9]) * invDet;
+        m_data[10] = (-m.m_data[4] * m.m_data[1] + m.m_data[0] * m.m_data[5]) * invDet;
 
-        determinant = CalcDeterminant();
+        m_determinant = CalcDeterminant();
 
         return true;
     }

@@ -45,7 +45,7 @@
     <ClInclude Include="include\Matrix3x4.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\pfgen.h">
+    <ClInclude Include="include\Pfgen.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Precision.h">
@@ -70,6 +70,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Config.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\AeroQuat.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\AeroBody3D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -105,6 +111,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Constraint2D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AeroBody3D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

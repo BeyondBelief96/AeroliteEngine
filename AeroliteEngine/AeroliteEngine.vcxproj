@@ -144,6 +144,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\AABB2D.h" />
+    <ClInclude Include="include\AeroBody3D.h" />
+    <ClInclude Include="include\AeroQuat.h" />
     <ClInclude Include="include\AeroWorld2D.h" />
     <ClInclude Include="include\AeroBody2D.h" />
     <ClInclude Include="include\Collision2D.h" />
@@ -157,13 +159,14 @@
     <ClInclude Include="include\Matrix3x3.h" />
     <ClInclude Include="include\Matrix3x4.h" />
     <ClInclude Include="include\Particle2D.h" />
-    <ClInclude Include="include\pfgen.h" />
+    <ClInclude Include="include\Pfgen.h" />
     <ClInclude Include="include\Precision.h" />
     <ClInclude Include="include\Shape.h" />
     <ClInclude Include="include\AeroVec2.h" />
     <ClInclude Include="include\AeroVec3.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\AeroBody3D.cpp" />
     <ClCompile Include="src\AeroWorld2D.cpp" />
     <ClCompile Include="src\AeroBody2D.cpp" />
     <ClCompile Include="src\Collision2D.cpp" />

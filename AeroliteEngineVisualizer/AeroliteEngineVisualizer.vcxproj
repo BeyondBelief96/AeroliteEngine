@@ -169,6 +169,7 @@
     <ClCompile Include="src\scenes\Collision2DScene.cpp" />
     <ClCompile Include="src\scenes\CollisionProjectionScene.cpp" />
     <ClCompile Include="src\scenes\JointConstraintScene.cpp" />
+    <ClCompile Include="src\scenes\LargeParticleTestScene.cpp" />
     <ClCompile Include="src\scenes\OptimizationScene.cpp" />
     <ClCompile Include="src\scenes\RagdollJointScene.cpp" />
     <ClCompile Include="src\scenes\SATCollisionScene.cpp" />

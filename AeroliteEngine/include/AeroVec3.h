@@ -25,6 +25,9 @@ namespace Aerolite {
         // Copy constructor.
         AeroVec3(AeroVec3& v) noexcept = default;
 
+        // Const version copy constructor
+        AeroVec3(const AeroVec3& v) noexcept = default;
+
         // Move constructor.
         AeroVec3(AeroVec3&& v) noexcept = default;
 
@@ -77,7 +80,7 @@ namespace Aerolite {
         // Equality comparison operator. Returns true if this AeroVec3 is equal to the given AeroVec3.
     	bool operator==(const AeroVec3& v) const noexcept
         {
-            return AreEqual(x, v.x, epsilon) && AreEqual(y, v.y, epsilon) && AreEqual(z, v.z, epsilon);
+            return AreEqual(x, v.x, EPSILON) && AreEqual(y, v.y, EPSILON) && AreEqual(z, v.z, EPSILON);
         }
 
         // Inequality comparison operator. Returns true if this AeroVec3 is not equal to the given AeroVec3.
