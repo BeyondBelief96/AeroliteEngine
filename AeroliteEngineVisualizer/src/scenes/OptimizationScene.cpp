@@ -46,11 +46,11 @@ void Body2DTestScene::Setup() {
    
 
     // Add a triangle polygon
-    std::vector<Vec2> triangleVertices = { Vec2(30, 30), Vec2(-30, 30), Vec2(0, -30) };
+    const std::vector<Vec2> triangleVertices = { Vec2(30, 30), Vec2(-30, 30), Vec2(0, -30) };
     auto triangle = std::make_unique<AeroBody2D> (new PolygonShape(triangleVertices), plank3->position.x, plank3->position.y - 50, make_real<real>(0.5));
 
     // Add a pyramid of boxes
-    int numRows = 5;
+    const int numRows = 5;
     for (int col = 0; col < numRows; col++) {
         for (int row = 0; row < col; row++) {
             float x = (plank3->position.x + 200.0f) + col * 50.0f - (row * 25.0f);
@@ -105,50 +105,45 @@ void Body2DTestScene::Setup() {
 ///////////////////////////////////////////////////////////////////////////////
 // Input processing
 ///////////////////////////////////////////////////////////////////////////////
-void Body2DTestScene::Input() {
-    SDL_Event event;
-    //static std::default_random_engine engine(std::random_device{}()); // Random number engine
-    //static std::uniform_int_distribution<int> distribution(0, 1);    // Distribution to generate either 0 or 1
-    while (SDL_PollEvent(&event)) {
-        switch (event.type) {
-        case SDL_QUIT:
-            running = false;
-            break;
-        case SDL_KEYDOWN:
-            if (event.key.keysym.sym == SDLK_ESCAPE)
-                running = false;
-            if (event.key.keysym.sym == SDLK_d) {
-                debug = !debug;
-            }
-            if (event.key.keysym.sym == SDLK_UP)
-                world->GetBodies()[0]->ApplyImpulseLinear(Vec2(make_real<real>(0.0), -make_real<real>(600.0)));
-            if (event.key.keysym.sym == SDLK_LEFT)
-                world->GetBodies()[0]->ApplyImpulseLinear(Vec2(-make_real<real>(400.0), make_real<real>(0.0)));
-            if (event.key.keysym.sym == SDLK_RIGHT)
-                world->GetBodies()[0]->ApplyImpulseLinear(Vec2(+make_real<real>(400.0), make_real<real>(0.0)));
-            break;
-        case SDL_MOUSEBUTTONDOWN:
-            if (event.button.button == SDL_BUTTON_LEFT) {
-                int x, y;
-                SDL_GetMouseState(&x, &y);
-                // Create and add a new BoxShape at the mouse location
-                auto circle = std::make_unique<AeroBody2D>(new CircleShape(50), x, y, make_real<real>(2.0));
-                circle->restitution = 0;
-                circle->friction = make_real<real>(0.4);
-                world->AddBody2D(std::move(circle));
-            }
-            else if (event.button.button == SDL_BUTTON_RIGHT) {
-                int x, y;
-                SDL_GetMouseState(&x, &y);
-                // Create and add a new CircleShape at the mouse location
-                auto circle = std::make_unique<AeroBody2D>(new BoxShape(50,50), x, y, make_real<real>(1.0)); // Assuming radius 25 for the circle
-                circle->restitution = 0;
-                circle->friction =make_real<real>(0.4);
-                world->AddBody2D(std::move(circle));
-            }
-            break;
-        }
-    }
+void Body2DTestScene::Input(SDL_Event event) {
+     switch (event.type) {
+     case SDL_QUIT:
+         running = false;
+         break;
+     case SDL_KEYDOWN:
+         if (event.key.keysym.sym == SDLK_ESCAPE)
+             running = false;
+         if (event.key.keysym.sym == SDLK_d) {
+             debug = !debug;
+         }
+         if (event.key.keysym.sym == SDLK_UP)
+             world->GetBodies()[0]->ApplyImpulseLinear(Vec2(make_real<real>(0.0), -make_real<real>(600.0)));
+         if (event.key.keysym.sym == SDLK_LEFT)
+             world->GetBodies()[0]->ApplyImpulseLinear(Vec2(-make_real<real>(400.0), make_real<real>(0.0)));
+         if (event.key.keysym.sym == SDLK_RIGHT)
+             world->GetBodies()[0]->ApplyImpulseLinear(Vec2(+make_real<real>(400.0), make_real<real>(0.0)));
+         break;
+     case SDL_MOUSEBUTTONDOWN:
+         if (event.button.button == SDL_BUTTON_LEFT) {
+             int x, y;
+             SDL_GetMouseState(&x, &y);
+             // Create and add a new BoxShape at the mouse location
+             auto circle = std::make_unique<AeroBody2D>(new CircleShape(50), x, y, make_real<real>(2.0));
+             circle->restitution = 0;
+             circle->friction = make_real<real>(0.4);
+             world->AddBody2D(std::move(circle));
+         }
+         else if (event.button.button == SDL_BUTTON_RIGHT) {
+             int x, y;
+             SDL_GetMouseState(&x, &y);
+             // Create and add a new CircleShape at the mouse location
+             auto circle = std::make_unique<AeroBody2D>(new BoxShape(50,50), x, y, make_real<real>(1.0)); // Assuming radius 25 for the circle
+             circle->restitution = 0;
+             circle->friction =make_real<real>(0.4);
+             world->AddBody2D(std::move(circle));
+         }
+         break;
+     }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -179,17 +174,17 @@ void Body2DTestScene::Update() {
 ///////////////////////////////////////////////////////////////////////////////
 void Body2DTestScene::Render() {
     Graphics::ClearScreen(0xFF000000);
-    for (auto& body : world->GetBodies()) {
+    for (const auto& body : world->GetBodies()) {
         if (body->shape->GetType() == Circle) {
-            auto circleShape = dynamic_cast<CircleShape*>(body->shape);
+	        const auto circleShape = dynamic_cast<CircleShape*>(body->shape);
             Graphics::DrawCircle(body->position.x, body->position.y, circleShape->radius, body->rotation, 0xFF00FF00);
         }
         else  if (body->shape->GetType() == Box) {
-            auto boxShape = dynamic_cast<BoxShape*>(body->shape);
+	        const auto boxShape = dynamic_cast<BoxShape*>(body->shape);
             Graphics::DrawPolygon(body->position.x, body->position.y, boxShape->worldVertices, 0xFF00FF00);
         }
         else  if (body->shape->GetType() == Polygon) {
-            auto boxShape = dynamic_cast<PolygonShape*>(body->shape);
+	        const auto boxShape = dynamic_cast<PolygonShape*>(body->shape);
             Graphics::DrawPolygon(body->position.x, body->position.y, boxShape->worldVertices, 0xFF00FF00);
         }
     }

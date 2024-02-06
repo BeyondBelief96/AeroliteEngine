@@ -13,11 +13,11 @@
 // Setup function (executed once in the beginning of the simulation)
 ///////////////////////////////////////////////////////////////////////////////
 void RagdollJointScene::Setup() {
-    running = Graphics::OpenWindow();
+    running = true;
 
     world = std::make_unique<Aerolite::AeroWorld2D>();
 
-    // Add ragdoll parts (rigid bodies)
+    // Add rag doll parts (rigid bodies)
     auto bob = std::make_unique<AeroBody2D>(new CircleShape(5), Graphics::Width() / make_real<real>(2.0), Graphics::Height() / make_real<real>(2.0) - 200, make_real<real>(0.0));
     auto head = std::make_unique<AeroBody2D>(new CircleShape(25), bob->position.x, bob->position.y + 70, make_real<real>(5.0));
     auto torso = std::make_unique<AeroBody2D>(new BoxShape(50, 100), head->position.x, head->position.y + 80, make_real<real>(3.0));
@@ -70,52 +70,48 @@ void RagdollJointScene::Setup() {
 ///////////////////////////////////////////////////////////////////////////////
 // Input processing
 ///////////////////////////////////////////////////////////////////////////////
-void RagdollJointScene::Input() {
-    SDL_Event event;
-    //static std::default_random_engine engine(std::random_device{}()); // Random number engine
-    //static std::uniform_int_distribution<int> distribution(0, 1);    // Distribution to generate either 0 or 1
-    while (SDL_PollEvent(&event)) {
-        switch (event.type) {
-        case SDL_QUIT:
-            running = false;
-            break;
-        case SDL_KEYDOWN:
-            if (event.key.keysym.sym == SDLK_ESCAPE)
-                running = false;
-            if (event.key.keysym.sym == SDLK_d) {
-                debug = !debug;
-            }
-            break;
-        case SDL_MOUSEBUTTONDOWN:
-            if (event.button.button == SDL_BUTTON_LEFT) {
-                int x, y;
-                SDL_GetMouseState(&x, &y);
-                // Create and add a new BoxShape at the mouse location
-                auto circle = std::make_unique<AeroBody2D>(new CircleShape(50), x, y, make_real<real>(2.0));
-                circle->restitution = make_real<real>(1.0);
-                circle->friction = make_real<real>(0.4);
-                world->AddBody2D(std::move(circle));
-            }
-            else if (event.button.button == SDL_BUTTON_RIGHT) {
-                int x, y;
-                SDL_GetMouseState(&x, &y);
-                // Create and add a new CircleShape at the mouse location
-                auto circle = std::make_unique<AeroBody2D>(PolygonShape::CreateRegularPolygon(5, 50), x, y, make_real<real>(1.0)); // Assuming radius 25 for the circle
-                circle->restitution = make_real<real>(1.0);
-                circle->friction = make_real<real>(0.4);
-                world->AddBody2D(std::move(circle));
-            }
-            break;
-        case SDL_MOUSEMOTION:
-            int x, y;
-            SDL_GetMouseState(&x, &y);
-            Vec2 mouse = Vec2(x, y);
-            Aerolite::AeroBody2D* bob = world->GetBodies()[0].get();
-            Vec2 direction = (mouse - bob->position).UnitVector();
-            real speed = make_real<real>(5.0);
-            bob->position += direction * speed;
-        }
-    }
+void RagdollJointScene::Input(const SDL_Event event) {
+     switch (event.type) {
+     case SDL_QUIT:
+         running = false;
+         break;
+     case SDL_KEYDOWN:
+         if (event.key.keysym.sym == SDLK_ESCAPE)
+             running = false;
+         if (event.key.keysym.sym == SDLK_d) {
+             debug = !debug;
+         }
+         break;
+     case SDL_MOUSEBUTTONDOWN:
+         if (event.button.button == SDL_BUTTON_LEFT) {
+             int x, y;
+             SDL_GetMouseState(&x, &y);
+             // Create and add a new BoxShape at the mouse location
+             auto circle = std::make_unique<AeroBody2D>(new CircleShape(50), x, y, make_real<real>(2.0));
+             circle->restitution = make_real<real>(1.0);
+             circle->friction = make_real<real>(0.4);
+             world->AddBody2D(std::move(circle));
+         }
+         else if (event.button.button == SDL_BUTTON_RIGHT) {
+             int x, y;
+             SDL_GetMouseState(&x, &y);
+             // Create and add a new CircleShape at the mouse location
+             auto circle = std::make_unique<AeroBody2D>(PolygonShape::CreateRegularPolygon(5, 50), x, y, make_real<real>(1.0)); // Assuming radius 25 for the circle
+             circle->restitution = make_real<real>(1.0);
+             circle->friction = make_real<real>(0.4);
+             world->AddBody2D(std::move(circle));
+         }
+         break;
+     case SDL_MOUSEMOTION:
+         int x, y;
+         SDL_GetMouseState(&x, &y);
+         Vec2 mouse = Vec2(x, y);
+         Aerolite::AeroBody2D* bob = world->GetBodies()[0].get();
+         Vec2 direction = (mouse - bob->position).UnitVector();
+         real speed = make_real<real>(5.0);
+         bob->position += direction * speed;
+     }
+    
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -190,5 +186,6 @@ void RagdollJointScene::Render() {
 // Destroy function to delete objects and close the window
 ///////////////////////////////////////////////////////////////////////////////
 void RagdollJointScene::Destroy() {
+    running = false;
     Graphics::CloseWindow();
 }

@@ -9,7 +9,7 @@
 // Setup function (executed once in the beginning of the simulation)
 ///////////////////////////////////////////////////////////////////////////////
 void BilliardScene::Setup() {
-    running = Graphics::OpenWindow();
+    running = true;
     world = std::make_unique<AeroWorld2D>(0);
     auto smallBall = std::make_unique<Particle2D>(50, 100, make_real<real>(1.0));
     world->AddParticle2D(std::move(smallBall));
@@ -18,61 +18,59 @@ void BilliardScene::Setup() {
 ///////////////////////////////////////////////////////////////////////////////
 // Input processing
 ///////////////////////////////////////////////////////////////////////////////
-void BilliardScene::Input() {
-    SDL_Event event;
-    while (SDL_PollEvent(&event)) {
-        switch (event.type) {
-        case SDL_QUIT:
-            running = false;
-            break;
-        case SDL_KEYDOWN:
-            if (event.key.keysym.sym == SDLK_ESCAPE)
-                running = false;
-            if (event.key.keysym.sym == SDLK_UP)
-                pushForce.y = -50 * PIXELS_PER_METER;
-            if (event.key.keysym.sym == SDLK_RIGHT)
-                pushForce.x = 50 * PIXELS_PER_METER;
-            if (event.key.keysym.sym == SDLK_DOWN)
-                pushForce.y = 50 * PIXELS_PER_METER;
-            if (event.key.keysym.sym == SDLK_LEFT)
-                pushForce.x = -50 * PIXELS_PER_METER;
-            break;
-        case SDL_KEYUP:
-            if (event.key.keysym.sym == SDLK_ESCAPE)
-                running = false;
-            if (event.key.keysym.sym == SDLK_UP)
-                pushForce.y = 0;
-            if (event.key.keysym.sym == SDLK_RIGHT)
-                pushForce.x = 0;
-            if (event.key.keysym.sym == SDLK_DOWN)
-                pushForce.y = 0;
-            if (event.key.keysym.sym == SDLK_LEFT)
-                pushForce.x = 0;
-            break;
-        case SDL_MOUSEMOTION:
-            mouseCursor.x = event.motion.x;
-            mouseCursor.y = event.motion.y;
-            break;
-        case SDL_MOUSEBUTTONDOWN:
-            if (!leftMouseButtonDown && event.button.button == SDL_BUTTON_LEFT) {
-                leftMouseButtonDown = true;
-                int x, y;
-                SDL_GetMouseState(&x, &y);
-                mouseCursor.x = x;
-                mouseCursor.y = y;
-            }
-            break;
-        case SDL_MOUSEBUTTONUP:
-            if (leftMouseButtonDown && event.button.button == SDL_BUTTON_LEFT) {
-                leftMouseButtonDown = false;
-                auto particles = world->GetParticle2Ds();
-                Vec2 impulseDirection = (particles[0]->position - mouseCursor).UnitVector();
-                float impulseMagnitude = (particles[0]->position - mouseCursor).Magnitude() * make_real<real>(5.0);
-                particles[0]->velocity = impulseDirection * impulseMagnitude;
-            }
-            break;
-        }
-    }
+void BilliardScene::Input(SDL_Event event) {
+     switch (event.type) {
+     case SDL_QUIT:
+         running = false;
+         break;
+     case SDL_KEYDOWN:
+         if (event.key.keysym.sym == SDLK_ESCAPE)
+             running = false;
+         if (event.key.keysym.sym == SDLK_UP)
+             pushForce.y = -50 * PIXELS_PER_METER;
+         if (event.key.keysym.sym == SDLK_RIGHT)
+             pushForce.x = 50 * PIXELS_PER_METER;
+         if (event.key.keysym.sym == SDLK_DOWN)
+             pushForce.y = 50 * PIXELS_PER_METER;
+         if (event.key.keysym.sym == SDLK_LEFT)
+             pushForce.x = -50 * PIXELS_PER_METER;
+         break;
+     case SDL_KEYUP:
+         if (event.key.keysym.sym == SDLK_ESCAPE)
+             running = false;
+         if (event.key.keysym.sym == SDLK_UP)
+             pushForce.y = 0;
+         if (event.key.keysym.sym == SDLK_RIGHT)
+             pushForce.x = 0;
+         if (event.key.keysym.sym == SDLK_DOWN)
+             pushForce.y = 0;
+         if (event.key.keysym.sym == SDLK_LEFT)
+             pushForce.x = 0;
+         break;
+     case SDL_MOUSEMOTION:
+         mouseCursor.x = event.motion.x;
+         mouseCursor.y = event.motion.y;
+         break;
+     case SDL_MOUSEBUTTONDOWN:
+         if (!leftMouseButtonDown && event.button.button == SDL_BUTTON_LEFT) {
+             leftMouseButtonDown = true;
+             int x, y;
+             SDL_GetMouseState(&x, &y);
+             mouseCursor.x = x;
+             mouseCursor.y = y;
+         }
+         break;
+     case SDL_MOUSEBUTTONUP:
+         if (leftMouseButtonDown && event.button.button == SDL_BUTTON_LEFT) {
+             leftMouseButtonDown = false;
+             auto particles = world->GetParticle2Ds();
+             Vec2 impulseDirection = (particles[0]->position - mouseCursor).UnitVector();
+             float impulseMagnitude = (particles[0]->position - mouseCursor).Magnitude() * make_real<real>(5.0);
+             particles[0]->velocity = impulseDirection * impulseMagnitude;
+         }
+         break;
+     }
+    
 }
 
 ///////////////////////////////////////////////////////////////////////////////

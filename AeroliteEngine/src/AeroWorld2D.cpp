@@ -136,35 +136,40 @@ namespace Aerolite {
             }
         }
 
-        for (const auto& constraint : m_constraints) {
-            constraint->PreSolve(dt);
-        }
+        /*for(auto& contact : m_contactsList)
+        {
+            contact.ResolveCollision();
+        }*/
 
-        for (auto& constraint : penetrations) {
-            constraint.PreSolve(dt);
-        }
+        //for (const auto& constraint : m_constraints) {
+        //    constraint->PreSolve(dt);
+        //}
 
-        for (int i = 0; i < 8; i++) {
-            for (const auto& constraint : m_constraints) {
-                constraint->Solve();
-            }
+        //for (auto& constraint : penetrations) {
+        //    constraint.PreSolve(dt);
+        //}
 
-            for (auto& constraint : penetrations) {
-                constraint.Solve();
-            }
-        }
+        //for (int i = 0; i < 8; i++) {
+        //    for (const auto& constraint : m_constraints) {
+        //        constraint->Solve();
+        //    }
 
-        for (const auto& constraint : m_constraints) {
-            constraint->PostSolve();
-        }
+        //    for (auto& constraint : penetrations) {
+        //        constraint.Solve();
+        //    }
+        //}
 
-        for (auto& constraint : penetrations) {
-            constraint.PostSolve();
-        }
+        //for (const auto& constraint : m_constraints) {
+        //    constraint->PostSolve();
+        //}
 
-        for (const auto& body : m_bodies) {
+        //for (auto& constraint : penetrations) {
+        //    constraint.PostSolve();
+        //}
+
+        /*for (const auto& body : m_bodies) {
             body->IntegrateVelocities(dt);
-        }
+        }*/
 
         for (const auto& particle : m_particles) {
 	        auto weight = AeroVec2(0.0, particle->mass * m_g * PIXELS_PER_METER);

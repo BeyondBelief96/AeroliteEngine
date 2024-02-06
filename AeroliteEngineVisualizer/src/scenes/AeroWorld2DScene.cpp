@@ -15,7 +15,7 @@
 // Setup function (executed once in the beginning of the simulation)
 ///////////////////////////////////////////////////////////////////////////////
 void AeroWorld2DScene::Setup() {
-    running = Graphics::OpenWindow();
+    running = true;
 
     world = std::make_unique<Aerolite::AeroWorld2D>(-make_real<real>(9.8));
 
@@ -56,44 +56,40 @@ void AeroWorld2DScene::Setup() {
 ///////////////////////////////////////////////////////////////////////////////
 // Input processing
 ///////////////////////////////////////////////////////////////////////////////
-void AeroWorld2DScene::Input() {
-    SDL_Event event;
-    //static std::default_random_engine engine(std::random_device{}()); // Random number engine
-    //static std::uniform_int_distribution<int> distribution(0, 1);    // Distribution to generate either 0 or 1
-    while (SDL_PollEvent(&event)) {
-        switch (event.type) {
-        case SDL_QUIT:
-            running = false;
-            break;
-        case SDL_KEYDOWN:
-            if (event.key.keysym.sym == SDLK_ESCAPE)
-                running = false;
-            if (event.key.keysym.sym == SDLK_d) {
-                debug = !debug;
-            }
-            break;
-        case SDL_MOUSEBUTTONDOWN:
-            if (event.button.button == SDL_BUTTON_LEFT) {
-                int x, y;
-                SDL_GetMouseState(&x, &y);
-                // Create and add a new BoxShape at the mouse location
-                auto circle = std::make_unique<AeroBody2D>(new CircleShape(50), x, y, make_real<real>(2.0));
-                circle->restitution = 0;
-                circle->friction = make_real<real>(0.4);
-                world->AddBody2D(std::move(circle));
-            }
-            else if (event.button.button == SDL_BUTTON_RIGHT) {
-                int x, y;
-                SDL_GetMouseState(&x, &y);
-                // Create and add a new CircleShape at the mouse location
-                auto circle = std::make_unique<AeroBody2D>(new BoxShape(50, 50), x, y, make_real<real>(1.0)); // Assuming radius 25 for the circle
-                circle->restitution = 0;
-                circle->friction = make_real<real>(0.4);
-                world->AddBody2D(std::move(circle));
-            }
-            break;
-        }
-    }
+void AeroWorld2DScene::Input(SDL_Event event) {
+     switch (event.type) {
+     case SDL_QUIT:
+         running = false;
+         break;
+     case SDL_KEYDOWN:
+         if (event.key.keysym.sym == SDLK_ESCAPE)
+             running = false;
+         if (event.key.keysym.sym == SDLK_d) {
+             debug = !debug;
+         }
+         break;
+     case SDL_MOUSEBUTTONDOWN:
+         if (event.button.button == SDL_BUTTON_LEFT) {
+             int x, y;
+             SDL_GetMouseState(&x, &y);
+             // Create and add a new BoxShape at the mouse location
+             auto circle = std::make_unique<AeroBody2D>(new CircleShape(50), x, y, make_real<real>(2.0));
+             circle->restitution = 0;
+             circle->friction = make_real<real>(0.4);
+             world->AddBody2D(std::move(circle));
+         }
+         else if (event.button.button == SDL_BUTTON_RIGHT) {
+             int x, y;
+             SDL_GetMouseState(&x, &y);
+             // Create and add a new CircleShape at the mouse location
+             auto circle = std::make_unique<AeroBody2D>(new BoxShape(50, 50), x, y, make_real<real>(1.0)); // Assuming radius 25 for the circle
+             circle->restitution = 0;
+             circle->friction = make_real<real>(0.4);
+             world->AddBody2D(std::move(circle));
+         }
+         break;
+     }
+    
 }
 
 ///////////////////////////////////////////////////////////////////////////////

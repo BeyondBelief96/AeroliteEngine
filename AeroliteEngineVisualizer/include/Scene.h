@@ -1,29 +1,28 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
-#include "Particle2D.h"
-#include "AeroBody2D.h"
-#include "pfgen.h"
-#include "Contact2D.h"
-#include "AeroWorld2D.h"
 #include <vector>
 #include <memory>
-#include "../Graphics.h"
+
+#include "Particle2D.h"
+#include "AeroBody2D.h"
+#include "AeroWorld2D.h"
+
+#include "Graphics.h"
 
 class Scene {
 protected:
     bool running = false;
     int timePreviousFrame = 0;
 public:
-    bool IsRunning() { return running; }
+    bool IsRunning() const { return running; }
     virtual void Setup() = 0;
-    virtual void Input() = 0;
+    virtual void Input(SDL_Event event) = 0;
     virtual void Update() = 0;
     virtual void Render() = 0;
     virtual void Destroy() = 0;
-protected:
     Scene() = default;
-    virtual ~Scene() = default;
+    ~Scene() = default;
 };
 
 class GravityDragScene : public Scene
@@ -36,7 +35,7 @@ private:
     
 public:
     virtual void Setup() override;
-    virtual void Input() override;
+    virtual void Input(SDL_Event event) override;
     virtual void Update() override;
     virtual void Render() override;
     virtual void Destroy()override;
@@ -52,7 +51,7 @@ private:
 
 public:
     virtual void Setup() override;
-    virtual void Input() override;
+    virtual void Input(SDL_Event event) override;
     virtual void Update() override;
     virtual void Render() override;
     virtual void Destroy()override;
@@ -78,7 +77,7 @@ public:
 
 
     virtual void Setup() override;
-    virtual void Input() override;
+    virtual void Input(SDL_Event event) override;
     virtual void Update() override;
     virtual void Render() override;
     virtual void Destroy()override;
@@ -100,23 +99,28 @@ private:
 
 public:
     virtual void Setup() override;
-    virtual void Input() override;
+    virtual void Input(SDL_Event event) override;
     virtual void Update() override;
     virtual void Render() override;
     virtual void Destroy()override;
 
 };
 
-class Collision2DScene : public Scene
+class ContactPointGenerationDemoScene : public Scene
 {
 private:
     std::unique_ptr<AeroWorld2D> world;
+    std::vector<unsigned int> m_bodyColors;
     Vec2 mouseCursor;
     bool leftMouseButtonDown;
+    int sliderValue = 0;
+
+    void AddRandomBody();
+    void RemoveLastBody();
 
 public:
     virtual void Setup() override;
-    virtual void Input() override;
+    virtual void Input(SDL_Event event) override;
     virtual void Update() override;
     virtual void Render() override;
     virtual void Destroy()override;
@@ -133,7 +137,7 @@ class CollisionProjectionResolutionScene : public Scene
 
     public:
         virtual void Setup() override;
-        virtual void Input() override;
+        virtual void Input(SDL_Event event) override;
         virtual void Update() override;
         virtual void Render() override;
         virtual void Destroy()override;
@@ -150,7 +154,7 @@ private:
 
 public:
     virtual void Setup() override;
-    virtual void Input() override;
+    virtual void Input(SDL_Event event) override;
     virtual void Update() override;
     virtual void Render() override;
     virtual void Destroy()override;
@@ -163,7 +167,7 @@ private:
     bool debug;
 public:
     virtual void Setup() override;
-    virtual void Input() override;
+    virtual void Input(SDL_Event event) override;
     virtual void Update() override;
     virtual void Render() override;
     virtual void Destroy()override;
@@ -176,7 +180,7 @@ private:
     bool debug;
 public:
     virtual void Setup() override;
-    virtual void Input() override;
+    virtual void Input(SDL_Event event) override;
     virtual void Update() override;
     virtual void Render() override;
     virtual void Destroy()override;
@@ -189,7 +193,7 @@ private:
     bool debug;
 public:
     virtual void Setup() override;
-    virtual void Input() override;
+    virtual void Input(SDL_Event event) override;
     virtual void Update() override;
     virtual void Render() override;
     virtual void Destroy()override;
@@ -202,7 +206,7 @@ private:
     bool debug;
 public:
     virtual void Setup() override;
-    virtual void Input() override;
+    virtual void Input(SDL_Event event) override;
     virtual void Update() override;
     virtual void Render() override;
     virtual void Destroy()override;
@@ -215,7 +219,7 @@ class LargeParticleTestScene : public Scene
 	void CreateRandomCircles(int numberOfCircles, real velocityRange, real radius) const;
 public:
     virtual void Setup() override;
-    virtual void Input() override;
+    virtual void Input(SDL_Event event) override;
     virtual void Update() override;
     virtual void Render() override;
     virtual void Destroy()override;

@@ -88,41 +88,38 @@ void SolarSystemScene::Setup() {
 ///////////////////////////////////////////////////////////////////////////////
 // Input processing
 ///////////////////////////////////////////////////////////////////////////////
-void SolarSystemScene::Input() {
-    SDL_Event event;
-    while (SDL_PollEvent(&event)) {
-        switch (event.type) {
-        case SDL_QUIT:
-            running = false;
-            break;
-        case SDL_KEYDOWN:
-            if (event.key.keysym.sym == SDLK_ESCAPE)
-                running = false;
-            break;
-        case SDL_MOUSEMOTION:
-            mouseCursor.x = event.motion.x;
-            mouseCursor.y = event.motion.y;
-            break;
-        case SDL_MOUSEBUTTONDOWN:
-            if (!leftMouseButtonDown && event.button.button == SDL_BUTTON_LEFT) {
-                leftMouseButtonDown = true;
-                int x, y;
-                SDL_GetMouseState(&x, &y);
-                mouseCursor.x = x;
-                mouseCursor.y = y;
-            }
-            break;
-        case SDL_MOUSEBUTTONUP:
-            if (leftMouseButtonDown && event.button.button == SDL_BUTTON_LEFT) {
-                leftMouseButtonDown = false;
-                auto planets = world->GetParticle2Ds();
-                Vec2 impulseDirection = (planets[0]->position - mouseCursor).UnitVector();
-                float impulseMagnitude = (planets[0]->position - mouseCursor).Magnitude() * 1;
-                planets[0]->velocity = impulseDirection * impulseMagnitude;
-            }
-            break;
-        }
-    }
+void SolarSystemScene::Input(SDL_Event event) {
+     switch (event.type) {
+     case SDL_QUIT:
+         running = false;
+         break;
+     case SDL_KEYDOWN:
+         if (event.key.keysym.sym == SDLK_ESCAPE)
+             running = false;
+         break;
+     case SDL_MOUSEMOTION:
+         mouseCursor.x = event.motion.x;
+         mouseCursor.y = event.motion.y;
+         break;
+     case SDL_MOUSEBUTTONDOWN:
+         if (!leftMouseButtonDown && event.button.button == SDL_BUTTON_LEFT) {
+             leftMouseButtonDown = true;
+             int x, y;
+             SDL_GetMouseState(&x, &y);
+             mouseCursor.x = x;
+             mouseCursor.y = y;
+         }
+         break;
+     case SDL_MOUSEBUTTONUP:
+         if (leftMouseButtonDown && event.button.button == SDL_BUTTON_LEFT) {
+             leftMouseButtonDown = false;
+             auto planets = world->GetParticle2Ds();
+             Vec2 impulseDirection = (planets[0]->position - mouseCursor).UnitVector();
+             float impulseMagnitude = (planets[0]->position - mouseCursor).Magnitude() * 1;
+             planets[0]->velocity = impulseDirection * impulseMagnitude;
+         }
+         break;
+     }
 }
 
 ///////////////////////////////////////////////////////////////////////////////

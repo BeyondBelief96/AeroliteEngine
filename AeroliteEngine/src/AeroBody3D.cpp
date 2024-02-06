@@ -59,6 +59,16 @@ namespace Aerolite
         iitWorld[2][2] = t52 * rotmat[2][0] + t57 * rotmat[2][1] + t62 * rotmat[2][2];
     }
 
+    AeroBody3D::AeroBody3D(Shape* shape, const real x, const real y, const real z, const real mass)
+    {
+    }
+
+    AeroBody3D::~AeroBody3D()
+    {
+        delete(shape);
+        shape = nullptr;
+    }
+
     bool AeroBody3D::IsStatic() const
     {
         return AreEqual(mass, 0.0, EPSILON);
@@ -129,6 +139,18 @@ namespace Aerolite
 	void AeroBody3D::ClearTorque()
 	{
         sum_torques *= 0;
+	}
+
+	void AeroBody3D::IntegrateForces(const real dt)
+	{
+        if (IsStatic() || !is_awake) return;
+
+        acceleration = sum_forces * inverse_mass;
+	}
+
+	void AeroBody3D::IntegrateVelocities(const real dt)
+	{
+        if (IsStatic() || !is_awake) return;
 	}
 }
 

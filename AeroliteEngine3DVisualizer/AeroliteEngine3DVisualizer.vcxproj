@@ -19,12 +19,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <VCProjectVersion>16.0</VCProjectVersion>
+    <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{273c3bc5-a37b-4e0b-a628-460abcc4f05a}</ProjectGuid>
-    <RootNamespace>AeroliteEngineVisualizer</RootNamespace>
+    <ProjectGuid>{e9ab5738-d4d2-453b-a764-7a90b5edf585}</ProjectGuid>
+    <RootNamespace>AeroliteEngine3DVisualizer</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>AeroliteEngine2DVisualizer</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -71,35 +70,12 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LibraryPath>C:\Users\brand\Code\cpp\Aerolite\AeroliteEngine\AeroliteEngine\x64\Debug;$(LibraryPath)</LibraryPath>
-    <ExternalIncludePath>
-    </ExternalIncludePath>
-    <IncludePath>$(SolutionDir)AeroliteEngine\include;$(IncludePath)</IncludePath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LibraryPath>C:\Users\brand\Code\cpp\Aerolite\AeroliteEngine\AeroliteEngine\x64\Debug;$(LibraryPath)</LibraryPath>
-    <ExternalIncludePath>
-    </ExternalIncludePath>
-    <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\brand\source\repos\AeroliteEngine\AeroliteEngine\include;$(IncludePath)</IncludePath>
-    <IntDir>$(Platform)\$(Configuration)\AeroliteEngine2DVisualizer\</IntDir>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\Users\brand\Code\cpp\Aerolite\AeroliteEngine\AeroliteEngine\src\Physics;$(IncludePath)</IncludePath>
-    <ExternalIncludePath />
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>C:\Users\brand\Code\cpp\Aerolite\AeroliteEngine\AeroliteEngine\src\Physics;$(IncludePath)</IncludePath>
-    <ExternalIncludePath />
-  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -114,7 +90,6 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -129,18 +104,11 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>C:\Users\brand\source\repos\AeroliteEngine\AeroliteEngineVisualizer\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
-    <ProjectReference>
-      <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
-    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -150,80 +118,16 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>C:\Users\brand\source\repos\AeroliteEngine\AeroliteEngineVisualizer\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
-    <ProjectReference>
-      <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
-    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\Downloads\imgui-master\imgui-master\imgui.cpp" />
-    <ClCompile Include="..\..\..\..\Downloads\imgui-master\imgui-master\imgui_demo.cpp" />
-    <ClCompile Include="..\..\..\..\Downloads\imgui-master\imgui-master\imgui_draw.cpp" />
-    <ClCompile Include="..\..\..\..\Downloads\imgui-master\imgui-master\imgui_tables.cpp" />
-    <ClCompile Include="..\..\..\..\Downloads\imgui-master\imgui-master\imgui_widgets.cpp" />
-    <ClCompile Include="imgui\imgui.cpp" />
-    <ClCompile Include="imgui\imgui_demo.cpp" />
-    <ClCompile Include="imgui\imgui_draw.cpp" />
-    <ClCompile Include="imgui\imgui_impl_sdl2.cpp" />
-    <ClCompile Include="imgui\imgui_impl_sdlrenderer2.cpp" />
-    <ClCompile Include="imgui\imgui_tables.cpp" />
-    <ClCompile Include="imgui\imgui_widgets.cpp" />
-    <ClCompile Include="src\scenes\AeroWorld2DScene.cpp" />
-    <ClCompile Include="src\scenes\BilliardsScene.cpp" />
-    <ClCompile Include="src\scenes\ContactPointGenerationDemoScene.cpp" />
-    <ClCompile Include="src\scenes\CollisionProjectionScene.cpp" />
-    <ClCompile Include="src\scenes\JointConstraintScene.cpp" />
-    <ClCompile Include="src\scenes\LargeParticleTestScene.cpp" />
-    <ClCompile Include="src\scenes\OptimizationScene.cpp" />
-    <ClCompile Include="src\scenes\RagdollJointScene.cpp" />
-    <ClCompile Include="src\scenes\SATCollisionScene.cpp" />
-    <ClCompile Include="src\scenes\SolarSystemScene.cpp" />
-    <ClCompile Include="src\scenes\GravityDragScene.cpp" />
-    <ClCompile Include="src\Graphics.cpp" />
-    <ClCompile Include="src\Main.cpp" />
-    <ClCompile Include="src\scenes\SpringScene.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\..\..\Downloads\imgui-master\imgui-master\imconfig.h" />
-    <ClInclude Include="..\..\..\..\Downloads\imgui-master\imgui-master\imgui.h" />
-    <ClInclude Include="..\..\..\..\Downloads\imgui-master\imgui-master\imgui_internal.h" />
-    <ClInclude Include="..\..\..\..\Downloads\imgui-master\imgui-master\imstb_rectpack.h" />
-    <ClInclude Include="..\..\..\..\Downloads\imgui-master\imgui-master\imstb_textedit.h" />
-    <ClInclude Include="..\..\..\..\Downloads\imgui-master\imgui-master\imstb_truetype.h" />
-    <ClInclude Include="include\imconfig.h" />
-    <ClInclude Include="include\imgui.h" />
-    <ClInclude Include="include\imgui_impl_sdl2.h" />
-    <ClInclude Include="include\imgui_impl_sdlrenderer2.h" />
-    <ClInclude Include="include\imgui_internal.h" />
-    <ClInclude Include="include\imstb_rectpack.h" />
-    <ClInclude Include="include\imstb_textedit.h" />
-    <ClInclude Include="include\imstb_truetype.h" />
-    <ClInclude Include="include\Scene.h" />
-    <ClInclude Include="include\Graphics.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="libavif-16.dll" />
-    <None Include="libtiff-5.dll" />
-    <None Include="libwebp-7.dll" />
-    <None Include="libwebpdemux-2.dll" />
-    <None Include="SDL2.dll" />
-    <None Include="SDL2_gfx.dll" />
-    <None Include="SDL2_image.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\AeroliteEngine\AeroliteEngine.vcxproj">
-      <Project>{f7355210-4019-4b95-8787-56a599c4562a}</Project>
-    </ProjectReference>
+    <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

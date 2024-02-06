@@ -10,11 +10,15 @@
 namespace Aerolite
 {
 	/**
-	 * \brief Represents a 3-Dimensional rigid body. This is the basic simulation
-	 * object for the 3D portion of the physics engine.
-	 */
+	* \brief Represents a 3-Dimensional rigid body. This is the basic simulation
+	* object for the 3D portion of the physics engine.
+	*/
 	struct AeroBody3D
 	{
+		AeroBody3D(Shape* shape, const real x, const real y, const real z, const real mass);
+
+		~AeroBody3D();
+
 		/**
 		 * \brief Position of the rigid bodies center of mass in 3D space.
 		 */
@@ -60,6 +64,18 @@ namespace Aerolite
 		 * \brief Sum of all torques currently being applied to the rigid body.
 		 */
 		AeroVec3 sum_torques;
+
+		/**
+		 * \brief Holds the amount of linear damping to be applied during motion.
+		 * Removes energy added through numerical instability of the integrator.
+		 */
+		real linear_damping;
+
+		/**
+		 * \brief Holds the amount of angular damping to be applied during motion.
+		 * Removes energy added through numerical instability of the integrator.
+		 */
+		real angular_damping;
 
 		/**
 		 * \brief The mass of the rigid body. Initialized to 0.
@@ -137,14 +153,39 @@ namespace Aerolite
 		void AddForce(const AeroVec3& force);
 
 		/**
-		 * \brief Clears the accumulated forces to zero.
-		 */
+		* \brief Clears the accumulated forces to zero.
+		*/
 		void ClearForces(void);
 
 		/**
-		 * \brief Clears the accumulated torques to zero.
-		 */
+		* \brief Clears the accumulated torques to zero.
+		*/
 		void ClearTorque(void);
+
+		/**
+		* \brief Performs integration of the forces/torques and linear/angular accelerations to find the new velocities of the current simulation frame.
+		*/
+		void IntegrateForces(const real dt);
+
+		/**
+		* \brief Performs integration of the linear and angular velocities to find the new position/rotation of the current simulation frame.
+		*/
+		void IntegrateVelocities(const real dt);
+
+		/**
+		* \brief Applies a linear impulse to the body at the center of mass.
+		*/
+		void ApplyImpulseLinear(const AeroVec3& j);
+
+		/**
+		* \brief Applies an angular impulse to the body at the center of mass.
+		*/
+		void ApplyImpulseAngular(const real j);
+
+		/**
+		* \brief Applies an impulse j to the body at the point r generated from a collision.
+		*/
+		void ApplyImpulseAtPoint(const AeroVec3& j, const AeroVec3& r);
 
 		/**
 		 * \brief Adds the given force to the given point on the rigid body.

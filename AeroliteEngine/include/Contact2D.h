@@ -86,6 +86,10 @@ namespace Aerolite {
             }
             return *this;
         }
+
+        void ResolveCollision();
+        void ResolvePenetration(void) const;
+        void ResolveImpulse();
     };
 } // namespace Aerolite
 

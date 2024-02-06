@@ -33,61 +33,58 @@ void SpringScene::Setup() {
 ///////////////////////////////////////////////////////////////////////////////
 // Input processing
 ///////////////////////////////////////////////////////////////////////////////
-void SpringScene::Input() {
-    SDL_Event event;
-    while (SDL_PollEvent(&event)) {
-        switch (event.type) {
-        case SDL_QUIT:
-            running = false;
-            break;
-        case SDL_KEYDOWN:
-            if (event.key.keysym.sym == SDLK_ESCAPE)
-                running = false;
-            if (event.key.keysym.sym == SDLK_UP)
-                pushForce.y = -50 * PIXELS_PER_METER;
-            if (event.key.keysym.sym == SDLK_RIGHT)
-                pushForce.x = 50 * PIXELS_PER_METER;
-            if (event.key.keysym.sym == SDLK_DOWN)
-                pushForce.y = 50 * PIXELS_PER_METER;
-            if (event.key.keysym.sym == SDLK_LEFT)
-                pushForce.x = -50 * PIXELS_PER_METER;
-            break;
-        case SDL_KEYUP:
-            if (event.key.keysym.sym == SDLK_ESCAPE)
-                running = false;
-            if (event.key.keysym.sym == SDLK_UP)
-                pushForce.y = 0;
-            if (event.key.keysym.sym == SDLK_RIGHT)
-                pushForce.x = 0;
-            if (event.key.keysym.sym == SDLK_DOWN)
-                pushForce.y = 0;
-            if (event.key.keysym.sym == SDLK_LEFT)
-                pushForce.x = 0;
-            break;
-        case SDL_MOUSEMOTION:
-            mouseCursor.x = event.motion.x;
-            mouseCursor.y = event.motion.y;
-            break;
-        case SDL_MOUSEBUTTONDOWN:
-            if (!leftMouseButtonDown && event.button.button == SDL_BUTTON_LEFT) {
-                leftMouseButtonDown = true;
-                int x, y;
-                SDL_GetMouseState(&x, &y);
-                mouseCursor.x = x;
-                mouseCursor.y = y;
-            }
-            break;
-        case SDL_MOUSEBUTTONUP:
-            if (leftMouseButtonDown && event.button.button == SDL_BUTTON_LEFT) {
-                leftMouseButtonDown = false;
-                auto particles = world->GetParticle2Ds();
-                Vec2 impulseDirection = (particles[particles.size() - 1]->position - mouseCursor).UnitVector();
-                real impulseMagnitude = -(particles[particles.size() - 1]->position - mouseCursor).Magnitude() * make_real<real>(6.0);
-                particles[particles.size() - 1]->velocity = impulseDirection * impulseMagnitude;
-            }
-            break;
-        }
-    }
+void SpringScene::Input(SDL_Event event) {
+     switch (event.type) {
+     case SDL_QUIT:
+         running = false;
+         break;
+     case SDL_KEYDOWN:
+         if (event.key.keysym.sym == SDLK_ESCAPE)
+             running = false;
+         if (event.key.keysym.sym == SDLK_UP)
+             pushForce.y = -50 * PIXELS_PER_METER;
+         if (event.key.keysym.sym == SDLK_RIGHT)
+             pushForce.x = 50 * PIXELS_PER_METER;
+         if (event.key.keysym.sym == SDLK_DOWN)
+             pushForce.y = 50 * PIXELS_PER_METER;
+         if (event.key.keysym.sym == SDLK_LEFT)
+             pushForce.x = -50 * PIXELS_PER_METER;
+         break;
+     case SDL_KEYUP:
+         if (event.key.keysym.sym == SDLK_ESCAPE)
+             running = false;
+         if (event.key.keysym.sym == SDLK_UP)
+             pushForce.y = 0;
+         if (event.key.keysym.sym == SDLK_RIGHT)
+             pushForce.x = 0;
+         if (event.key.keysym.sym == SDLK_DOWN)
+             pushForce.y = 0;
+         if (event.key.keysym.sym == SDLK_LEFT)
+             pushForce.x = 0;
+         break;
+     case SDL_MOUSEMOTION:
+         mouseCursor.x = event.motion.x;
+         mouseCursor.y = event.motion.y;
+         break;
+     case SDL_MOUSEBUTTONDOWN:
+         if (!leftMouseButtonDown && event.button.button == SDL_BUTTON_LEFT) {
+             leftMouseButtonDown = true;
+             int x, y;
+             SDL_GetMouseState(&x, &y);
+             mouseCursor.x = x;
+             mouseCursor.y = y;
+         }
+         break;
+     case SDL_MOUSEBUTTONUP:
+         if (leftMouseButtonDown && event.button.button == SDL_BUTTON_LEFT) {
+             leftMouseButtonDown = false;
+             auto particles = world->GetParticle2Ds();
+             Vec2 impulseDirection = (particles[particles.size() - 1]->position - mouseCursor).UnitVector();
+             real impulseMagnitude = -(particles[particles.size() - 1]->position - mouseCursor).Magnitude() * make_real<real>(6.0);
+             particles[particles.size() - 1]->velocity = impulseDirection * impulseMagnitude;
+         }
+         break;
+     }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
