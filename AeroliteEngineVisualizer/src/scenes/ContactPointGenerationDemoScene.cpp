@@ -28,7 +28,7 @@ void ContactPointGenerationDemoScene::AddRandomBody() {
     // The '0xFF' is the alpha component for full opacity.
     const auto color = (0xFF << 24) | (red << 16) | (green << 8) | blue;
     m_bodyColors.push_back(color);
-    auto body = std::make_unique<AeroBody2D>(PolygonShape::CreateRegularPolygon(polygonSidesDist(gen), polygonSidesLengthDist(gen)), position.x, position.y, 1.0);
+    auto body = std::make_unique<AeroBody2D>(PolygonShape::CreateRegularPolygon(polygonSidesDist(gen), polygonSidesLengthDist(gen)), position.x, position.y, 0.0);
     world->AddBody2D(std::move(body));
 }
 
@@ -46,7 +46,7 @@ void ContactPointGenerationDemoScene::Setup() {
     running = true;
     world = std::make_unique<AeroWorld2D>(0);
     m_bodyColors.push_back(0xFFFFFFFF);
-    auto moveablePolygon = std::make_unique<AeroBody2D>(PolygonShape::CreateRegularPolygon(4, 50), Graphics::Width() / 2, Graphics::Height() / 2, make_real<real>(5.0));
+    auto moveablePolygon = std::make_unique<AeroBody2D>(PolygonShape::CreateRegularPolygon(4, 50), Graphics::Width() / 2, Graphics::Height() / 2, make_real<real>(0.0));
     world->AddBody2D(std::move(moveablePolygon));
 }
 
@@ -55,9 +55,6 @@ void ContactPointGenerationDemoScene::Setup() {
 ///////////////////////////////////////////////////////////////////////////////
 void ContactPointGenerationDemoScene::Input(const SDL_Event event) {
      switch (event.type) {
-         case SDL_QUIT:
-             running = false;
-             break;
          case SDL_KEYDOWN:
              if (event.key.keysym.sym == SDLK_ESCAPE)
                  running = false;
@@ -151,16 +148,12 @@ void ContactPointGenerationDemoScene::Render() {
             Graphics::DrawCircle(contact.end.x, contact.end.y, 2, make_real<real>(0.0), 0xFF00FFFF);
         }
     }
-
-    ImGui::Render();
-    ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData());
-
-    Graphics::RenderFrame();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 // Destroy function to delete objects and close the window
 ///////////////////////////////////////////////////////////////////////////////
 void ContactPointGenerationDemoScene::Destroy() {
-    Graphics::CloseWindow();
+    sliderValue = 0;
+    running = false;
 }

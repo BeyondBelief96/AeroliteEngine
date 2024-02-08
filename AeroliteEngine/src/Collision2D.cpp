@@ -3,6 +3,7 @@
 #include "Collision2D.h"
 #include "Precision.h"
 #include "Shape.h"
+#include "Config.h"
 
 namespace Aerolite
 {
@@ -16,7 +17,9 @@ namespace Aerolite
     //              on the shape types.
     bool CollisionDetection2D::IsColliding(AeroBody2D& a, AeroBody2D& b, std::vector<Contact2D>& contacts)
     {
+#ifndef CHECK_STATIC_COLLISIONS
         if (a.IsStatic() && b.IsStatic()) return false;
+#endif
         const bool aIsCircle = a.shape->GetType() == Circle;
         const bool bIsCircle = b.shape->GetType() == Circle;
 

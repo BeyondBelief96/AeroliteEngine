@@ -127,52 +127,6 @@ public:
 
 };
 
-class CollisionProjectionResolutionScene : public Scene
-{
-    private:
-        std::unique_ptr<AeroWorld2D> world;
-        Vec2 pushForce;
-        Vec2 mouseCursor;
-        bool leftMouseButtonDown;
-
-    public:
-        virtual void Setup() override;
-        virtual void Input(SDL_Event event) override;
-        virtual void Update() override;
-        virtual void Render() override;
-        virtual void Destroy()override;
-};
-
-class SATCollisionScene : public Scene
-{
-private:
-    std::unique_ptr<AeroWorld2D> world;
-    Vec2 pushForce;
-    Vec2 mouseCursor;
-    bool leftMouseButtonDown;
-    bool debug = false;
-
-public:
-    virtual void Setup() override;
-    virtual void Input(SDL_Event event) override;
-    virtual void Update() override;
-    virtual void Render() override;
-    virtual void Destroy()override;
-};
-
-class AeroWorld2DScene : public Scene
-{
-private:
-    std::unique_ptr<Aerolite::AeroWorld2D> world;
-    bool debug;
-public:
-    virtual void Setup() override;
-    virtual void Input(SDL_Event event) override;
-    virtual void Update() override;
-    virtual void Render() override;
-    virtual void Destroy()override;
-};
-
 class JointConstraintScene : public Scene
 {
 private:
@@ -199,10 +153,25 @@ public:
     virtual void Destroy()override;
 };
 
-class Body2DTestScene : public Scene
+class RigidBodiesAndJointsDemoScene : public Scene
 {
 private:
     std::unique_ptr<Aerolite::AeroWorld2D> world;
+    std::vector<unsigned int> m_bodyColors;
+    bool debug;
+public:
+    virtual void Setup() override;
+    virtual void Input(SDL_Event event) override;
+    virtual void Update() override;
+    virtual void Render() override;
+    virtual void Destroy()override;
+};
+
+class ProjectileExplosionDemoScene : public Scene
+{
+private:
+    std::unique_ptr<Aerolite::AeroWorld2D> world;
+    std::vector<unsigned int> m_bodyColors;
     bool debug;
 public:
     virtual void Setup() override;

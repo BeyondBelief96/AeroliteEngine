@@ -6,17 +6,15 @@
 #include "Collision2D.h"
 #include "Contact2D.h"
 #include "Constants.h"
-#include "pfgen.h"
 #include "Scene.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 // Setup function (executed once in the beginning of the simulation)
 ///////////////////////////////////////////////////////////////////////////////
-void Body2DTestScene::Setup() {
+void RigidBodiesAndJointsDemoScene::Setup() {
 
-    running = Graphics::OpenWindow();
-
-    world = std::make_unique<Aerolite::AeroWorld2D>(-9.8f);
+    running = true;
+    world = std::make_unique<AeroWorld2D>(-9.8f);
 
     // Add bird
     auto bird = std::make_unique<AeroBody2D>(new CircleShape(45), 100, Graphics::Height() / make_real<real>(2.0) + 220, make_real<real>(3.0));
@@ -100,12 +98,28 @@ void Body2DTestScene::Setup() {
     world->AddBody2D(std::move(pig2));
     world->AddBody2D(std::move(pig3));
     world->AddBody2D(std::move(pig4));
+
+    for(auto& body : world->GetBodies())
+    {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<> colorDist(0, 255);
+        // Generate random colors for red, green, and blue components
+        const int red = colorDist(gen);
+        const int green = colorDist(gen);
+        const int blue = colorDist(gen);
+
+        // Combine the color components into a single ARGB value with full opacity (0xFF)
+        // The '0xFF' is the alpha component for full opacity.
+        const auto color = (0xFF << 24) | (red << 16) | (green << 8) | blue;
+        m_bodyColors.push_back(color);
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 // Input processing
 ///////////////////////////////////////////////////////////////////////////////
-void Body2DTestScene::Input(SDL_Event event) {
+void RigidBodiesAndJointsDemoScene::Input(const SDL_Event event) {
      switch (event.type) {
      case SDL_QUIT:
          running = false;
@@ -125,22 +139,46 @@ void Body2DTestScene::Input(SDL_Event event) {
          break;
      case SDL_MOUSEBUTTONDOWN:
          if (event.button.button == SDL_BUTTON_LEFT) {
-             int x, y;
-             SDL_GetMouseState(&x, &y);
-             // Create and add a new BoxShape at the mouse location
-             auto circle = std::make_unique<AeroBody2D>(new CircleShape(50), x, y, make_real<real>(2.0));
-             circle->restitution = 0;
-             circle->friction = make_real<real>(0.4);
-             world->AddBody2D(std::move(circle));
+            int x, y;
+            SDL_GetMouseState(&x, &y);
+            // Create and add a new BoxShape at the mouse location
+            auto circle = std::make_unique<AeroBody2D>(new CircleShape(50), x, y, make_real<real>(2.0));
+            circle->restitution = 0;
+            circle->friction = make_real<real>(0.4);
+            std::random_device rd;
+            std::mt19937 gen(rd());
+            std::uniform_int_distribution<> colorDist(0, 255);
+            // Generate random colors for red, green, and blue components
+            const int red = colorDist(gen);
+            const int green = colorDist(gen);
+            const int blue = colorDist(gen);
+
+            // Combine the color components into a single ARGB value with full opacity (0xFF)
+            // The '0xFF' is the alpha component for full opacity.
+            const auto color = (0xFF << 24) | (red << 16) | (green << 8) | blue;
+            m_bodyColors.push_back(color);
+            world->AddBody2D(std::move(circle));
          }
          else if (event.button.button == SDL_BUTTON_RIGHT) {
-             int x, y;
-             SDL_GetMouseState(&x, &y);
-             // Create and add a new CircleShape at the mouse location
-             auto circle = std::make_unique<AeroBody2D>(new BoxShape(50,50), x, y, make_real<real>(1.0)); // Assuming radius 25 for the circle
-             circle->restitution = 0;
-             circle->friction =make_real<real>(0.4);
-             world->AddBody2D(std::move(circle));
+            int x, y;
+            SDL_GetMouseState(&x, &y);
+            // Create and add a new CircleShape at the mouse location
+            auto circle = std::make_unique<AeroBody2D>(new BoxShape(50,50), x, y, make_real<real>(1.0)); // Assuming radius 25 for the circle
+            circle->restitution = 0;
+            circle->friction = make_real<real>(0.4);
+            std::random_device rd;
+            std::mt19937 gen(rd());
+            std::uniform_int_distribution<> colorDist(0, 255);
+            // Generate random colors for red, green, and blue components
+            const int red = colorDist(gen);
+            const int green = colorDist(gen);
+            const int blue = colorDist(gen);
+
+            // Combine the color components into a single ARGB value with full opacity (0xFF)
+            // The '0xFF' is the alpha component for full opacity.
+            const auto color = (0xFF << 24) | (red << 16) | (green << 8) | blue;
+            m_bodyColors.push_back(color);
+            world->AddBody2D(std::move(circle));
          }
          break;
      }
@@ -149,7 +187,7 @@ void Body2DTestScene::Input(SDL_Event event) {
 ///////////////////////////////////////////////////////////////////////////////
 // Update function (called several times per second to update objects)
 ///////////////////////////////////////////////////////////////////////////////
-void Body2DTestScene::Update() {
+void RigidBodiesAndJointsDemoScene::Update() {
     // Check if we are too fast, and if so, waste some milliseconds until we reach
     // MILLISECONDS_PER_FRAME.
     const int time_to_wait = MILLISECS_PER_FRAME - (SDL_GetTicks() - timePreviousFrame);
@@ -172,20 +210,21 @@ void Body2DTestScene::Update() {
 ///////////////////////////////////////////////////////////////////////////////
 // Render function (called several times per second to draw objects)
 ///////////////////////////////////////////////////////////////////////////////
-void Body2DTestScene::Render() {
+void RigidBodiesAndJointsDemoScene::Render() {
     Graphics::ClearScreen(0xFF000000);
+    int i = 0;
     for (const auto& body : world->GetBodies()) {
         if (body->shape->GetType() == Circle) {
 	        const auto circleShape = dynamic_cast<CircleShape*>(body->shape);
-            Graphics::DrawCircle(body->position.x, body->position.y, circleShape->radius, body->rotation, 0xFF00FF00);
+            Graphics::DrawCircle(body->position.x, body->position.y, circleShape->radius, body->rotation, m_bodyColors[i++]);
         }
         else  if (body->shape->GetType() == Box) {
 	        const auto boxShape = dynamic_cast<BoxShape*>(body->shape);
-            Graphics::DrawPolygon(body->position.x, body->position.y, boxShape->worldVertices, 0xFF00FF00);
+            Graphics::DrawFillPolygon(body->position.x, body->position.y, boxShape->worldVertices, m_bodyColors[i++]);
         }
         else  if (body->shape->GetType() == Polygon) {
 	        const auto boxShape = dynamic_cast<PolygonShape*>(body->shape);
-            Graphics::DrawPolygon(body->position.x, body->position.y, boxShape->worldVertices, 0xFF00FF00);
+            Graphics::DrawFillPolygon(body->position.x, body->position.y, boxShape->worldVertices, m_bodyColors[i++]);
         }
     }
 
@@ -198,13 +237,11 @@ void Body2DTestScene::Render() {
                 contact.start.y + contact.normal.y * 15, 0xFFFF00FF);
         }
     }
-
-    Graphics::RenderFrame();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 // Destroy function to delete objects and close the window
 ///////////////////////////////////////////////////////////////////////////////
-void Body2DTestScene::Destroy() {
-    Graphics::CloseWindow();
+void RigidBodiesAndJointsDemoScene::Destroy() {
+    running = false;
 }

@@ -4,6 +4,8 @@
 #include "Collision2D.h"
 #include "Contact2D.h"
 #include "Constants.h"
+#include "imgui.h"
+#include "imgui_impl_sdlrenderer2.h"
 #include "pfgen.h"
 #include "scene.h"
 
@@ -72,9 +74,6 @@ void RagdollJointScene::Setup() {
 ///////////////////////////////////////////////////////////////////////////////
 void RagdollJointScene::Input(const SDL_Event event) {
      switch (event.type) {
-     case SDL_QUIT:
-         running = false;
-         break;
      case SDL_KEYDOWN:
          if (event.key.keysym.sym == SDLK_ESCAPE)
              running = false;
@@ -105,10 +104,10 @@ void RagdollJointScene::Input(const SDL_Event event) {
      case SDL_MOUSEMOTION:
          int x, y;
          SDL_GetMouseState(&x, &y);
-         Vec2 mouse = Vec2(x, y);
+         const Vec2 mouse = Vec2(x, y);
          Aerolite::AeroBody2D* bob = world->GetBodies()[0].get();
-         Vec2 direction = (mouse - bob->position).UnitVector();
-         real speed = make_real<real>(5.0);
+         const Vec2 direction = (mouse - bob->position).UnitVector();
+         const real speed = make_real<real>(5.0);
          bob->position += direction * speed;
      }
     
@@ -120,7 +119,7 @@ void RagdollJointScene::Input(const SDL_Event event) {
 void RagdollJointScene::Update() {
     // Check if we are too fast, and if so, waste some milliseconds until we reach
     // MILLISECONDS_PER_FRAME.
-    int timeToWait = MILLISECS_PER_FRAME - (SDL_GetTicks() - timePreviousFrame);
+    const int timeToWait = MILLISECS_PER_FRAME - (SDL_GetTicks() - timePreviousFrame);
     if (timeToWait > 0) {
         SDL_Delay(timeToWait);
     }
@@ -143,43 +142,31 @@ void RagdollJointScene::Update() {
 void RagdollJointScene::Render() {
     Graphics::ClearScreen(0xFF000000);
 
-    AeroBody2D* bob = world->GetBodies()[0].get();
-    AeroBody2D* head = world->GetBodies()[1].get();
+    const AeroBody2D* bob = world->GetBodies()[0].get();
+    const AeroBody2D* head = world->GetBodies()[1].get();
     Graphics::DrawLine(bob->position.x, bob->position.y, head->position.x, head->position.y, 0xFFFFFFFF);
 
-    for (auto& joint : world->GetConstraints()) {
+    for (const auto& joint : world->GetConstraints()) {
         if (debug) {
             const Vec2 anchorPoint = joint->a.LocalSpaceToWorldSpace(joint->aPoint);
             Graphics::DrawFillCircle(anchorPoint.x, anchorPoint.y, 3, 0xFF0000FF);
         }
     }
 
-    for (auto& body : world->GetBodies()) {
+    for (const auto& body : world->GetBodies()) {
         if (body->shape->GetType() == Circle) {
-            auto circleShape = dynamic_cast<CircleShape*>(body->shape);
+	        const auto circleShape = dynamic_cast<CircleShape*>(body->shape);
             Graphics::DrawCircle(body->position.x, body->position.y, circleShape->radius, body->rotation, 0xFFFFFFFF);
         }
         else  if (body->shape->GetType() == Box) {
-            auto boxShape = dynamic_cast<BoxShape*>(body->shape);
+	        const auto boxShape = dynamic_cast<BoxShape*>(body->shape);
             Graphics::DrawPolygon(body->position.x, body->position.y, boxShape->worldVertices, 0xFFFFFFFF);
         }
         else  if (body->shape->GetType() == Polygon) {
-            auto boxShape = dynamic_cast<PolygonShape*>(body->shape);
+	        const auto boxShape = dynamic_cast<PolygonShape*>(body->shape);
             Graphics::DrawPolygon(body->position.x, body->position.y, boxShape->worldVertices, 0xFFFF0000);
         }
     }
-
-    /*if (debug) {
-        for (auto& contact : world->GetContacts())
-        {
-            Graphics::DrawFillCircle(contact.start.x, contact.start.y, 4, 0xFFFF00FF);
-            Graphics::DrawFillCircle(contact.end.x, contact.end.y, 4, 0xFFFF00FF);
-            Graphics::DrawLine(contact.start.x, contact.start.y, contact.start.x + contact.normal.x * 15,
-                contact.start.y + contact.normal.y * 15, 0xFFFF00FF);
-        }
-    }*/
-
-    Graphics::RenderFrame();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -187,5 +174,4 @@ void RagdollJointScene::Render() {
 ///////////////////////////////////////////////////////////////////////////////
 void RagdollJointScene::Destroy() {
     running = false;
-    Graphics::CloseWindow();
 }
