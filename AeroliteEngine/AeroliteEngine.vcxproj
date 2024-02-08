@@ -143,7 +143,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="include\AABB2D.h" />
     <ClInclude Include="include\AeroBody3D.h" />
     <ClInclude Include="include\AeroQuat.h" />
     <ClInclude Include="include\AeroWorld2D.h" />

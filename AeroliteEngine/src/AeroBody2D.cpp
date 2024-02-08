@@ -38,9 +38,9 @@ namespace Aerolite {
         shape->UpdateVertices(rotation, position);
     }
 
-    AABB2D AeroBody2D::GetAABB() const
+    AeroAABB AeroBody2D::GetAABB() const
     {
-        AABB2D aabb;
+        AeroAABB aabb;
         if (shape->GetType() == Circle)
         {
 	        const CircleShape* circleShape = dynamic_cast<CircleShape*>(shape);

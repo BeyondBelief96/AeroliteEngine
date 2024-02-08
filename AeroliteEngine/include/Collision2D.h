@@ -1,6 +1,7 @@
 #ifndef COLLISION_DETECTION_H
 #define COLLISION_DETECTION_H
 
+#include "AeroAABB.h"
 #include "AeroBody2D.h"
 #include "Contact2D.h"
 #include "Precision.h"
@@ -26,7 +27,7 @@ namespace Aerolite {
         /// <param name="a"></param>
         /// <param name="b"></param>
         /// <returns></returns>
-        static bool IntersectAABBs(AABB2D& a, AABB2D& b);
+        static bool IntersectAABBs(AeroAABB& a, AeroAABB& b);
 
     private:
         /// @brief Detects if two circle AeroBody2D's are colliding.

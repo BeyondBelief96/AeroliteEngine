@@ -4,7 +4,7 @@
 #include "AeroVec2.h"
 #include "Shape.h"
 #include "Precision.h"
-#include "AABB2D.h"
+#include "AeroAABB.h"
 
 namespace Aerolite {
 
@@ -102,7 +102,7 @@ namespace Aerolite {
         /**
          * \brief Returns an AABB surrounding the rigid body for broad phase collision detection.
          */
-        AABB2D GetAABB(void) const;
+        AeroAABB GetAABB(void) const;
 
         /**
          * \brief Performs integration of the forces/torques and linear/angular accelerations to find the new velocities of the current simulation frame.

@@ -54,9 +54,6 @@
     <ClInclude Include="include\Shape.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\AABB2D.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\AeroWorld2D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
