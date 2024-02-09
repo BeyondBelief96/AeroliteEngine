@@ -75,6 +75,15 @@
     <ClInclude Include="include\AeroBody3D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\AeroAABB2D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\AeroBroadPhase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\AeroShg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\AeroVec2.cpp">
@@ -111,6 +120,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\AeroBody3D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AeroShg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AeroBroadPhase.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

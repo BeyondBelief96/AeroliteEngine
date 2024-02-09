@@ -145,7 +145,7 @@ namespace Aerolite
 	{
         if (IsStatic() || !is_awake) return;
 
-        acceleration = sum_forces * inverse_mass;
+        linear_acceleration = sum_forces * inverse_mass;
 	}
 
 	void AeroBody3D::IntegrateVelocities(const real dt)

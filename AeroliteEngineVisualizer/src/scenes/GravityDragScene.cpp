@@ -14,7 +14,7 @@ Vec2 gravity(make_real<real>(0.0), make_real<real>(9.8) * PIXELS_PER_METER);
 ///////////////////////////////////////////////////////////////////////////////
 void GravityDragScene::Setup() {
     running = Graphics::OpenWindow();
-    world = std::make_unique<AeroWorld2D>();
+    world = std::make_unique<AeroWorld2D>(-9.8);
 
     for (int i = 0; i < 500; i++)
     {

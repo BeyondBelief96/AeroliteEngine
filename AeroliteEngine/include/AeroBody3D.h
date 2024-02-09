@@ -25,14 +25,14 @@ namespace Aerolite
 		AeroVec3 position;
 
 		/**
-		 * \brief  Linear velocity of the rigid bodies center of mass.
+		 * \brief  Linear linear_velocity of the rigid bodies center of mass.
 		 */
-		AeroVec3 velocity;
+		AeroVec3 linear_velocity;
 
 		/**
-		 * \brief Linear acceleration of the rigid bodies center of mass.
+		 * \brief Linear linear_acceleration of the rigid bodies center of mass.
 		 */
-		AeroVec3 acceleration;
+		AeroVec3 linear_acceleration;
 
 		/**
 		 * \brief holds the angular orientation of the rigid body in world space.
@@ -40,12 +40,12 @@ namespace Aerolite
 		Quaternion orientation;
 
 		/**
-		 * \brief Holds the angular velocity of the rigid body in world space.
+		 * \brief Holds the angular linear_velocity of the rigid body in world space.
 		 */
 		AeroVec3 angular_velocity;
 
 		/**
-		 * \brief Holds the angular acceleration of the rigid body in world space.
+		 * \brief Holds the angular linear_acceleration of the rigid body in world space.
 		 */
 		AeroVec3 angular_acceleration;
 
@@ -103,7 +103,7 @@ namespace Aerolite
 		/**
 		 * \brief Holds the inverse inertia tensor of the rigid body
 		 * in world coordinates. This is needed due to the calculation of
-		 * the angular velocity being done in world coordinates. This will be
+		 * the angular linear_velocity being done in world coordinates. This will be
 		 * calculated every frame to ensure it stays up to date.
 		 */
 		Matrix3x3 inverse_inertia_tensor_world;

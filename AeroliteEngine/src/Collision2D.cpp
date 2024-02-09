@@ -44,7 +44,7 @@ namespace Aerolite
     }
 
 
-    bool CollisionDetection2D::IntersectAABBs(AeroAABB& a, AeroAABB& b)
+    bool CollisionDetection2D::IntersectAABBs(AeroAABB2D& a, AeroAABB2D& b)
     {
         if (a.max.x <= b.min.x || b.max.x <= a.min.x ||
             a.max.y <= b.min.y || b.max.y <= a.min.y) return false;

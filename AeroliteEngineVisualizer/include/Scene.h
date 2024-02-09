@@ -12,6 +12,7 @@
 
 class Scene {
 protected:
+    std::unique_ptr<AeroWorld2D> world;
     bool running = false;
     int timePreviousFrame = 0;
 public:
@@ -23,12 +24,13 @@ public:
     virtual void Destroy() = 0;
     Scene() = default;
     ~Scene() = default;
+
+    AeroWorld2D* GetWorld() const { return world.get(); }
 };
 
 class GravityDragScene : public Scene
 {
 private:
-    std::unique_ptr<Aerolite::AeroWorld2D> world;
     SDL_Rect liquid;
     SDL_Rect floor;
     Vec2 pushForce;
@@ -44,7 +46,6 @@ public:
 class BilliardScene : public Scene
 {
 private:
-    std::unique_ptr<Aerolite::AeroWorld2D> world;
     Vec2 pushForce;
     Vec2 mouseCursor;
     bool leftMouseButtonDown;
@@ -61,7 +62,6 @@ public:
 class SolarSystemScene : public Scene
 {
 private:
-    std::unique_ptr<Aerolite::AeroWorld2D> world;
     std::vector<float> planetRadii;
     Vec2 mouseCursor;
     bool leftMouseButtonDown;
@@ -86,7 +86,6 @@ public:
 class SpringScene : public Scene
 {
 private:
-    std::unique_ptr<Aerolite::AeroWorld2D> world;
     Vec2 pushForce;
     Vec2 mouseCursor;
     bool leftMouseButtonDown;
@@ -109,7 +108,6 @@ public:
 class ContactPointGenerationDemoScene : public Scene
 {
 private:
-    std::unique_ptr<AeroWorld2D> world;
     std::vector<unsigned int> m_bodyColors;
     Vec2 mouseCursor;
     bool leftMouseButtonDown;
@@ -130,7 +128,6 @@ public:
 class JointConstraintScene : public Scene
 {
 private:
-    std::unique_ptr<Aerolite::AeroWorld2D> world;
     bool debug;
 public:
     virtual void Setup() override;
@@ -143,7 +140,6 @@ public:
 class RagdollJointScene : public Scene
 {
 private:
-    std::unique_ptr<Aerolite::AeroWorld2D> world;
     bool debug;
 public:
     virtual void Setup() override;
@@ -156,7 +152,6 @@ public:
 class RigidBodiesAndJointsDemoScene : public Scene
 {
 private:
-    std::unique_ptr<Aerolite::AeroWorld2D> world;
     std::vector<unsigned int> m_bodyColors;
     bool debug;
 public:
@@ -170,7 +165,6 @@ public:
 class ProjectileExplosionDemoScene : public Scene
 {
 private:
-    std::unique_ptr<Aerolite::AeroWorld2D> world;
     std::vector<unsigned int> m_bodyColors;
     bool debug;
 public:
@@ -183,7 +177,6 @@ public:
 
 class LargeParticleTestScene : public Scene
 {
-    std::unique_ptr<Aerolite::AeroWorld2D> world;
     bool debug;
 	void CreateRandomCircles(int numberOfCircles, real velocityRange, real radius) const;
 public:

@@ -15,7 +15,7 @@
 void JointConstraintScene::Setup() {
     running = Graphics::OpenWindow();
 
-    world = std::make_unique<Aerolite::AeroWorld2D>();
+    world = std::make_unique<Aerolite::AeroWorld2D>(-9.8);
 
     const int NUM_BODIES = 10;
     for (int i = 0; i < NUM_BODIES; i++) {

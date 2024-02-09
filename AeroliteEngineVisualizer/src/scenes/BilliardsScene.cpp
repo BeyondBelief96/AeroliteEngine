@@ -1,5 +1,5 @@
 #include "Constants.h"
-#include <random>
+#include <random>std::make_unique<AeroWorld2D>(0);
 #include "pfgen.h"
 #include "Scene.h"
 

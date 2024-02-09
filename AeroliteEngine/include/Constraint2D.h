@@ -24,7 +24,7 @@ namespace Aerolite {
 		MatrixMxN<6, 6> GetInvM() const;
 
 		/// <summary>
-		/// Creates linear and angular velocity vector for constraint solving.
+		/// Creates linear and angular linear_velocity vector for constraint solving.
 		/// </summary>
 		/// <returns>1x6 vector of linear and angular velocities of bodies "a" and "b".</returns>
 		MatrixMxN<6,1> GetVelocities() const;

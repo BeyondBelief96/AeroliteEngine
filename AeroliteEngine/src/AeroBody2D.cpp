@@ -1,25 +1,29 @@
 #include "AeroBody2D.h"
 #include "Precision.h"
 
+static Aerolite::aero_uint16 current_id = 0;
 
 namespace Aerolite {
 
     // Constructor for AeroBody2D.
     // Takes a pointer to a Shape, position coordinates (x, y), and mass.
     AeroBody2D::AeroBody2D(Shape* shape, const real x, const real y, const real mass)
+	    : position({x, y}), mass(mass), shape(shape)
     {
-        this->shape = shape;
-        this->position = AeroVec2(x, y);
-        this->velocity = AeroVec2(0.0f, 0.0f);
-        this->acceleration = AeroVec2(0.0f, 0.0f);
-        this->mass = mass;
+        this->id = current_id++;
+        this->linear_velocity = AeroVec2(0.0f, 0.0f);
+        this->linear_acceleration = AeroVec2(0.0f, 0.0f);
         this->rotation = 0.0f;
         this->angular_velocity = 0.0f;
         this->angular_acceleration = 0.0f;
+        this->linear_damping = 0.002;
+        this->angular_damping = 0.002;
         this->sum_forces = AeroVec2(0.0f, 0.0f);
         this->sum_torque = 0.0f;
         this->restitution = 0.5;
         this->friction = make_real<real>(0.7);
+        this->is_sleeping = false;
+        this->sleep_timer = 0;
 
         if(mass != 0.0) {
             this-> inv_mass = make_real<real>(1.0) / mass;
@@ -27,20 +31,20 @@ namespace Aerolite {
             this->inv_mass = 0.0;
         }
 
-        this->I = shape->GetMomentOfInertia() * this->mass;
+        this->inertia = shape->GetMomentOfInertia() * this->mass;
 
-        if(I != 0.0) {
-            this-> invI = make_real<real>(1.0) / I;
+        if(inertia != 0.0) {
+            this-> inv_inertia = make_real<real>(1.0) / inertia;
         } else {
-            invI = 0.0;
+            inv_inertia = 0.0;
         }
 
         shape->UpdateVertices(rotation, position);
     }
 
-    AeroAABB AeroBody2D::GetAABB() const
+    AeroAABB2D AeroBody2D::GetAABB() const
     {
-        AeroAABB aabb;
+        AeroAABB2D aabb;
         if (shape->GetType() == Circle)
         {
 	        const CircleShape* circleShape = dynamic_cast<CircleShape*>(shape);
@@ -71,17 +75,19 @@ namespace Aerolite {
     {
         if (IsStatic()) return;
 
-        // Find the acceleration based on the forces that are being applied this frame.
-        acceleration = sum_forces * inv_mass;
+        // Find the linear_acceleration based on the forces that are being applied this frame.
+        linear_acceleration = sum_forces * inv_mass;
 
-        // Integrate the acceleration to find the new velocity.
-        velocity += acceleration * dt;
+        // Integrate the linear_acceleration to find the new linear_velocity.
+        linear_velocity += linear_acceleration * dt;
+        linear_velocity *= RealPow(0.98f, linear_damping);
 
-        // Integrate the torques to find the new angular acceleration.
-        angular_acceleration = sum_torque * invI;
+        // Integrate the torques to find the new angular linear_acceleration.
+        angular_acceleration = sum_torque * inv_inertia;
 
-        // Integrate the angular acceleration to find the new angular velocity.
+        // Integrate the angular linear_acceleration to find the new angular linear_velocity.
         angular_velocity += angular_acceleration * dt;
+        angular_velocity *= RealPow(0.98f, angular_damping);
 
         // Clear all forces and torque acting on the body before the next physics simulation frame.
         ClearForces();
@@ -92,10 +98,10 @@ namespace Aerolite {
     {
         if (IsStatic()) return;
 
-        // Integrate the velocity to find the new position.
-        position += velocity * dt + (acceleration * dt * dt) / 2.0f;
+        // Integrate the linear_velocity to find the new position.
+        position += linear_velocity * dt + (linear_acceleration * dt * dt) / 2.0f;
 
-        // Integrate the angular velocity to find the new rotation angle.
+        // Integrate the angular linear_velocity to find the new rotation angle.
         rotation += angular_velocity * dt;
 
         // Update the vertices of the shape based on the position/rotation.
@@ -129,21 +135,39 @@ namespace Aerolite {
     void AeroBody2D::ApplyImpulseLinear(const AeroVec2& j)
     {
         if (IsStatic()) return;
-        velocity += j * inv_mass;
+        linear_velocity += j * inv_mass;
     }
 
     void AeroBody2D::ApplyImpulseAngular(const real j)
     {
         if (IsStatic()) return;
-        angular_velocity += j * invI;
+        angular_velocity += j * inv_inertia;
     }
 
     void AeroBody2D::ApplyImpulseAtPoint(const AeroVec2& j, const AeroVec2& r)
     {
         if (IsStatic()) return;
 
-        velocity += j * inv_mass;
-        angular_velocity += r.Cross(j) * invI;
+        linear_velocity += j * inv_mass;
+        angular_velocity += r.Cross(j) * inv_inertia;
+    }
+
+    void AeroBody2D::Sleep()
+    {
+        if(!IsStatic())
+        {
+            is_sleeping = true;
+            linear_velocity = { 0, 0 };
+            angular_velocity = 0;
+            ClearForces();
+            ClearTorque();
+        }
+    }
+
+    void AeroBody2D::Awake()
+    {
+        is_sleeping = false;
+        sleep_timer = 0;
     }
 
     // Method to clear all forces acting on the body.

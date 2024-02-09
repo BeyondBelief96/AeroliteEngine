@@ -3,7 +3,14 @@
 
 #include <cmath>
 
+#include "Config.h"
+
 namespace Aerolite {
+
+
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
 
     //Defines a real number precision. Aerolite engine can be compiled in single or double-precision versions. By default, single
     //precision is provided.
@@ -77,14 +84,35 @@ namespace Aerolite {
             return std::cos(a);
     }
 
+    /**
+    * @brief Raises a base to a given power.
+    * \param base The value to take the cos of.
+    * @param power The value to raise the base to.
+    * \return Returns the result of base ^ power.
+    */
+    inline real RealPow(const real base, const real power)
+    {
+        if (std::is_same_v < real, float>)
+            return std::powf(base, power);
+        else if (std::is_same_v<real, double>)
+            return std::pow(base, power);
+    }
+
     template<typename T>
     T make_real(double value) {
         return static_cast<T>(value);
     }
 
-    #ifndef M_PI
-    #define M_PI 3.14159265358979323846
-    #endif
+    /**
+     * \brief Combines two 16-bit integers into a 32 bit integer.
+     * \param x The first integer
+     * \param y The second integer
+     * \return The two integers combined into a 32 bit integer
+     */
+	inline aero_uint32 ComputeIdPair(const aero_uint16 x, const aero_uint16 y) {
+        // https://stackoverflow.com/a/919631
+        return ((aero_int32)x << 16) | (aero_int32)y;
+    }
 
 }
 

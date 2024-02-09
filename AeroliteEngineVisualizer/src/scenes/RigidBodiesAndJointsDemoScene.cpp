@@ -15,6 +15,10 @@ void RigidBodiesAndJointsDemoScene::Setup() {
 
     running = true;
     world = std::make_unique<AeroWorld2D>(-9.8f);
+    world->ShgSetBounds({ 0, 0 }, { (real)Graphics::Width(), (real)Graphics::Height() });
+    world->ShgSetCellWidth(100);
+    world->ShgSetCellHeight(100);
+    world->SetBroadPhaseAlgorithm(BroadPhaseAlg::SHG);
 
     // Add bird
     auto bird = std::make_unique<AeroBody2D>(new CircleShape(45), 100, Graphics::Height() / make_real<real>(2.0) + 220, make_real<real>(3.0));

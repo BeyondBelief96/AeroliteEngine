@@ -45,6 +45,9 @@ void ContactPointGenerationDemoScene::RemoveLastBody()  {
 void ContactPointGenerationDemoScene::Setup() {
     running = true;
     world = std::make_unique<AeroWorld2D>(0);
+    world->ShgSetBounds({ 0, 0 }, { static_cast<real>(Graphics::Width()), static_cast<real>(Graphics::Height()) });
+    world->ShgSetCellWidth(200);
+    world->ShgSetCellHeight(200);
     m_bodyColors.push_back(0xFFFFFFFF);
     auto moveablePolygon = std::make_unique<AeroBody2D>(PolygonShape::CreateRegularPolygon(4, 50), Graphics::Width() / 2, Graphics::Height() / 2, make_real<real>(0.0));
     world->AddBody2D(std::move(moveablePolygon));

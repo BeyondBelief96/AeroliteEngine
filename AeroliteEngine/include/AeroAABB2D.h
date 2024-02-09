@@ -7,23 +7,23 @@
 namespace Aerolite {
 
     /**
-     * @struct AeroAABB
+     * @struct AeroAABB2D
      * @brief Represents an axis-aligned bounding box with minimum and maximum coordinates.
      */
-    struct AeroAABB
+    struct AeroAABB2D
     {
         AeroVec2 min; ///< Minimum coordinate of the box (bottom-left corner).
         AeroVec2 max; ///< Maximum coordinate of the box (top-right corner).
 
         /// Default constructor.
-        AeroAABB() = default;
+        AeroAABB2D() = default;
 
         /**
          * @brief Constructor with parameters to initialize the bounding box.
          * @param min The minimum coordinate (bottom-left corner) of the box.
          * @param max The maximum coordinate (top-right corner) of the box.
          */
-        AeroAABB(AeroVec2 min, AeroVec2 max)
+        AeroAABB2D(AeroVec2 min, AeroVec2 max)
             : min(std::move(min)), max(std::move(max)) {}
 
         /**
@@ -31,7 +31,7 @@ namespace Aerolite {
          * @param other The other AABB to check intersection with.
          * @return True if the AABBs intersect, false otherwise.
          */
-        [[nodiscard]] bool Intersects(const AeroAABB& other) const
+        [[nodiscard]] bool Intersects(const AeroAABB2D& other) const
         {
             if (max.x < other.min.x || min.x > other.max.x) return false;
             if (max.y < other.min.y || min.y > other.max.y) return false;
@@ -54,6 +54,24 @@ namespace Aerolite {
         [[nodiscard]] AeroVec2 Size() const
         {
             return max - min;
+        }
+
+        /**
+         * @brief Returns the width of this bounding box.
+         * @return Returns the width of the bounding box./
+         */
+        real Width() const
+        {
+            return max.x - min.x;
+        }
+
+        /**
+        * @brief Returns the height of this bounding box.
+        * @return Returns the height of the bounding box./
+        */
+        real Height() const
+        {
+            return max.y - min.y;
         }
 
         /**

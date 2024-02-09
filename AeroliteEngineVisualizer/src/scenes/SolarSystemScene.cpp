@@ -54,7 +54,7 @@ auto planetColors = std::vector<unsigned int>();
 // Setup function (executed once in the beginning of the simulation)
 ///////////////////////////////////////////////////////////////////////////////
 void SolarSystemScene::Setup() {
-    running = Graphics::OpenWindow();
+    running = true;
     world = std::make_unique<Aerolite::AeroWorld2D>(0);
     sun->radius = 30;
     sun->position.x = Graphics::Width() / 2;
@@ -200,5 +200,5 @@ void SolarSystemScene::Render() {
 // Destroy function to delete objects and close the window
 ///////////////////////////////////////////////////////////////////////////////
 void SolarSystemScene::Destroy() {
-    Graphics::CloseWindow();
+    running = false;
 }

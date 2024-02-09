@@ -141,7 +141,7 @@ namespace Aerolite
 
 		void AddScaledVector(const AeroVec3& vector, const real scale)
 		{
-			// First, create a quaternion representing the angular velocity vector
+			// First, create a quaternion representing the angular linear_velocity vector
 			// The real part is 0 because we're representing a pure rotation
 			Quaternion p(0, vector.x * scale, vector.y * scale, vector.z * scale);
 

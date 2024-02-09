@@ -30,7 +30,7 @@ namespace Aerolite {
     void Contact2D::ResolveImpulse()
     {
         // Calculate the coefficient of restitution, 'e', which is a measure of how bouncy the collision is.
-        // The coefficient of restitution is the ratio of the final to initial relative velocity 
+        // The coefficient of restitution is the ratio of the final to initial relative linear_velocity 
         // between two objects after they collide. It ranges from 0 (perfectly inelastic collision, 
         // no bounce) to 1 (perfectly elastic collision).
         // Here, 'e' is determined by taking the minimum of the restitution coefficients 
@@ -45,16 +45,16 @@ namespace Aerolite {
 
         // Calculate the velocities at the point of contact for each object.
         // This includes both linear and angular contributions.
-        // The formula is: velocity = linear_velocity + angular_velocity cross radius_vector
-        AeroVec2 va = a->velocity + AeroVec2(-a->angular_velocity * ra.y, a->angular_velocity * ra.x);
-        AeroVec2 vb = b->velocity + AeroVec2(-b->angular_velocity * rb.y, b->angular_velocity * rb.x);
+        // The formula is: linear_velocity = linear_velocity + angular_velocity cross radius_vector
+        AeroVec2 va = a->linear_velocity + AeroVec2(-a->angular_velocity * ra.y, a->angular_velocity * ra.x);
+        AeroVec2 vb = b->linear_velocity + AeroVec2(-b->angular_velocity * rb.y, b->angular_velocity * rb.x);
 
-        // Compute the relative velocity at the point of contact.
-        // This is the velocity of object A relative to object B at the contact point.
+        // Compute the relative linear_velocity at the point of contact.
+        // This is the linear_velocity of object A relative to object B at the contact point.
         const AeroVec2 vrel = va - vb;
 
-        // Calculate the dot product of the relative velocity and the collision normal.
-        // This value is a component of the relative velocity along the normal direction,
+        // Calculate the dot product of the relative linear_velocity and the collision normal.
+        // This value is a component of the relative linear_velocity along the normal direction,
         // which is used in calculating the impulse magnitude.
         float vrelDotNormal = vrel.Dot(normal);
 
@@ -65,8 +65,8 @@ namespace Aerolite {
         // The formula is: j = -(1 + e) * vrelDotNormal / (inv_massA + inv_massB + termA + termB)
         // where termA and termB are additional terms that account for the objects' rotational inertia.
         const float impulseMagnitudeN = -(1 + e) * vrelDotNormal / ((a->inv_mass + b->inv_mass)
-            + (ra.Cross(normal) * ra.Cross(normal)) * a->invI
-            + (rb.Cross(normal) * rb.Cross(normal)) * b->invI);
+            + (ra.Cross(normal) * ra.Cross(normal)) * a->inv_inertia
+            + (rb.Cross(normal) * rb.Cross(normal)) * b->inv_inertia);
 
         // Calculate the normal component of the impulse.
         // jN is the impulse vector along the collision normal.
@@ -78,17 +78,17 @@ namespace Aerolite {
         // First, obtain the tangent vector, which is perpendicular to the collision normal.
         const AeroVec2 tangent = normal.Normal();
 
-        // Calculate the dot product of the relative velocity and the tangent vector.
-        // This represents the component of the relative velocity in the direction of the tangent.
+        // Calculate the dot product of the relative linear_velocity and the tangent vector.
+        // This represents the component of the relative linear_velocity in the direction of the tangent.
         real vrelDotTangent = vrel.Dot(tangent);
 
         // Calculate the magnitude of the tangential impulse.
-        // This calculation is similar to the normal impulse, but uses the tangential component of the relative velocity.
+        // This calculation is similar to the normal impulse, but uses the tangential component of the relative linear_velocity.
         // The coefficient 'f' represents the friction coefficient, which controls how much friction is applied.
         // The formula also includes restitution 'e' and the inverse masses and moment of inertia of the objects.
         const real impulseMagnitudeT = f * -(1 + e) * vrelDotTangent / ((a->inv_mass + b->inv_mass)
-            + (ra.Cross(tangent) * ra.Cross(tangent)) * a->invI
-            + (rb.Cross(tangent) * rb.Cross(tangent)) * b->invI);
+            + (ra.Cross(tangent) * ra.Cross(tangent)) * a->inv_inertia
+            + (rb.Cross(tangent) * rb.Cross(tangent)) * b->inv_inertia);
 
         // Calculate the tangential impulse vector.
         // This is the impulse due to friction, acting along the tangent at the point of contact.

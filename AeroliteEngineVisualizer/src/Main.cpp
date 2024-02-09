@@ -18,6 +18,8 @@ int main(int argc, char* args[]) {
     scenes["$5 flappy bird."] = std::make_shared<RigidBodiesAndJointsDemoScene>();
     scenes["Well...Its a rag doll alright."] = std::make_shared<RagdollJointScene>();
     scenes["Destroy the castle!"] = std::make_shared<ProjectileExplosionDemoScene>();
+    scenes["PARTICLES!!!!"] = std::make_shared<LargeParticleTestScene>();
+    scenes["Solar System Cyclone"] = std::make_shared<SolarSystemScene>();
 
     // Initialize the current scene based on currentSceneKey
     currentScene = scenes[currentSceneKey];
@@ -51,6 +53,32 @@ int main(int argc, char* args[]) {
                     currentScene = scene.second; // Move the selected scene to currentScene
                     currentSceneKey = scene.first;
                     currentScene->Setup();
+                }
+            }
+        }
+
+        if (ImGui::CollapsingHeader("Broadphase Options")) {
+            static const char* broadPhaseAlgNames[] = { "Brute Force", "Spatial Hash Grid" };
+            static int currentAlg = 0; // default to Brute Force
+
+            // Dropdown to select broad phase algorithm
+            ImGui::Combo("Algorithm", &currentAlg, broadPhaseAlgNames, IM_ARRAYSIZE(broadPhaseAlgNames));
+
+            // Access the world from the current scene
+            const auto world = std::dynamic_pointer_cast<Scene>(currentScene)->GetWorld();
+
+            // Update the broad phase algorithm based on selection
+            world->SetBroadPhaseAlgorithm(static_cast<BroadPhaseAlg>(currentAlg));
+
+            // Inputs to adjust cell width and height for Spatial Hash Grid
+            if (currentAlg == 1) { // Assuming 1 corresponds to Spatial Hash Grid
+                float cellWidth = world->GetShg().GetCellWidth();
+                float cellHeight = world->GetShg().GetCellHeight();
+                if (ImGui::InputFloat("Cell Width", &cellWidth)) {
+                    world->ShgSetCellWidth(cellWidth);
+                }
+                if (ImGui::InputFloat("Cell Height", &cellHeight)) {
+                    world->ShgSetCellHeight(cellHeight);
                 }
             }
         }

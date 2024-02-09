@@ -16,32 +16,32 @@ namespace Aerolite {
 	/// <summary>
 	/// Creates inverse mass/moment matrix.
 	/// </summary>
-	/// <returns>Returns a Mat6x6 with all the inverse mass and inverse I of bodies "a" and "b"</returns>
+	/// <returns>Returns a Mat6x6 with all the inverse mass and inverse inertia of bodies "a" and "b"</returns>
 	MatrixMxN<6, 6> Constraint2D::GetInvM() const {
 		MatrixMxN<6, 6> invM;
 		invM.Zero();
 		invM[0][0] = a.inv_mass;
 		invM[1][1] = a.inv_mass;
-		invM[2][2] = a.invI;
+		invM[2][2] = a.inv_inertia;
 
 		invM[3][3] = b.inv_mass;
 		invM[4][4] = b.inv_mass;
-		invM[5][5] = b.invI;
+		invM[5][5] = b.inv_inertia;
 		return invM;
 	}
 
 	/// <summary>
-	/// Creates velocity vector for constraint solving.
+	/// Creates linear_velocity vector for constraint solving.
 	/// </summary>
-	/// <returns>Returns a Mat6x6 with all the inverse mass and inverse I of bodies "a" and "b"</returns>
+	/// <returns>Returns a Mat6x6 with all the inverse mass and inverse inertia of bodies "a" and "b"</returns>
 	MatrixMxN<6,1>Constraint2D::GetVelocities() const
 	{
 		MatrixMxN<6,1> v;
-		v[0][0] = a.velocity.x;
-		v[1][0] = a.velocity.y;
+		v[0][0] = a.linear_velocity.x;
+		v[1][0] = a.linear_velocity.y;
 		v[2][0] = a.angular_velocity;
-		v[3][0] = b.velocity.x;
-		v[4][0] = b.velocity.y;
+		v[3][0] = b.linear_velocity.x;
+		v[4][0] = b.linear_velocity.y;
 		v[5][0] = b.angular_velocity;
 
 		return v;
@@ -67,18 +67,18 @@ namespace Aerolite {
 		jacobian.Zero();
 		// Load the joint constraint jacobian matrix.
 		AeroVec2 J1 = (pa - pb) * 2.0;
-		jacobian[0][0] = J1.x; // coefficient for body "a" linear velocity.x;
-		jacobian[0][1] = J1.y; // coefficient for body "a" linear velocity.y;
+		jacobian[0][0] = J1.x; // coefficient for body "a" linear linear_velocity.x;
+		jacobian[0][1] = J1.y; // coefficient for body "a" linear linear_velocity.y;
 
 		real J2 = 2.0 * (ra.Cross(pa - pb));
-		jacobian[0][2] = J2; // coefficient for body "a" angular velocity.
+		jacobian[0][2] = J2; // coefficient for body "a" angular linear_velocity.
 
 		AeroVec2 J3 = (pb - pa) * 2.0;
-		jacobian[0][3] = J3.x; // coefficient for body "b" linear velocity.x;
-		jacobian[0][4] = J3.y; // coefficient for body "b" linear velocity.y;
+		jacobian[0][3] = J3.x; // coefficient for body "b" linear linear_velocity.x;
+		jacobian[0][4] = J3.y; // coefficient for body "b" linear linear_velocity.y;
 
 		real J4 = 2.0 * (rb.Cross(pb - pa));
-		jacobian[0][5] = J4; // coefficient for body "b" angular velocity.
+		jacobian[0][5] = J4; // coefficient for body "b" angular linear_velocity.
 
 		auto impulses = jacobian.Transpose() * cachedLambda;
 
@@ -161,18 +161,18 @@ namespace Aerolite {
 
 		// Load the normal vector components of the jacobian for impulse application.
 		AeroVec2 J1 = -n;
-		jacobian[0][0] = J1.x; // coefficient for body "a" linear velocity.x;
-		jacobian[0][1] = J1.y; // coefficient for body "a" linear velocity.y;
+		jacobian[0][0] = J1.x; // coefficient for body "a" linear linear_velocity.x;
+		jacobian[0][1] = J1.y; // coefficient for body "a" linear linear_velocity.y;
 
 		real J2 = -ra.Cross(n);
-		jacobian[0][2] = J2; // coefficient for body "a" angular velocity.
+		jacobian[0][2] = J2; // coefficient for body "a" angular linear_velocity.
 
 		AeroVec2 J3 = n;
-		jacobian[0][3] = J3.x; // coefficient for body "b" linear velocity.x;
-		jacobian[0][4] = J3.y; // coefficient for body "b" linear velocity.y;
+		jacobian[0][3] = J3.x; // coefficient for body "b" linear linear_velocity.x;
+		jacobian[0][4] = J3.y; // coefficient for body "b" linear linear_velocity.y;
 
 		real J4 = rb.Cross(n);
-		jacobian[0][5] = J4; // coefficient for body "b" angular velocity.
+		jacobian[0][5] = J4; // coefficient for body "b" angular linear_velocity.
 
 		// Populate the tangent vector components of the jacobian for friction application.
 		friction = std::max(a.friction, b.friction);
@@ -180,18 +180,18 @@ namespace Aerolite {
 			AeroVec2 t = n.Normal();
 
 			J1 = -t;
-			jacobian[1][0] = J1.x; // coefficient for body "a" linear velocity.x;
-			jacobian[1][1] = J1.y; // coefficient for body "a" linear velocity.y;
+			jacobian[1][0] = J1.x; // coefficient for body "a" linear linear_velocity.x;
+			jacobian[1][1] = J1.y; // coefficient for body "a" linear linear_velocity.y;
 
 			J2 = -ra.Cross(t);
-			jacobian[1][2] = J2; // coefficient for body "a" angular velocity.
+			jacobian[1][2] = J2; // coefficient for body "a" angular linear_velocity.
 
 			J3 = t;
-			jacobian[1][3] = J3.x; // coefficient for body "b" linear velocity.x;
-			jacobian[1][4] = J3.y; // coefficient for body "b" linear velocity.y;
+			jacobian[1][3] = J3.x; // coefficient for body "b" linear linear_velocity.x;
+			jacobian[1][4] = J3.y; // coefficient for body "b" linear linear_velocity.y;
 
 			J4 = rb.Cross(t);
-			jacobian[1][5] = J4; // coefficient for body "b" angular velocity.
+			jacobian[1][5] = J4; // coefficient for body "b" angular linear_velocity.
 		}
 
 		auto impulses = jacobian.Transpose() * cachedLambda;
@@ -209,9 +209,9 @@ namespace Aerolite {
 		real C = (pb - pa).Dot(-n);
 		C = std::min(0.0f, C + 0.01f);
 		
-		// Calculate the relative velocity pre-impuse normal to computse elasticity.
-		AeroVec2 va = a.velocity + AeroVec2(-a.angular_velocity * ra.y, a.angular_velocity * ra.x);
-		AeroVec2 vb = b.velocity + AeroVec2(-b.angular_velocity * rb.y, a.angular_velocity * rb.x);
+		// Calculate the relative linear_velocity pre-impuse normal to computse elasticity.
+		AeroVec2 va = a.linear_velocity + AeroVec2(-a.angular_velocity * ra.y, a.angular_velocity * ra.x);
+		AeroVec2 vb = b.linear_velocity + AeroVec2(-b.angular_velocity * rb.y, a.angular_velocity * rb.x);
 		real vrelDotNormal = (va - vb).Dot(n);
 		real e = std::min(a.restitution, b.restitution);
 		bias = (beta / dt) * C + (e * vrelDotNormal);

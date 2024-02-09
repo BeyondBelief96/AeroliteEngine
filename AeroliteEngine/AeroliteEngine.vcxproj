@@ -143,16 +143,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\AeroAABB2D.h" />
     <ClInclude Include="include\AeroBody3D.h" />
     <ClInclude Include="include\AeroQuat.h" />
     <ClInclude Include="include\AeroWorld2D.h" />
     <ClInclude Include="include\AeroBody2D.h" />
+    <ClInclude Include="include\AeroBroadPhase.h" />
     <ClInclude Include="include\Collision2D.h" />
     <ClInclude Include="include\Config.h" />
     <ClInclude Include="include\Constants.h" />
     <ClInclude Include="include\Constraint2D.h" />
     <ClInclude Include="include\Contact2D.h" />
     <ClInclude Include="include\MatrixMxN.h" />
+    <ClInclude Include="include\AeroShg.h" />
     <ClInclude Include="include\VecN.h" />
     <ClInclude Include="src\Physics\Forces\pfgen.h" />
     <ClInclude Include="include\Matrix3x3.h" />
@@ -166,8 +169,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\AeroBody3D.cpp" />
+    <ClCompile Include="src\AeroShg.cpp" />
     <ClCompile Include="src\AeroWorld2D.cpp" />
     <ClCompile Include="src\AeroBody2D.cpp" />
+    <ClCompile Include="src\AeroBroadPhase.cpp" />
     <ClCompile Include="src\Collision2D.cpp" />
     <ClCompile Include="src\Constraint2D.cpp" />
     <ClCompile Include="src\Contact2D.cpp" />

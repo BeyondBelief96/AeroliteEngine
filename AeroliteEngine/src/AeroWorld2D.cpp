@@ -5,12 +5,9 @@
 #include <stdexcept>
 
 namespace Aerolite {
-    AeroWorld2D::AeroWorld2D(const real gravity) : m_g(-gravity) {}
-
-    AeroWorld2D::AeroWorld2D(AeroWorld2D&& world) noexcept
-        : m_bodies(std::move(world.m_bodies)), m_particles(std::move(world.m_particles)),
-        m_constraints(std::move(world.m_constraints)), m_bodyForces(std::move(world.m_bodyForces)),
-        m_bodyTorques(std::move(world.m_bodyTorques)), m_g(world.m_g) {
+    AeroWorld2D::AeroWorld2D(const real gravity)
+	: m_g(-gravity)
+    {
     }
 
     void AeroWorld2D::AddBody2D(std::unique_ptr<AeroBody2D> body) {
@@ -25,6 +22,46 @@ namespace Aerolite {
 
     std::vector<std::unique_ptr<Constraint2D>>& AeroWorld2D::GetConstraints(void) {
         return m_constraints;
+    }
+
+    void AeroWorld2D::SetBroadPhaseAlgorithm(const BroadPhaseAlg alg)
+    {
+        m_broadPhasePipeline = AeroBroadPhase(alg);
+    }
+
+    void AeroWorld2D::AddBroadPhasePair(const BroadPhasePair& pair)
+    {
+        m_broadphasePairs.push_back(pair);
+    }
+
+    void AeroWorld2D::ClearBroadPhasePairs()
+    {
+        m_broadphasePairs.clear();
+    }
+
+    const AeroShg& AeroWorld2D::GetShg() const
+    {
+        return m_shg;
+    }
+
+    void AeroWorld2D::ShgSetBounds(const AeroVec2& minPoint, const AeroVec2& maxPoint)
+    {
+        m_shg.SetBounds(minPoint, maxPoint);
+    }
+
+    void AeroWorld2D::ShgSetBounds(const real x0, const real y0, const real x1, const real y1)
+    {
+        m_shg.SetBounds(x0, y0, x1, y1);
+    }
+
+    void AeroWorld2D::ShgSetCellWidth(const real cellWidth)
+    {
+        m_shg.SetCellWidth(cellWidth);
+    }
+
+    void AeroWorld2D::ShgSetCellHeight(const real cellHeight)
+    {
+        m_shg.SetCellHeight(cellHeight);
     }
 
     void AeroWorld2D::AddParticle2D(std::unique_ptr<Particle2D> particle)
@@ -81,17 +118,8 @@ namespace Aerolite {
         return m_contactsList;
     }
 
-    void AeroWorld2D::AddForceBody(const AeroVec2& force) {
-        m_bodyForces.push_back(force);
-    }
-
-    void AeroWorld2D::AddForceParticle2D(const AeroVec2& force)
-    {
-        m_particleForces.push_back(force);
-    }
-
-    void AeroWorld2D::AddTorque(const real torque) {
-        m_bodyTorques.push_back(torque);
+    void AeroWorld2D::AddGlobalForce(const AeroVec2& force) {
+        m_globalForces.push_back(force);
     }
 
     void AeroWorld2D::Update(const real dt) {
@@ -104,12 +132,8 @@ namespace Aerolite {
 	        auto weight = AeroVec2(0.0, body->mass * m_g * PIXELS_PER_METER);
             body->AddForce(weight);
 
-            for (auto& force : m_bodyForces) {
+            for (auto& force : m_globalForces) {
                 body->AddForce(force);
-            }
-
-            for (const auto& torque : m_bodyTorques) {
-                body->AddTorque(torque);
             }
         }
 
@@ -117,29 +141,21 @@ namespace Aerolite {
             body->IntegrateForces(dt);
         }
 
-        // Collision Detection and Resolution.
-        for (int i = 0; i < m_bodies.size(); ++i) {
-            for (int j = i + 1; j < m_bodies.size(); ++j) {
-                std::unique_ptr<AeroBody2D>& a = m_bodies[i];
-                std::unique_ptr<AeroBody2D>& b = m_bodies[j];
-                auto aAABB = a->GetAABB();
-                auto bAABB = b->GetAABB();
-                if (!CollisionDetection2D::IntersectAABBs(aAABB, bAABB)) continue;
-                std::vector<Contact2D> contacts;
-                if (CollisionDetection2D::IsColliding(*a, *b, contacts))
-                {
-                    m_contactsList.insert(m_contactsList.end(), contacts.begin(), contacts.end());
-                    for (auto& contact : contacts) {
-                        penetrations.emplace_back(*contact.a, *contact.b, contact.start, contact.end, contact.normal);
-                    }
+        // Broad phase detection
+        m_broadPhasePipeline.Execute(*this);
+
+        // Narrow phase detection
+        for(const auto& pair : m_broadphasePairs)
+        {
+            std::vector<Contact2D> contacts;
+            if (CollisionDetection2D::IsColliding(*pair.a, *pair.b, contacts))
+            {
+                m_contactsList.insert(m_contactsList.end(), contacts.begin(), contacts.end());
+                for (auto& contact : contacts) {
+					penetrations.emplace_back(*contact.a, *contact.b, contact.start, contact.end, contact.normal);
                 }
             }
         }
-
-        //for(auto& contact : m_contactsList)
-        //{
-        //    contact.ResolveCollision();
-        //}
 
         for (const auto& constraint : m_constraints) {
             constraint->PreSolve(dt);
@@ -149,7 +165,7 @@ namespace Aerolite {
             constraint.PreSolve(dt);
         }
 
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < 12; i++) {
             for (const auto& constraint : m_constraints) {
                 constraint->Solve();
             }
@@ -177,21 +193,23 @@ namespace Aerolite {
             particle->Integrate(dt);
         }
 
-	    const auto endTime = std::chrono::high_resolution_clock::now();
+        const auto endTime = std::chrono::high_resolution_clock::now();
         m_accumulatedTime += endTime - startTime;
         m_frameCount++;
 
-        // Log the average frame time and the number of bodies every second or after every 60 frames
-        if (m_accumulatedTime >= std::chrono::seconds(1) || m_frameCount >= 60) {
-	        const double averageTime = m_accumulatedTime.count() / m_frameCount;
-	        const std::size_t bodyCount = m_bodies.size(); // Assuming bodies is a container like std::vector
+        // Check if more than a second has passed since the last log
+        auto now = std::chrono::steady_clock::now();
+        if (now - lastLogTime >= std::chrono::seconds(1)) {
+            const double averageTime = m_accumulatedTime.count() / m_frameCount;
+            const std::size_t bodyCount = m_bodies.size();
 
             std::cout << "Average frame time: " << averageTime << " seconds, "
-                << "Number of bodies: " << bodyCount << '\n';
+                << "Number of bodies: " << bodyCount << std::endl;
 
-            // Reset counters
+            // Reset counters and update lastLogTime
             m_accumulatedTime = std::chrono::seconds(0);
             m_frameCount = 0;
+            lastLogTime = now;
         }
     }
 }
