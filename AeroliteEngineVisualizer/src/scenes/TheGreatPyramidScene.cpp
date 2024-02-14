@@ -20,8 +20,8 @@ void TheGreatPyramidScene::Setup() {
     world->SetBroadPhaseAlgorithm(BroadPhaseAlg::SHG);
 
     // Add a floor
-    const auto floor = world->CreateBody2D(std::make_shared<BoxShape>(Graphics::Width(), 20),
-                                           Graphics::Width() / 2.0f, Graphics::Height() - 20, 0.0f); // Floor positioned at the bottom
+    const auto floor = world->CreateBody2D(std::make_shared<BoxShape>(Graphics::Width(), 500),
+                                           Graphics::Width() / 2.0f, Graphics::Height() + 230, 0.0f); // Floor positioned at the bottom
     floor->restitution = 0.1f;
     floor->friction = 0.5f;
 

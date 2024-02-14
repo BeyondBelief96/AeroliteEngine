@@ -15,7 +15,7 @@ namespace Aerolite
 		m_rows = static_cast<uint32_t>(std::ceil(m_bounds.Height() * m_invCellHeight));
 	}
 
-	AeroShg::AeroShg(const AeroAABB2D& bounds, const float cellWidth, const float cellHeight)
+	AeroShg::AeroShg(const AeroAABB2D& bounds, const real cellWidth, const real cellHeight)
 		: m_bounds(bounds), m_cellWidth(cellWidth), m_cellHeight(cellHeight)
 	{
 		m_invCellWidth = 1.0f / m_cellWidth;

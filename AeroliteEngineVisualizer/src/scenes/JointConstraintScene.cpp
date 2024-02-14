@@ -1,5 +1,4 @@
 #include <random>
-#include <iostream>
 #include "AeroWorld2D.h"
 #include "Collision2D.h"
 #include "Contact2D.h"

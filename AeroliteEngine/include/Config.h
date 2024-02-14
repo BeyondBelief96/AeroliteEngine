@@ -7,16 +7,16 @@ namespace Aerolite
 /**
  * @brief Uncomment this and comment out REAL_TYPE_DOUBLE for single floating point precision. 
  */
-#define REAL_TYPE_FLOAT
+//#define REAL_TYPE_FLOAT
 /**
 * @brief Uncomment this and comment out REAL_TYPE_DOUBLE for single floating point precision.
 */
-// #define REAL_TYPE_DOUBLE
+ #define REAL_TYPE_DOUBLE
 
 /**
  * \brief Uncomment if you want static objects to be included in collision checks.
  */
-//#define CHECK_STATIC_COLLISIONS
+#define CHECK_STATIC_COLLISIONS
 
 #define BROAD_PHASE_BRUTE_FORCE
 #define BROAD_PHASE_SHG

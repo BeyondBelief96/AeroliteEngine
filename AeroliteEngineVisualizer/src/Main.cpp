@@ -6,8 +6,8 @@
 #include "Scene.h"
 #include "Graphics.h"
 
-real globalFriction = 0.5f; // Default friction value
-real globalRestitution = 0.1f; // Default restitution value
+float globalFriction = 0.5f; // Default friction value
+float globalRestitution = 0.1f; // Default restitution value
 float frameRate = 0.0f;
 
 int main(int argc, char* args[]) {
@@ -21,7 +21,6 @@ int main(int argc, char* args[]) {
     scenes["Contacts...contacts everywhere."] = std::make_shared<ContactPointGenerationDemoScene>();
     scenes["$5 flappy bird."] = std::make_shared<FiveDollarFlappyBirdScene>();
     scenes["Well...Its a rag doll alright."] = std::make_shared<RagdollJointScene>();
-    scenes["Destroy the castle!"] = std::make_shared<TheGreatPyramidScene>();
     scenes["PARTICLES!!!!"] = std::make_shared<LargeParticleTestScene>();
     scenes["Solar System Cyclone"] = std::make_shared<SolarSystemScene>();
     scenes["The Great Pyramid"] = std::make_shared<TheGreatPyramidScene>();
@@ -65,6 +64,12 @@ int main(int argc, char* args[]) {
                     currentScene->Setup();
                 }
             }
+        }
+
+        if(ImGui::Button("Reset Scene", { 100, 30 }))
+        {
+            currentScene->Destroy();
+            currentScene->Setup();
         }
 
         if (ImGui::CollapsingHeader("Broadphase Options")) {

@@ -91,7 +91,7 @@ namespace Aerolite {
 		constexpr real beta = 0.1f;
 		// Compute the positional error
 		real c = (pb - pa).Dot(pb - pa);
-		c = std::max(0.0f, c - 0.01f);
+		c = std::max(0.0, c - 0.01);
 		bias = (beta / dt) * c;
 	}
 
@@ -206,9 +206,9 @@ namespace Aerolite {
 		constexpr real beta = 0.2f;
 		// Compute the positional error
 		real C = (pb - pa).Dot(-n);
-		C = std::min(0.0f, C + 0.01f);
+		C = std::min(0.0, C + 0.01);
 		
-		// Calculate the relative linear_velocity pre-impuse normal to computse elasticity.
+		// Calculate the relative linear_velocity pre-impulse normal to compute elasticity.
 		const AeroVec2 va = a->linear_velocity + AeroVec2(-a->angular_velocity * ra.y, a->angular_velocity * ra.x);
 		const AeroVec2 vb = b->linear_velocity + AeroVec2(-b->angular_velocity * rb.y, a->angular_velocity * rb.x);
 		const real vrelDotNormal = (va - vb).Dot(n);
