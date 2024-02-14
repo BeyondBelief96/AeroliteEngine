@@ -4,7 +4,6 @@
 #include <chrono>
 #include <vector>
 #include "AeroBody2D.h"
-#include "AeroBodyManager.h"
 #include "AeroBroadPhase.h"
 #include "AeroShg.h"
 #include "Contact2D.h"
@@ -16,6 +15,7 @@ namespace Aerolite {
     private:
         std::vector<std::unique_ptr<Particle2D>> m_particles;
         std::vector<std::unique_ptr<Constraint2D>> m_constraints;
+        std::vector<std::shared_ptr<AeroBody2D>> m_bodies;
         std::vector<AeroVec2> m_globalForces;
         real m_g = 9.8f;
 
@@ -23,7 +23,6 @@ namespace Aerolite {
         std::vector<Contact2D> m_contactsList;
         AeroBroadPhase m_broadPhasePipeline;
         AeroShg m_shg;
-        BodyManager m_bodyManager;
 
         // Benchmarking 
         std::chrono::high_resolution_clock::time_point m_lastLogTime;

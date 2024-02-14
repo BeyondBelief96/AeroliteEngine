@@ -24,6 +24,7 @@ int main(int argc, char* args[]) {
     scenes["PARTICLES!!!!"] = std::make_shared<LargeParticleTestScene>();
     scenes["Solar System Cyclone"] = std::make_shared<SolarSystemScene>();
     scenes["The Great Pyramid"] = std::make_shared<TheGreatPyramidScene>();
+    scenes["FLIGHT SIM 2D!"] = std::make_shared<AirplaneShootingScene>();
 
     // Initialize the current scene based on currentSceneKey
     currentScene = scenes[currentSceneKey];

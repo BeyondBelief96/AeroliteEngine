@@ -12,7 +12,7 @@ namespace Aerolite {
 
     void AeroWorld2D::ClearWorld()
     {
-        m_bodyManager.GetBodies().clear();
+        m_bodies.clear();
         m_broadphasePairs.clear();
         m_constraints.clear();
         m_contactsList.clear();
@@ -26,15 +26,21 @@ namespace Aerolite {
         // Check the type of the shape and create the corresponding derived shape
         if (std::dynamic_pointer_cast<CircleShape>(shape) != nullptr) {
 	        const auto concreteShape = std::dynamic_pointer_cast<CircleShape>(shape);
-            body = m_bodyManager.CreateBody(concreteShape, x, y, mass);
+        	body = std::make_shared<AeroBody2D>(shape, x, y, mass);
+            m_bodies.push_back(body);
+            return body;
         }
         else if (std::dynamic_pointer_cast<PolygonShape>(shape) != nullptr) {
 	        const auto concreteShape = std::dynamic_pointer_cast<PolygonShape>(shape);
-            body = m_bodyManager.CreateBody(concreteShape, x, y, mass);
+            body = std::make_shared<AeroBody2D>(shape, x, y, mass);
+            m_bodies.push_back(body);
+            return body;
         }
         else if (std::dynamic_pointer_cast<BoxShape>(shape) != nullptr) {
 	        const auto concreteShape = std::dynamic_pointer_cast<BoxShape>(shape);
-            body = m_bodyManager.CreateBody(concreteShape, x, y, mass);
+            body = std::make_shared<AeroBody2D>(shape, x, y, mass);
+            m_bodies.push_back(body);
+            return body;
         }
         else {
             // Handle unknown shape type or add additional checks for other shape types
@@ -109,33 +115,33 @@ namespace Aerolite {
     void AeroWorld2D::RemoveBody2D(const int index)
     {
         // Check if the index is within bounds
-        if (index < 0 || index >= m_bodyManager.GetBodies().size()) {
+        if (index < 0 || index >= m_bodies.size()) {
             throw std::out_of_range("Index is out of range in RemoveBody2D");
         }
 
         // Remove the element at the specified index
-        m_bodyManager.GetBodies().erase(m_bodyManager.GetBodies().begin() + index);
+        m_bodies.erase(m_bodies.begin() + index);
     }
 
     void AeroWorld2D::RemoveBody2D(AeroBody2D* bodyToRemove) {
-	    const auto it = std::remove_if(m_bodyManager.GetBodies().begin(), m_bodyManager.GetBodies().end(),
+	    const auto it = std::remove_if(m_bodies.begin(), m_bodies.end(),
 	                                   [bodyToRemove](const std::shared_ptr<AeroBody2D>& body) {
 		                                   return body.get() == bodyToRemove;
 	                                   });
 
-        if (it != m_bodyManager.GetBodies().end()) {
-            m_bodyManager.GetBodies().erase(it, m_bodyManager.GetBodies().end());
+        if (it != m_bodies.end()) {
+            m_bodies.erase(it, m_bodies.end());
         }
     }
 
 	const std::vector<std::shared_ptr<AeroBody2D>>& AeroWorld2D::GetBodies() const
     {
-        return m_bodyManager.GetBodies();
+        return m_bodies;
     }
 
     std::vector<std::shared_ptr<AeroBody2D>>& AeroWorld2D::GetBodies()
     {
-        return m_bodyManager.GetBodies();
+        return m_bodies;
     }
 
     std::vector<Particle2D*> AeroWorld2D::GetParticle2Ds() const
@@ -163,7 +169,7 @@ namespace Aerolite {
         std::vector<PenetrationConstraint> penetrations;
 
         m_contactsList.clear();
-        for (const auto& body : m_bodyManager.GetBodies()) {
+        for (const auto& body : m_bodies) {
 	        auto weight = AeroVec2(0.0, body->mass * m_g * PIXELS_PER_METER);
             body->AddForce(weight);
 
@@ -172,13 +178,14 @@ namespace Aerolite {
             }
         }
 
-        for (const auto& body : m_bodyManager.GetBodies()) {
+        for (const auto& body : m_bodies) {
             body->IntegrateForces(dt);
         }
 
         // Broad phase detection
         m_broadPhasePipeline.Execute(*this);
 
+        std::cout << "Number of broadphase pairs: " << m_broadphasePairs.size() << std::endl;
         // Narrow phase detection
         for(const auto& pair : m_broadphasePairs)
         {
@@ -218,7 +225,7 @@ namespace Aerolite {
             constraint.PostSolve();
         }
 
-        for (const auto& body : m_bodyManager.GetBodies()) {
+        for (const auto& body : m_bodies) {
             body->IntegrateVelocities(dt);
         }
 
@@ -236,7 +243,7 @@ namespace Aerolite {
         auto now = std::chrono::steady_clock::now();
         if (now - lastLogTime >= std::chrono::seconds(1)) {
             const double averageTime = m_accumulatedTime.count() / m_frameCount;
-            const std::size_t bodyCount = m_bodyManager.GetBodies().size();
+            const std::size_t bodyCount = m_bodies.size();
 
             std::cout << "Average frame time: " << averageTime << " seconds, "
                 << "Number of bodies: " << bodyCount << std::endl;

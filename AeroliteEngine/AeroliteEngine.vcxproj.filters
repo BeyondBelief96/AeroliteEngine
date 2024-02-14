@@ -84,9 +84,6 @@
     <ClInclude Include="include\AeroShg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\AeroBodyManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\AeroVec2.cpp">

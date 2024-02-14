@@ -178,6 +178,7 @@
     <ClCompile Include="imgui\imgui_impl_sdlrenderer2.cpp" />
     <ClCompile Include="imgui\imgui_tables.cpp" />
     <ClCompile Include="imgui\imgui_widgets.cpp" />
+    <ClCompile Include="src\scenes\AirplaneShootingScene.cpp" />
     <ClCompile Include="src\scenes\Scene.cpp" />
     <ClCompile Include="src\scenes\TheGreatPyramidScene.cpp" />
     <ClCompile Include="src\scenes\ContactPointGenerationDemoScene.cpp" />

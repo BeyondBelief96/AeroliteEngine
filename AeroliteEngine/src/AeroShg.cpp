@@ -1,3 +1,4 @@
+// ReSharper disable All
 #include "AeroShg.h"
 
 namespace Aerolite
@@ -26,7 +27,7 @@ namespace Aerolite
 
 	AeroShg::~AeroShg()
 	{
-		for(auto& cell : m_cells)
+		for(const auto& cell : m_cells)
 		{
 			delete cell.second;
 		}

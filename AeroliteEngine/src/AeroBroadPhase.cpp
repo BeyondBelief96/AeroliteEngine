@@ -85,10 +85,7 @@ namespace Aerolite
 	void AeroBroadPhase::Shg(AeroWorld2D& world)
 	{
 		world.ClearBroadPhasePairs();
-		std::vector<std::shared_ptr<AeroBody2D>> bodies;
-		for (const auto& sharedPtrBody : world.GetBodies()) {
-			bodies.push_back(sharedPtrBody);
-		}
+		std::vector<std::shared_ptr<AeroBody2D>> bodies = world.GetBodies();
 
 		auto shg = world.GetShg();
 		shg.ClearCellContentCache();

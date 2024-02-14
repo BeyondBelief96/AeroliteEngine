@@ -16,6 +16,9 @@ namespace Aerolite {
      */
     class AeroBody2D
     {
+    private:
+        AeroVec2 sum_forces; ///< Accumulated sum of forces applied to the body.
+        real sum_torque; ///< Accumulated sum of torques applied to the body.
     public:
         aero_uint16 id; ///< Unique identifier for the body.
         AeroVec2 position; ///< Position of the body in world space coordinates.
@@ -26,8 +29,6 @@ namespace Aerolite {
         real angular_acceleration; ///< Angular linear_acceleration of the body (rad/s^2).
         real linear_damping; ///< Coefficient for linear damping, reducing linear linear_velocity over time.
         real angular_damping; ///< Coefficient for angular damping, reducing angular linear_velocity over time.
-        AeroVec2 sum_forces; ///< Accumulated sum of forces applied to the body.
-        real sum_torque; ///< Accumulated sum of torques applied to the body.
         real mass; ///< Mass of the body. A mass of 0 indicates a static body.
         real inv_mass; ///< Inverse mass of the body for efficient computation. Zero for static bodies.
         real inertia; ///< Moment of inertia of the body, defining resistance to rotational linear_acceleration.
@@ -37,8 +38,6 @@ namespace Aerolite {
         std::shared_ptr<Shape> shape; ///< Shape of the body, defining its geometric representation.
         bool is_sleeping; ///< Flag indicating if the body is currently in a sleeping state to optimize simulation.
         unsigned int sleep_timer; ///< Timer for tracking how long the body has been inactive.
-
-    public:
         /**
          * @brief Construct a new AeroBody2D object with specified shape, position, and mass.
          *

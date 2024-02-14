@@ -120,8 +120,21 @@ public:
 
 class LargeParticleTestScene : public Scene
 {
+private:
     bool debug = false;
 	void CreateRandomCircles(int numberOfCircles, real velocityRange, real radius) const;
+public:
+    virtual void Setup() override;
+    virtual void Input(SDL_Event event) override;
+    virtual void Update() override;
+    virtual void Render() override;
+};
+
+class AirplaneShootingScene : public Scene
+{
+private:
+    bool debug = false;
+    std::vector<unsigned int> m_bodyColors;
 public:
     virtual void Setup() override;
     virtual void Input(SDL_Event event) override;
