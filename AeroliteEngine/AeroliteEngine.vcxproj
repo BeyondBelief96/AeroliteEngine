@@ -149,6 +149,7 @@
     <ClInclude Include="include\AeroWorld2D.h" />
     <ClInclude Include="include\AeroBody2D.h" />
     <ClInclude Include="include\AeroBroadPhase.h" />
+    <ClInclude Include="include\AeroBodyManager.h" />
     <ClInclude Include="include\Collision2D.h" />
     <ClInclude Include="include\Config.h" />
     <ClInclude Include="include\Constants.h" />

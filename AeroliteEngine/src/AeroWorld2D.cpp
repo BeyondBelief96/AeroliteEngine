@@ -10,14 +10,42 @@ namespace Aerolite {
     {
     }
 
-    void AeroWorld2D::AddBody2D(std::unique_ptr<AeroBody2D> body) {
-        if (body != nullptr) {
-            m_bodies.push_back(std::move(body));
-        }
+    void AeroWorld2D::ClearWorld()
+    {
+        m_bodyManager.GetBodies().clear();
+        m_broadphasePairs.clear();
+        m_constraints.clear();
+        m_contactsList.clear();
+        m_globalForces.clear();
+        m_particles.clear();
     }
 
-    void AeroWorld2D::AddConstraint(std::unique_ptr<Constraint2D> constraint) {
-        m_constraints.push_back(std::move(constraint));
+    std::shared_ptr<AeroBody2D> AeroWorld2D::CreateBody2D(const std::shared_ptr<Shape>& shape, const real x, const real y, const real mass)
+    {
+        std::shared_ptr<AeroBody2D> body;
+        // Check the type of the shape and create the corresponding derived shape
+        if (std::dynamic_pointer_cast<CircleShape>(shape) != nullptr) {
+	        const auto concreteShape = std::dynamic_pointer_cast<CircleShape>(shape);
+            body = m_bodyManager.CreateBody(concreteShape, x, y, mass);
+        }
+        else if (std::dynamic_pointer_cast<PolygonShape>(shape) != nullptr) {
+	        const auto concreteShape = std::dynamic_pointer_cast<PolygonShape>(shape);
+            body = m_bodyManager.CreateBody(concreteShape, x, y, mass);
+        }
+        else if (std::dynamic_pointer_cast<BoxShape>(shape) != nullptr) {
+	        const auto concreteShape = std::dynamic_pointer_cast<BoxShape>(shape);
+            body = m_bodyManager.CreateBody(concreteShape, x, y, mass);
+        }
+        else {
+            // Handle unknown shape type or add additional checks for other shape types
+            // You may throw an exception, return nullptr, or handle it in another way.
+        }
+
+        return body;
+    }
+
+    void AeroWorld2D::AddJointConstraint(const std::shared_ptr<AeroBody2D>& a, const std::shared_ptr<AeroBody2D>& b, const AeroVec2& anchorPoint) {
+        m_constraints.push_back(std::make_unique<JointConstraint>(a, b, anchorPoint));
     }
 
     std::vector<std::unique_ptr<Constraint2D>>& AeroWorld2D::GetConstraints(void) {
@@ -81,27 +109,33 @@ namespace Aerolite {
     void AeroWorld2D::RemoveBody2D(const int index)
     {
         // Check if the index is within bounds
-        if (index < 0 || index >= m_bodies.size()) {
+        if (index < 0 || index >= m_bodyManager.GetBodies().size()) {
             throw std::out_of_range("Index is out of range in RemoveBody2D");
         }
 
         // Remove the element at the specified index
-        m_bodies.erase(m_bodies.begin() + index);
+        m_bodyManager.GetBodies().erase(m_bodyManager.GetBodies().begin() + index);
     }
 
     void AeroWorld2D::RemoveBody2D(AeroBody2D* bodyToRemove) {
-        auto it = std::remove_if(m_bodies.begin(), m_bodies.end(),
-            [bodyToRemove](const std::unique_ptr<AeroBody2D>& body) {
-                return body.get() == bodyToRemove;
-            });
+	    const auto it = std::remove_if(m_bodyManager.GetBodies().begin(), m_bodyManager.GetBodies().end(),
+	                                   [bodyToRemove](const std::shared_ptr<AeroBody2D>& body) {
+		                                   return body.get() == bodyToRemove;
+	                                   });
 
-        if (it != m_bodies.end()) {
-            m_bodies.erase(it, m_bodies.end());
+        if (it != m_bodyManager.GetBodies().end()) {
+            m_bodyManager.GetBodies().erase(it, m_bodyManager.GetBodies().end());
         }
     }
 
-    std::vector<std::unique_ptr<AeroBody2D>>& AeroWorld2D::GetBodies() {
-        return m_bodies;
+	const std::vector<std::shared_ptr<AeroBody2D>>& AeroWorld2D::GetBodies() const
+    {
+        return m_bodyManager.GetBodies();
+    }
+
+    std::vector<std::shared_ptr<AeroBody2D>>& AeroWorld2D::GetBodies()
+    {
+        return m_bodyManager.GetBodies();
     }
 
     std::vector<Particle2D*> AeroWorld2D::GetParticle2Ds() const
@@ -114,7 +148,8 @@ namespace Aerolite {
         return pointers;
     }
 
-    const std::vector<Contact2D> AeroWorld2D::GetContacts(void) const {
+	std::vector<Contact2D> AeroWorld2D::GetContacts() const
+    {
         return m_contactsList;
     }
 
@@ -128,7 +163,7 @@ namespace Aerolite {
         std::vector<PenetrationConstraint> penetrations;
 
         m_contactsList.clear();
-        for (const auto& body : m_bodies) {
+        for (const auto& body : m_bodyManager.GetBodies()) {
 	        auto weight = AeroVec2(0.0, body->mass * m_g * PIXELS_PER_METER);
             body->AddForce(weight);
 
@@ -137,7 +172,7 @@ namespace Aerolite {
             }
         }
 
-        for (const auto& body : m_bodies) {
+        for (const auto& body : m_bodyManager.GetBodies()) {
             body->IntegrateForces(dt);
         }
 
@@ -148,11 +183,11 @@ namespace Aerolite {
         for(const auto& pair : m_broadphasePairs)
         {
             std::vector<Contact2D> contacts;
-            if (CollisionDetection2D::IsColliding(*pair.a, *pair.b, contacts))
+            if (CollisionDetection2D::IsColliding(pair.a, pair.b, contacts))
             {
                 m_contactsList.insert(m_contactsList.end(), contacts.begin(), contacts.end());
                 for (auto& contact : contacts) {
-					penetrations.emplace_back(*contact.a, *contact.b, contact.start, contact.end, contact.normal);
+					penetrations.emplace_back(contact.a, contact.b, contact.start, contact.end, contact.normal);
                 }
             }
         }
@@ -183,7 +218,7 @@ namespace Aerolite {
             constraint.PostSolve();
         }
 
-        for (const auto& body : m_bodies) {
+        for (const auto& body : m_bodyManager.GetBodies()) {
             body->IntegrateVelocities(dt);
         }
 
@@ -201,7 +236,7 @@ namespace Aerolite {
         auto now = std::chrono::steady_clock::now();
         if (now - lastLogTime >= std::chrono::seconds(1)) {
             const double averageTime = m_accumulatedTime.count() / m_frameCount;
-            const std::size_t bodyCount = m_bodies.size();
+            const std::size_t bodyCount = m_bodyManager.GetBodies().size();
 
             std::cout << "Average frame time: " << averageTime << " seconds, "
                 << "Number of bodies: " << bodyCount << std::endl;

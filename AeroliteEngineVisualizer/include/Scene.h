@@ -21,42 +21,12 @@ public:
     virtual void Input(SDL_Event event) = 0;
     virtual void Update() = 0;
     virtual void Render() = 0;
-    virtual void Destroy() = 0;
+    void Destroy();
     Scene() = default;
-    ~Scene() = default;
+    virtual ~Scene() = default;
 
+	void UpdatePhysicsProperties(const real friction, const real restitution) const;
     AeroWorld2D* GetWorld() const { return world.get(); }
-};
-
-class GravityDragScene : public Scene
-{
-private:
-    SDL_Rect liquid;
-    SDL_Rect floor;
-    Vec2 pushForce;
-    
-public:
-    virtual void Setup() override;
-    virtual void Input(SDL_Event event) override;
-    virtual void Update() override;
-    virtual void Render() override;
-    virtual void Destroy()override;
-};
-
-class BilliardScene : public Scene
-{
-private:
-    Vec2 pushForce;
-    Vec2 mouseCursor;
-    bool leftMouseButtonDown;
-
-public:
-    virtual void Setup() override;
-    virtual void Input(SDL_Event event) override;
-    virtual void Update() override;
-    virtual void Render() override;
-    virtual void Destroy()override;
-
 };
 
 class SolarSystemScene : public Scene
@@ -64,11 +34,11 @@ class SolarSystemScene : public Scene
 private:
     std::vector<float> planetRadii;
     Vec2 mouseCursor;
-    bool leftMouseButtonDown;
+    bool leftMouseButtonDown = false;
 public:
     void GenerateSolarSystem(
         std::vector<std::unique_ptr<Particle2D>>& planets,
-        std::shared_ptr<Particle2D>& sun,
+        const std::shared_ptr<Particle2D>& sun,
         int numPlanets,
         real gravitationalConstant,
         real minOrbitRadius,
@@ -80,29 +50,6 @@ public:
     virtual void Input(SDL_Event event) override;
     virtual void Update() override;
     virtual void Render() override;
-    virtual void Destroy()override;
-};
-
-class SpringScene : public Scene
-{
-private:
-    Vec2 pushForce;
-    Vec2 mouseCursor;
-    bool leftMouseButtonDown;
-
-    Vec2 anchor = Vec2(0, 0);
-    float k = 150;
-    float restLength = 20;
-    int NUM_PARTICLES = 30;
-    float PARTICLE_MASS = make_real<real>(1.0);
-
-public:
-    virtual void Setup() override;
-    virtual void Input(SDL_Event event) override;
-    virtual void Update() override;
-    virtual void Render() override;
-    virtual void Destroy()override;
-
 };
 
 class ContactPointGenerationDemoScene : public Scene
@@ -110,7 +57,7 @@ class ContactPointGenerationDemoScene : public Scene
 private:
     std::vector<unsigned int> m_bodyColors;
     Vec2 mouseCursor;
-    bool leftMouseButtonDown;
+    bool leftMouseButtonDown = false;
     int sliderValue = 0;
 
     void AddRandomBody();
@@ -121,70 +68,65 @@ public:
     virtual void Input(SDL_Event event) override;
     virtual void Update() override;
     virtual void Render() override;
-    virtual void Destroy()override;
 
 };
 
 class JointConstraintScene : public Scene
 {
 private:
-    bool debug;
+    bool debug = false;
 public:
     virtual void Setup() override;
     virtual void Input(SDL_Event event) override;
     virtual void Update() override;
     virtual void Render() override;
-    virtual void Destroy()override;
 };
 
 class RagdollJointScene : public Scene
 {
 private:
-    bool debug;
+    bool debug = false;
 public:
     virtual void Setup() override;
     virtual void Input(SDL_Event event) override;
     virtual void Update() override;
     virtual void Render() override;
-    virtual void Destroy()override;
 };
 
-class RigidBodiesAndJointsDemoScene : public Scene
+class FiveDollarFlappyBirdScene : public Scene
 {
 private:
     std::vector<unsigned int> m_bodyColors;
-    bool debug;
+    bool debug = false;
 public:
     virtual void Setup() override;
     virtual void Input(SDL_Event event) override;
     virtual void Update() override;
     virtual void Render() override;
-    virtual void Destroy()override;
 };
 
-class ProjectileExplosionDemoScene : public Scene
+class TheGreatPyramidScene : public Scene
 {
 private:
+    int pyramidHeight = 5;
     std::vector<unsigned int> m_bodyColors;
-    bool debug;
+    bool debug = false;
 public:
     virtual void Setup() override;
     virtual void Input(SDL_Event event) override;
     virtual void Update() override;
     virtual void Render() override;
-    virtual void Destroy()override;
 };
 
 class LargeParticleTestScene : public Scene
 {
-    bool debug;
+    bool debug = false;
 	void CreateRandomCircles(int numberOfCircles, real velocityRange, real radius) const;
 public:
     virtual void Setup() override;
     virtual void Input(SDL_Event event) override;
     virtual void Update() override;
     virtual void Render() override;
-    virtual void Destroy()override;
 };
 
 #endif

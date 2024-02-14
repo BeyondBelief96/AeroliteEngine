@@ -50,7 +50,7 @@ namespace Aerolite {
          * @brief Places bodies into the spatial hash grid.
          * @param bodies Vector of pointers to AeroBody2D objects to be placed in the grid.
          */
-        void Place(const std::vector<AeroBody2D*>& bodies);
+        void Place(const std::vector<std::shared_ptr<AeroBody2D>>& bodies);
 
 	    /**
 	     * \brief Clears the contents of the cell content cache to prepare for next update.
@@ -63,7 +63,7 @@ namespace Aerolite {
          * @param y0 The y-coordinate of the cell.
          * @return Vector of pointers to AeroBody2D objects that are neighbors to the specified cell.
          */
-        std::vector<AeroBody2D*> GetNeighbors(aero_int16 x0, aero_int16 y0) const;
+        std::vector<std::shared_ptr<AeroBody2D>> GetNeighbors(aero_int16 x0, aero_int16 y0) const;
 
         /**
         * @brief Computes the grid cell coordinates range covered by a given AABB.
@@ -78,11 +78,11 @@ namespace Aerolite {
          * @param y The y coordinate of the cell.
          * @return Vector of pointers to AeroBody2D objects contained in the specified cell.
          */
-        std::vector<AeroBody2D*> GetCellContent(const aero_int16 x, const aero_int16 y) const;
+        std::vector<std::shared_ptr<AeroBody2D>> GetCellContent(const aero_int16 x, const aero_int16 y) const;
 
     private:
         struct Cell {
-            std::vector<AeroBody2D*> bodies; ///< Bodies contained within a cell
+            std::vector<std::shared_ptr<AeroBody2D>> bodies; ///< Bodies contained within a cell
         };
 
 	    /**
@@ -94,9 +94,10 @@ namespace Aerolite {
         AeroAABB2D m_bounds; ///< Total bounds of the spatial hash grid
         aero_uint32 m_cols, m_rows; ///< Number of columns and rows in the grid
         real m_cellWidth, m_cellHeight; ///< Width and height of each cell
+        real m_invCellWidth, m_invCellHeight; ///<Inverse of the cell width/height for computational efficiency.
         std::unordered_map<aero_uint32, Cell*> m_cells; ///< Mapping from cell keys to cell data
 
-        mutable std::unordered_map<int, std::vector<AeroBody2D*>> m_cellContentCache;
+        mutable std::unordered_map<int, std::vector<std::shared_ptr<AeroBody2D>>> m_cellContentCache; ///<Cached version of the cell contents to prevent multiple hash map lookups during update.
 
         /**
          * @brief Computes a unique key for a cell based on its x and y coordinates.
@@ -111,7 +112,7 @@ namespace Aerolite {
          * @param key The unique key of the cell.
          * @param body Shared pointer to the AeroBody2D object to insert.
          */
-        void InsertBodyIntoCell(const aero_uint32 key, AeroBody2D* body);
+        void InsertBodyIntoCell(const aero_uint32 key, const std::shared_ptr<AeroBody2D>& body);
     };
 }
 

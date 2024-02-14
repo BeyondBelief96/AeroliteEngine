@@ -16,7 +16,7 @@ namespace Aerolite
 /**
  * \brief Uncomment if you want static objects to be included in collision checks.
  */
-#define CHECK_STATIC_COLLISIONS
+//#define CHECK_STATIC_COLLISIONS
 
 #define BROAD_PHASE_BRUTE_FORCE
 #define BROAD_PHASE_SHG

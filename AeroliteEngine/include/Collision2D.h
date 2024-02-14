@@ -18,7 +18,7 @@ namespace Aerolite {
         /// @param b The second AeroBody2D for detection.
         /// @param contacts A vector of contact2D object to store collision information if one is detected.
         /// @return Returns true if collision is detected, false if not.
-        static bool IsColliding(AeroBody2D& a, AeroBody2D& b, std::vector<Contact2D>& contacts);
+        static bool IsColliding(const std::shared_ptr<AeroBody2D>& a, const std::shared_ptr<AeroBody2D>& b, std::vector<Contact2D>& contacts);
 
         /// <summary>
         /// Determines if two axis-aligned bounding boxes for two bodies are intersecting.
@@ -27,7 +27,7 @@ namespace Aerolite {
         /// <param name="a"></param>
         /// <param name="b"></param>
         /// <returns></returns>
-        static bool IntersectAABBs(AeroAABB2D& a, AeroAABB2D& b);
+        static bool IntersectAABBs(const AeroAABB2D& a, const AeroAABB2D& b);
 
     private:
         /// @brief Detects if two circle AeroBody2D's are colliding.
@@ -35,7 +35,7 @@ namespace Aerolite {
         /// @param b The second circle body for detection.
         /// @param contacts A vector of contact2D object to store collision information if one is detected.
         /// @return Returns true if the two circles are colliding, false if not.
-        static bool IsCollidingCircleCircle(AeroBody2D& a, AeroBody2D& b, std::vector<Contact2D>& contacts);
+        static bool IsCollidingCircleCircle(const std::shared_ptr<AeroBody2D>& a, const std::shared_ptr<AeroBody2D>& b, std::vector<Contact2D>& contacts);
 
         /// <summary>
         /// Detects if two polygons are colliding.
@@ -44,7 +44,7 @@ namespace Aerolite {
         /// <param name="b">The second polygon body for detection.</param>\
         /// <param name="contacts"> contacts A vector of contact2D object to store collision information if one is detected.
         /// <returns>Returns true if the two polygons are colliding, false if not.</returns>
-        static bool IsCollidingPolygonPolygon(AeroBody2D& a, AeroBody2D& b, std::vector<Contact2D>& contacts);
+        static bool IsCollidingPolygonPolygon(const std::shared_ptr<AeroBody2D>& a, const std::shared_ptr<AeroBody2D>& b, std::vector<Contact2D>& contacts);
 
         /// <summary>
         /// Detects if a circle and polygon are colliding.
@@ -53,24 +53,26 @@ namespace Aerolite {
         /// <param name="circle">The circle body for detection.</param>
         /// <param name="contacts">A reference parameter to store collision and contact information.</param>
         /// <returns>Returns true if the polygon and circle are colliding, false if not.</returns>
-        static bool IsCollidingCirclePolygon(AeroBody2D& polygon, AeroBody2D& circle, std::vector<Contact2D>& contacts);
+        static bool IsCollidingCirclePolygon(const std::shared_ptr<AeroBody2D>& polygon, const std::shared_ptr<AeroBody2D>
+                                             & circle, std::vector<Contact2D>& contacts);
 
         /// <summary>
         /// Helper function for setting the contact details of the circle polygon collision detection algorithm for regions A and B.
         /// </summary>
-        static void SetContactDetails(Contact2D& contact, AeroBody2D& polygon, AeroBody2D& circle, const AeroVec2& v1, real radius);
+        static void SetContactDetails(Contact2D& contact, const std::shared_ptr<AeroBody2D>& polygon, const std::shared_ptr<AeroBody2D>
+                                      & circle, const AeroVec2& v1, real radius);
 
         /// <summary>
         /// Helper function for setting the contact details of the circle polygon collision detection algorithm for region C.
         /// </summary>
-        static void SetContactDetailsForRegionC(Contact2D& contact, AeroBody2D& polygon, AeroBody2D& circle, const AeroVec2& minCurrVertex,
+        static void SetContactDetailsForRegionC(Contact2D& contact, const std::shared_ptr<AeroBody2D>& polygon, const std::shared_ptr<AeroBody2D>& circle, const AeroVec2& minCurrVertex,
                                                 const AeroVec2& minNextVertex, real radius, real distanceToCircleEdge);
 
         /// <summary>
         /// Helper function for setting the contact details of the circle polygon collision detection algorithm for when the 
         /// circle center is inside the polygon.
         /// </summary>
-        static void SetContactDetailsForInsideCollision(Contact2D& contact, AeroBody2D& polygon, AeroBody2D& circle, const AeroVec2& minCurrVertex,
+        static void SetContactDetailsForInsideCollision(Contact2D& contact, const std::shared_ptr<AeroBody2D>& polygon, const std::shared_ptr<AeroBody2D>& circle, const AeroVec2& minCurrVertex,
                                                         const AeroVec2& minNextVertex, real radius, real distanceToCircleEdge);
 
         /// <summary>
@@ -80,7 +82,7 @@ namespace Aerolite {
         /// <param name="b">The second polygon for collision detection.</param>
         /// <param name="contact">A reference parameter to store collision and contact information.</param>
         /// <returns></returns>
-        static bool IsCollidingSATBruteForce(AeroBody2D& a, AeroBody2D& b, Contact2D& contact);
+        static bool IsCollidingSATBruteForce(std::shared_ptr<AeroBody2D> a, std::shared_ptr<AeroBody2D> b, Contact2D& contact);
 
         /// <summary>
         /// Uses an optimized version of the SAT algorithm to determine if two polygons are colliding.
@@ -89,7 +91,7 @@ namespace Aerolite {
         /// <param name="b">The second polygon for collision detection.</param>
          /// <param name="contacts">A reference parameter to store collision and contact information.</param>
         /// <returns></returns>
-        static bool IsCollidingSATOptimized(AeroBody2D& a, AeroBody2D& b, std::vector<Contact2D>& contacts);
+        static bool IsCollidingSATOptimized(std::shared_ptr<AeroBody2D> a, std::shared_ptr<AeroBody2D> b, std::vector<Contact2D>& contacts);
 
         /// <summary>
         /// Projects the given vertices onto the given axis and find the minimum and maximum projections
@@ -110,7 +112,7 @@ namespace Aerolite {
         /// <param name="linePointB">The second endpoint of the line segment.</param>
         /// <param name="distance">Output parameter for the distance from p to the closestPoint.</param>
         /// <param name="closestPoint">The closest point on the line segment from the point p.</param>
-        static void PointLineSegmentDistance(AeroVec2 p, const AeroVec2& linePointA, const AeroVec2& linePointB, real& distance,
+        static void PointLineSegmentDistance(const AeroVec2& p, const AeroVec2& linePointA, const AeroVec2& linePointB, real& distance,
                                              AeroVec2& closestPoint);
 
         /// <summary>
@@ -119,7 +121,7 @@ namespace Aerolite {
         /// <param name="shapeA">The first polygon.</param>
         /// <param name="shapeB">The second polygon.</param>
         /// <param name="contact">The contact structure to store collision information in.</param>
-        static void FindContactPointsPolygons(PolygonShape& shapeA, PolygonShape& shapeB, Contact2D& contact);
+        static void FindContactPointsPolygons(const PolygonShape& shapeA, const PolygonShape& shapeB, Contact2D& contact);
     };
 }
 

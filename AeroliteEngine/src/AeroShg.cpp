@@ -9,13 +9,17 @@ namespace Aerolite
 		m_bounds = AeroAABB2D({0, 0}, {1920, 1080});
 		m_cellWidth = 10;
 		m_cellHeight = 10;
-		m_cols = static_cast<uint32_t>(std::ceil(m_bounds.Width() / m_cellWidth));
-		m_rows = static_cast<uint32_t>(std::ceil(m_bounds.Height() / m_cellHeight));
+		m_invCellWidth = 1.0f / m_cellWidth;
+		m_invCellHeight = 1.0f / m_cellHeight;
+		m_cols = static_cast<uint32_t>(std::ceil(m_bounds.Width() * m_invCellWidth));
+		m_rows = static_cast<uint32_t>(std::ceil(m_bounds.Height() * m_invCellHeight));
 	}
 
 	AeroShg::AeroShg(const AeroAABB2D& bounds, const float cellWidth, const float cellHeight)
 		: m_bounds(bounds), m_cellWidth(cellWidth), m_cellHeight(cellHeight)
 	{
+		m_invCellWidth = 1.0f / m_cellWidth;
+		m_invCellHeight = 1.0f / m_cellHeight;
 		m_cols = static_cast<uint32_t>(std::ceil(bounds.Width() / cellWidth));
 		m_rows = static_cast<uint32_t>(std::ceil(bounds.Height() / cellHeight));
 	}
@@ -64,10 +68,10 @@ namespace Aerolite
 		ResizeGrid();
 	}
 
-	void AeroShg::Place(const std::vector<AeroBody2D*>& bodies) {
-		for (auto* body : bodies) { // body is a raw pointer
-			const auto bodyAABB = body->GetAABB();
-			auto [minX, minY, maxX, maxY] = ComputeCellRange(bodyAABB);
+	void AeroShg::Place(const std::vector<std::shared_ptr<AeroBody2D>>& bodies) {
+		for (const auto& body : bodies) { // body is a raw pointer
+			const auto bodyAabb = body->GetAABB();
+			auto [minX, minY, maxX, maxY] = ComputeCellRange(bodyAabb);
 
 			for (int y = minY; y <= maxY; ++y) {
 				for (int x = minX; x <= maxX; ++x) {
@@ -78,7 +82,7 @@ namespace Aerolite
 		}
 	}
 
-	std::vector<AeroBody2D*> AeroShg::GetNeighbors(const aero_int16 x0, const aero_int16 y0) const
+	std::vector<std::shared_ptr<AeroBody2D>> AeroShg::GetNeighbors(const aero_int16 x0, const aero_int16 y0) const
 	{
 		return GetCellContent(x0, y0);
 	}
@@ -86,10 +90,10 @@ namespace Aerolite
 	std::tuple<int, int, int, int> AeroShg::ComputeCellRange(const AeroAABB2D& aabb) const
 	{
 		// Convert AABB min and max points to cell coordinates
-		int minX = static_cast<int>((aabb.min.x - m_bounds.min.x) / m_cellWidth);
-		int minY = static_cast<int>((aabb.min.y - m_bounds.min.y) / m_cellHeight);
-		int maxX = static_cast<int>((aabb.max.x - m_bounds.min.x) / m_cellWidth);
-		int maxY = static_cast<int>((aabb.max.y - m_bounds.min.y) / m_cellHeight);
+		int minX = static_cast<int>((aabb.min.x - m_bounds.min.x) * m_invCellWidth);
+		int minY = static_cast<int>((aabb.min.y - m_bounds.min.y) * m_invCellHeight);
+		int maxX = static_cast<int>((aabb.max.x - m_bounds.min.x) * m_invCellWidth);
+		int maxY = static_cast<int>((aabb.max.y - m_bounds.min.y) * m_invCellHeight);
 
 		// Clamp values to ensure they're within the bounds of the grid
 		minX = std::max(minX, 0);
@@ -100,11 +104,11 @@ namespace Aerolite
 		return { minX, minY, maxX, maxY };
 	}
 
-	std::vector<AeroBody2D*> AeroShg::GetCellContent(const aero_int16 x, const aero_int16 y) const
+	std::vector<std::shared_ptr<AeroBody2D>> AeroShg::GetCellContent(const aero_int16 x, const aero_int16 y) const
 	{
 		const auto cellKey = ComputeCellKey(x, y);
 		// Check if the cell content is already in the cache
-		auto it = m_cellContentCache.find(cellKey);
+		const auto it = m_cellContentCache.find(cellKey);
 		if (it != m_cellContentCache.end()) {
 			return it->second; // Return the cached result
 		}
@@ -129,16 +133,18 @@ namespace Aerolite
 
 	void AeroShg::ResizeGrid()
 	{
-		m_cols = static_cast<uint32_t>(std::ceil(m_bounds.Width() / m_cellWidth));
-		m_rows = static_cast<uint32_t>(std::ceil(m_bounds.Height() / m_cellHeight));
+		m_invCellWidth = 1.0f / m_cellWidth;
+		m_invCellHeight = 1.0f / m_cellHeight;
+		m_cols = static_cast<uint32_t>(std::ceil(m_bounds.Width() * m_invCellWidth));
+		m_rows = static_cast<uint32_t>(std::ceil(m_bounds.Height() * m_invCellHeight));
 	}
 
 	aero_uint32 AeroShg::ComputeCellKey(const aero_int16 x, const aero_int16 y) const
 	{
-		return static_cast<aero_uint32>(y * m_cols + x);
+		return y * m_rows + x;
 	}
 
-	void AeroShg::InsertBodyIntoCell(const aero_uint32 key, AeroBody2D* body)
+	void AeroShg::InsertBodyIntoCell(const aero_uint32 key, const std::shared_ptr<AeroBody2D>& body)
 	{
 		if (!m_cells.contains(key)) 
 		{

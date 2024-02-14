@@ -178,18 +178,16 @@
     <ClCompile Include="imgui\imgui_impl_sdlrenderer2.cpp" />
     <ClCompile Include="imgui\imgui_tables.cpp" />
     <ClCompile Include="imgui\imgui_widgets.cpp" />
-    <ClCompile Include="src\scenes\BilliardsScene.cpp" />
-    <ClCompile Include="src\scenes\ProjectileExplosionDemoScene.cpp" />
+    <ClCompile Include="src\scenes\Scene.cpp" />
+    <ClCompile Include="src\scenes\TheGreatPyramidScene.cpp" />
     <ClCompile Include="src\scenes\ContactPointGenerationDemoScene.cpp" />
     <ClCompile Include="src\scenes\JointConstraintScene.cpp" />
     <ClCompile Include="src\scenes\LargeParticleTestScene.cpp" />
-    <ClCompile Include="src\scenes\RigidBodiesAndJointsDemoScene.cpp" />
+    <ClCompile Include="src\scenes\FiveDollarFlappyBirdScene.cpp" />
     <ClCompile Include="src\scenes\RagdollJointScene.cpp" />
     <ClCompile Include="src\scenes\SolarSystemScene.cpp" />
-    <ClCompile Include="src\scenes\GravityDragScene.cpp" />
     <ClCompile Include="src\Graphics.cpp" />
     <ClCompile Include="src\Main.cpp" />
-    <ClCompile Include="src\scenes\SpringScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\Downloads\imgui-master\imgui-master\imconfig.h" />

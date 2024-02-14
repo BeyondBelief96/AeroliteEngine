@@ -13,10 +13,9 @@ namespace Aerolite {
 
     public:
         // Pointers to the bodies involved in the contact.
-        // These are raw pointers because Contact2D does not own the bodies.
         // The bodies are presumably managed elsewhere in your physics engine.
-        AeroBody2D* a = nullptr;
-        AeroBody2D* b = nullptr;
+        std::shared_ptr<AeroBody2D> a = nullptr;
+        std::shared_ptr<AeroBody2D> b = nullptr;
 
         // The start point of the contact in world coordinates.
         AeroVec2 start;
@@ -65,7 +64,7 @@ namespace Aerolite {
 
         // Move constructor.
         Contact2D(Contact2D&& other) noexcept
-            : a(other.a), b(other.b), start(std::move(other.start)), end(std::move(other.end)),
+            : a(std::move(other.a)), b(std::move(other.b)), start(std::move(other.start)), end(std::move(other.end)),
             normal(std::move(other.normal)), depth(other.depth) {
             other.a = nullptr;
             other.b = nullptr;
@@ -74,8 +73,8 @@ namespace Aerolite {
         // Move assignment operator.
         Contact2D& operator=(Contact2D&& other) noexcept {
             if (this != &other) {
-                a = other.a;
-                b = other.b;
+                a = std::move(other.a);
+                b = std::move(other.b);
                 start = std::move(other.start);
                 end = std::move(other.end);
                 normal = std::move(other.normal);

@@ -2,6 +2,7 @@
 #define SHAPE_H
 
 #include <vector>
+#include <memory>
 #include "AeroVec2.h"
 #include "Precision.h"
 
@@ -51,7 +52,7 @@ namespace Aerolite {
             AeroVec2 GeometricCenter(void) const;
             int FindIncidentEdgeIndex(const AeroVec2& referenceEdge) const;
             static int ClipLineSegmentToLine(const std::vector<AeroVec2>& contactsIn, std::vector<AeroVec2>& contactsOut, const AeroVec2& c0, const AeroVec2& c1);
-            static PolygonShape* CreateRegularPolygon(int sides, real sideLength);
+            static std::shared_ptr<PolygonShape> CreateRegularPolygon(int sides, real sideLength);
             real FindMinimumSeparation(const PolygonShape& other, int& indexReferenceEdge, AeroVec2& supportPoint) const;
     };
 

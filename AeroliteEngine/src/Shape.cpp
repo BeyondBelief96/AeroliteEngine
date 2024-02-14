@@ -86,7 +86,7 @@ Aerolite::real Aerolite::PolygonShape::GetMomentOfInertia() const
     return acc0 / 6 / acc1;
 }
 
-Aerolite::PolygonShape* Aerolite::PolygonShape::CreateRegularPolygon(int sides, real sideLength) {
+std::shared_ptr<Aerolite::PolygonShape> Aerolite::PolygonShape::CreateRegularPolygon(int sides, real sideLength) {
     if (sides < 3) {
         throw std::invalid_argument("Polygon must have at least 3 sides.");
     }
@@ -102,7 +102,7 @@ Aerolite::PolygonShape* Aerolite::PolygonShape::CreateRegularPolygon(int sides, 
         vertices.emplace_back(x, y);
     }
 
-    return new PolygonShape(vertices);
+    return std::make_shared<PolygonShape>(vertices);
 }
 
 Aerolite::AeroVec2 Aerolite::PolygonShape::EdgeAt(int index) const

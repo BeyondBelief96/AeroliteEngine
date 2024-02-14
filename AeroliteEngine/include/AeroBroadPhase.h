@@ -11,11 +11,11 @@ namespace Aerolite {
      * @brief Represents a pair of bodies that might be colliding.
      */
     struct BroadPhasePair {
-        AeroBody2D* a;
-        AeroBody2D* b;
+        std::shared_ptr<AeroBody2D> a;
+        std::shared_ptr<AeroBody2D> b;
         uint32_t id_pair;
 
-        BroadPhasePair(AeroBody2D* a, AeroBody2D* b, const uint32_t idPair)
+        BroadPhasePair(const std::shared_ptr<AeroBody2D>& a, const std::shared_ptr<AeroBody2D>& b, const uint32_t idPair)
             : a(a), b(b), id_pair(idPair) {}
     };
 
@@ -52,7 +52,7 @@ namespace Aerolite {
         void InitializeAlgorithm();
         static bool EarlyOut(AeroWorld2D& world, const AeroBody2D& a, const AeroBody2D& b);
         static void BruteForce(AeroWorld2D& world);
-    	void Shg(AeroWorld2D& world);
+        static void Shg(AeroWorld2D& world);
         static void Bvh(AeroWorld2D& world);
     };
 

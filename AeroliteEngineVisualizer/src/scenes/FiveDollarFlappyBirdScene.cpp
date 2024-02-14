@@ -11,97 +11,90 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Setup function (executed once in the beginning of the simulation)
 ///////////////////////////////////////////////////////////////////////////////
-void RigidBodiesAndJointsDemoScene::Setup() {
+void FiveDollarFlappyBirdScene::Setup() {
 
     running = true;
     world = std::make_unique<AeroWorld2D>(-9.8f);
-    world->ShgSetBounds({ 0, 0 }, { (real)Graphics::Width(), (real)Graphics::Height() });
+    world->ShgSetBounds({ 0, 0 }, { make_real<real>(Graphics::Width()), make_real<real>(Graphics::Height())});
     world->ShgSetCellWidth(100);
     world->ShgSetCellHeight(100);
     world->SetBroadPhaseAlgorithm(BroadPhaseAlg::SHG);
 
     // Add bird
-    auto bird = std::make_unique<AeroBody2D>(new CircleShape(45), 100, Graphics::Height() / make_real<real>(2.0) + 220, make_real<real>(3.0));
-    world->AddBody2D(std::move(bird));
+    auto bird = world->CreateBody2D(std::make_shared<CircleShape>(45), 100, Graphics::Height() / make_real<real>(2.0) + 220, make_real<real>(3.0));
 
     // Add a floor and walls to contain objects
-    auto floor = std::make_unique<AeroBody2D>(new BoxShape(Graphics::Width() - 50, 50),
-        Graphics::Width() / make_real<real>(2.0), Graphics::Height() / make_real<real>(2.0) + 290, make_real<real>(0.0));
-    auto leftFence = std::make_unique<AeroBody2D>(new BoxShape(50, Graphics::Height() - 200), 0, Graphics::Height() / make_real<real>(2.0) - 35, make_real<real>(0.0));
-    auto rightFence = std::make_unique<AeroBody2D>(new BoxShape(50, Graphics::Height() - 200), Graphics::Width(),
+    const auto floor = world->CreateBody2D(std::make_shared<BoxShape>(Graphics::Width() - 50, 50),
+                                           Graphics::Width() / make_real<real>(2.0), Graphics::Height() / make_real<real>(2.0) + 290, make_real<real>(0.0));
+    auto leftFence = world->CreateBody2D(std::make_shared<BoxShape>(50, Graphics::Height() - 200), 0, Graphics::Height() / make_real<real>(2.0) - 35, make_real<real>(0.0));
+    auto rightFence = world->CreateBody2D(std::make_shared<BoxShape>(50, Graphics::Height() - 200), Graphics::Width(),
         Graphics::Height() / make_real<real>(2.0) - 35, make_real<real>(0.0));
     
 
     // Add a stack of boxes
     for (int i = 1; i <= 4; i++) {
-        float mass = 10.0f / static_cast<real>(i);
-        auto box = std::make_unique<AeroBody2D>(new BoxShape(50, 50), 600, floor->position.y - i * 55, mass);
-        box->friction = 0.9f;
-        box->restitution = 0.1f;
-        world->AddBody2D(std::move(box));
+	    const float mass = 10.0f / static_cast<real>(i);
+	    const auto box = world->CreateBody2D(std::make_shared<BoxShape>(50, 50), 600, floor->position.y - i * 55, mass);
+        box->SetFriction(0.9f);
+        box->SetRestitution(0.1f);
     }
 
     // Add structure with blocks
-    auto plank1 = std::make_unique<AeroBody2D>(new BoxShape(50, 150), Graphics::Width() / make_real<real>(2.0) + 20, floor->position.y - 100, make_real<real>(5.0));
-    auto plank2 = std::make_unique<AeroBody2D>(new BoxShape(50, 150), Graphics::Width() / make_real<real>(2.0) + 180, floor->position.y - 100, make_real<real>(5.0));
-    auto plank3 = std::make_unique<AeroBody2D>(new BoxShape(250, 25), Graphics::Width() / make_real<real>(2.0) + 100.0f, floor->position.y - 200, make_real<real>(2.0));
+    const auto plank1 = world->CreateBody2D(std::make_shared<BoxShape>(50, 150), Graphics::Width() / make_real<real>(2.0) + 20, floor->position.y - 100, make_real<real>(5.0));
+    const auto plank2 = world->CreateBody2D(std::make_shared<BoxShape>(50, 150), Graphics::Width() / make_real<real>(2.0) + 180, floor->position.y - 100, make_real<real>(5.0));
+    const auto plank3 = world->CreateBody2D(std::make_shared<BoxShape>(250, 25), Graphics::Width() / make_real<real>(2.0) + 100.0f, floor->position.y - 200, make_real<real>(2.0));
    
 
     // Add a triangle polygon
-    const std::vector<Vec2> triangleVertices = { Vec2(30, 30), Vec2(-30, 30), Vec2(0, -30) };
-    auto triangle = std::make_unique<AeroBody2D> (new PolygonShape(triangleVertices), plank3->position.x, plank3->position.y - 50, make_real<real>(0.5));
+    const std::vector triangleVertices = { Vec2(30, 30), Vec2(-30, 30), Vec2(0, -30) };
+    auto triangle = world->CreateBody2D(std::make_shared<PolygonShape>(triangleVertices), plank3->position.x, plank3->position.y - 50, make_real<real>(0.5));
 
     // Add a pyramid of boxes
     const int numRows = 5;
     for (int col = 0; col < numRows; col++) {
         for (int row = 0; row < col; row++) {
-            float x = (plank3->position.x + 200.0f) + col * 50.0f - (row * 25.0f);
-            float y = (floor->position.y - 50.0f) - row * 52.0f;
-            float mass = (5.0f / (row + 1.0f));
-            auto box = std::make_unique<AeroBody2D>(new BoxShape(50, 50), x, y, mass);
-            box->friction = make_real<real>(0.9);
-            box->restitution = make_real<real>(0.0);
-            world->AddBody2D(std::move(box));
+	        const float x = plank3->position.x + 200.0f + col * 50.0f - row * 25.0f;
+	        const float y = floor->position.y - 50.0f - row * 52.0f;
+	        const float mass = 5.0f / (row + 1.0f);
+	        const auto box = world->CreateBody2D(std::make_shared<BoxShape>(50, 50), x, y, mass);
+            box->SetFriction(0.9f);
+            box->SetRestitution(0.0f);
         }
     }
 
     // Add a bridge of connected steps and joints
     const int numSteps = 10;
-    auto startStep = std::make_unique<AeroBody2D>(new BoxShape(80, 20), 200, 200, make_real<real>(0.0));
-    AeroBody2D* last = floor.get();
+
+    // Create the initial step (floor)
+    const auto startStep = world->CreateBody2D(std::make_shared<BoxShape>(80, 20), 200, 200, make_real<real>(0.0));
+    auto lastStep = startStep;  // Initialize lastStep to the starting step
+
+    // Iterate to create the steps in the bridge
     for (int i = 1; i <= numSteps; i++) {
-	    constexpr int spacing = 33;
-	    float x = startStep->position.x + 30 + i * spacing;
-        float y = startStep->position.y + 20;
-        float mass = (i == numSteps) ? 0.0f : 3.0f;
-        auto step = std::make_unique<AeroBody2D>(new CircleShape(15), x, y, mass);
-        auto joint = std::make_unique<JointConstraint>(*last, *step, step->position);
-        last = step.get();
-        world->AddConstraint(std::move(joint));
-        world->AddBody2D(std::move(step));
+
+        // Calculate the position of the new step
+        const real x = lastStep->position.x + 30 + i;
+        const real y = lastStep->position.y + 20;
+
+        // Set the mass for the current step (0.0 for the last step, 3.0 for others)
+        const real mass = (i == numSteps) ? 0.0f : 3.0f;
+
+        // Create the step using a CircleShape
+        auto step = world->CreateBody2D(std::make_shared<CircleShape>(15), x, y, mass);
+
+        // Connect the current step to the previous step using a joint constraint
+        world->AddJointConstraint(lastStep, step, step->position);
+
+        // Update lastStep to be the current step for the next iteration
+        lastStep = step;
     }
 
-    auto end_step = std::make_unique<AeroBody2D>(new BoxShape(80, 20), last->position.x + 60, last->position.y - 20, make_real<real>(0.0));
+    auto endStep = world->CreateBody2D(std::make_shared<BoxShape>(80, 20), lastStep->position.x + 60, lastStep->position.y - 20, make_real<real>(0.0));
 
-    auto pig1 = std::make_unique<AeroBody2D>(new CircleShape(30), plank1->position.x + 80, floor->position.y - 50, make_real<real>(3.0));
-    auto pig2 = std::make_unique<AeroBody2D>(new CircleShape(30), plank2->position.x + 400, floor->position.y - 50, make_real<real>(3.0));
-    auto pig3 = std::make_unique<AeroBody2D>(new CircleShape(30), plank2->position.x + 460, floor->position.y - 50, make_real<real>(3.0));
-    auto pig4 = std::make_unique<AeroBody2D>(new CircleShape(30), 220, 130, make_real<real>(1.0));
-
-
-    world->AddBody2D(std::move(triangle));
-    world->AddBody2D(std::move(startStep));
-    world->AddBody2D(std::move(end_step));
-    world->AddBody2D(std::move(floor));
-    world->AddBody2D(std::move(leftFence));
-    world->AddBody2D(std::move(rightFence));
-    world->AddBody2D(std::move(plank1));
-    world->AddBody2D(std::move(plank2));
-    world->AddBody2D(std::move(plank3));
-    world->AddBody2D(std::move(pig1));
-    world->AddBody2D(std::move(pig2));
-    world->AddBody2D(std::move(pig3));
-    world->AddBody2D(std::move(pig4));
+    auto pig1 = world->CreateBody2D(std::make_shared<CircleShape>(30), plank1->position.x + 80, floor->position.y - 50, make_real<real>(3.0));
+    auto pig2 = world->CreateBody2D(std::make_shared<CircleShape>(30), plank2->position.x + 400, floor->position.y - 50, make_real<real>(3.0));
+    auto pig3 = world->CreateBody2D(std::make_shared<CircleShape>(30), plank2->position.x + 460, floor->position.y - 50, make_real<real>(3.0));
+    auto pig4 = world->CreateBody2D(std::make_shared<CircleShape>(30), 220, 130, make_real<real>(1.0));
 
     for(auto& body : world->GetBodies())
     {
@@ -115,7 +108,7 @@ void RigidBodiesAndJointsDemoScene::Setup() {
 
         // Combine the color components into a single ARGB value with full opacity (0xFF)
         // The '0xFF' is the alpha component for full opacity.
-        const auto color = (0xFF << 24) | (red << 16) | (green << 8) | blue;
+        const auto color = 0xFF << 24 | red << 16 | green << 8 | blue;
         m_bodyColors.push_back(color);
     }
 }
@@ -123,7 +116,7 @@ void RigidBodiesAndJointsDemoScene::Setup() {
 ///////////////////////////////////////////////////////////////////////////////
 // Input processing
 ///////////////////////////////////////////////////////////////////////////////
-void RigidBodiesAndJointsDemoScene::Input(const SDL_Event event) {
+void FiveDollarFlappyBirdScene::Input(const SDL_Event event) {
      switch (event.type) {
      case SDL_QUIT:
          running = false;
@@ -145,8 +138,8 @@ void RigidBodiesAndJointsDemoScene::Input(const SDL_Event event) {
          if (event.button.button == SDL_BUTTON_LEFT) {
             int x, y;
             SDL_GetMouseState(&x, &y);
-            // Create and add a new BoxShape at the mouse location
-            auto circle = std::make_unique<AeroBody2D>(new CircleShape(50), x, y, make_real<real>(2.0));
+            // Create and add a std::make_shared< BoxShape at the mouse location
+            const auto circle = world->CreateBody2D(std::make_shared<CircleShape>(50), x, y, make_real<real>(2.0));
             circle->restitution = 0;
             circle->friction = make_real<real>(0.4);
             std::random_device rd;
@@ -159,15 +152,14 @@ void RigidBodiesAndJointsDemoScene::Input(const SDL_Event event) {
 
             // Combine the color components into a single ARGB value with full opacity (0xFF)
             // The '0xFF' is the alpha component for full opacity.
-            const auto color = (0xFF << 24) | (red << 16) | (green << 8) | blue;
+            const auto color = 0xFF << 24 | red << 16 | green << 8 | blue;
             m_bodyColors.push_back(color);
-            world->AddBody2D(std::move(circle));
          }
          else if (event.button.button == SDL_BUTTON_RIGHT) {
             int x, y;
             SDL_GetMouseState(&x, &y);
-            // Create and add a new CircleShape at the mouse location
-            auto circle = std::make_unique<AeroBody2D>(new BoxShape(50,50), x, y, make_real<real>(1.0)); // Assuming radius 25 for the circle
+            // Create and add a std::make_shared< CircleShape at the mouse location
+            const auto circle = world->CreateBody2D(std::make_shared<BoxShape>(50,50), x, y, make_real<real>(1.0)); // Assuming radius 25 for the circle
             circle->restitution = 0;
             circle->friction = make_real<real>(0.4);
             std::random_device rd;
@@ -180,9 +172,8 @@ void RigidBodiesAndJointsDemoScene::Input(const SDL_Event event) {
 
             // Combine the color components into a single ARGB value with full opacity (0xFF)
             // The '0xFF' is the alpha component for full opacity.
-            const auto color = (0xFF << 24) | (red << 16) | (green << 8) | blue;
+            const auto color = 0xFF << 24 | red << 16 | green << 8 | blue;
             m_bodyColors.push_back(color);
-            world->AddBody2D(std::move(circle));
          }
          break;
      }
@@ -191,7 +182,7 @@ void RigidBodiesAndJointsDemoScene::Input(const SDL_Event event) {
 ///////////////////////////////////////////////////////////////////////////////
 // Update function (called several times per second to update objects)
 ///////////////////////////////////////////////////////////////////////////////
-void RigidBodiesAndJointsDemoScene::Update() {
+void FiveDollarFlappyBirdScene::Update() {
     // Check if we are too fast, and if so, waste some milliseconds until we reach
     // MILLISECONDS_PER_FRAME.
     const int time_to_wait = MILLISECS_PER_FRAME - (SDL_GetTicks() - timePreviousFrame);
@@ -214,26 +205,26 @@ void RigidBodiesAndJointsDemoScene::Update() {
 ///////////////////////////////////////////////////////////////////////////////
 // Render function (called several times per second to draw objects)
 ///////////////////////////////////////////////////////////////////////////////
-void RigidBodiesAndJointsDemoScene::Render() {
+void FiveDollarFlappyBirdScene::Render() {
     Graphics::ClearScreen(0xFF000000);
     int i = 0;
     for (const auto& body : world->GetBodies()) {
         if (body->shape->GetType() == Circle) {
-	        const auto circleShape = dynamic_cast<CircleShape*>(body->shape);
+	        const auto circleShape =  std::dynamic_pointer_cast<CircleShape>(body->shape);
             Graphics::DrawCircle(body->position.x, body->position.y, circleShape->radius, body->rotation, m_bodyColors[i++]);
         }
         else  if (body->shape->GetType() == Box) {
-	        const auto boxShape = dynamic_cast<BoxShape*>(body->shape);
+	        const auto boxShape =  std::dynamic_pointer_cast<BoxShape>(body->shape);
             Graphics::DrawFillPolygon(body->position.x, body->position.y, boxShape->worldVertices, m_bodyColors[i++]);
         }
         else  if (body->shape->GetType() == Polygon) {
-	        const auto boxShape = dynamic_cast<PolygonShape*>(body->shape);
+	        const auto boxShape =  std::dynamic_pointer_cast<PolygonShape>(body->shape);
             Graphics::DrawFillPolygon(body->position.x, body->position.y, boxShape->worldVertices, m_bodyColors[i++]);
         }
     }
 
     if (debug) {
-        for (auto& contact : world->GetContacts())
+        for (const auto& contact : world->GetContacts())
         {
             Graphics::DrawFillCircle(contact.start.x, contact.start.y, 4, 0xFFFF00FF);
             Graphics::DrawFillCircle(contact.end.x, contact.end.y, 4, 0xFFFF00FF);
@@ -241,11 +232,4 @@ void RigidBodiesAndJointsDemoScene::Render() {
                 contact.start.y + contact.normal.y * 15, 0xFFFF00FF);
         }
     }
-}
-
-///////////////////////////////////////////////////////////////////////////////
-// Destroy function to delete objects and close the window
-///////////////////////////////////////////////////////////////////////////////
-void RigidBodiesAndJointsDemoScene::Destroy() {
-    running = false;
 }

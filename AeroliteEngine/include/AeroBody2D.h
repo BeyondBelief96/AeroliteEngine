@@ -1,6 +1,8 @@
 #ifndef BODY2D_H
 #define BODY2D_H
 
+#include <memory>
+
 #include "AeroVec2.h"
 #include "Shape.h"
 #include "Precision.h"
@@ -32,7 +34,7 @@ namespace Aerolite {
         real inv_inertia; ///< Inverse of the moment of inertia for efficient computation.
         real restitution; ///< Coefficient of restitution (bounciness) of the body.
         real friction; ///< Coefficient of friction affecting tangential collision response.
-        Shape* shape; ///< Shape of the body, defining its geometric representation.
+        std::shared_ptr<Shape> shape; ///< Shape of the body, defining its geometric representation.
         bool is_sleeping; ///< Flag indicating if the body is currently in a sleeping state to optimize simulation.
         unsigned int sleep_timer; ///< Timer for tracking how long the body has been inactive.
 
@@ -45,12 +47,12 @@ namespace Aerolite {
          * @param y Initial y-coordinate of the body's position.
          * @param mass Mass of the body, where a value of 0 indicates a static (immovable) body.
          */
-        AeroBody2D(Shape* shape, const real x, const real y, const real mass);
+        AeroBody2D(const std::shared_ptr<Shape>& shape, const real x, const real y, const real mass);
 
         /**
          * @brief Destroy the AeroBody2D object, performing necessary cleanup.
          */
-        ~AeroBody2D();
+        ~AeroBody2D() = default;
 
         /**
          * @brief Calculates and returns the Axis-Aligned Bounding Box (AABB) of the body.
@@ -115,6 +117,18 @@ namespace Aerolite {
          * @param r The point (relative to the body's center of mass) where the impulse is applied.
          */
         void ApplyImpulseAtPoint(const AeroVec2& j, const AeroVec2& r);
+
+        /**
+         * \brief Used to dynamically update the friction value of this body.
+         * \param f The friction value to set
+         */
+        void SetFriction(real f);
+
+        /**
+        * \brief Used to dynamically update the restitution value of this body.
+        * \param r The restitution value to set
+        */
+        void SetRestitution(real r);
 
         /**
          * @brief Puts this body to sleep. All forces, velocities, accelerations are set to zero.

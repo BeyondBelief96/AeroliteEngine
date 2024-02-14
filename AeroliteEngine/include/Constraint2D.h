@@ -8,13 +8,13 @@
 namespace Aerolite {
 	class Constraint2D {
 	public:
-		AeroBody2D& a;
-		AeroBody2D& b;
+		std::shared_ptr<AeroBody2D> a;
+		std::shared_ptr<AeroBody2D> b;
 
 		AeroVec2 aPoint; // Constraint specific point in A's local space.
 		AeroVec2 bPoint; // Constraint specific point in B's local space.
 
-		Constraint2D(AeroBody2D& a, AeroBody2D& b);
+		Constraint2D(const std::shared_ptr<AeroBody2D>& a, const std::shared_ptr<AeroBody2D>& b);
 		virtual ~Constraint2D() = default;
 
 		/// <summary>
@@ -48,11 +48,11 @@ namespace Aerolite {
 	public:
 
 		JointConstraint() = default;
-		JointConstraint(AeroBody2D& a, AeroBody2D& b, const AeroVec2& anchorPoint);
+		JointConstraint(const std::shared_ptr<AeroBody2D>& a, const std::shared_ptr<AeroBody2D>& b, const AeroVec2& anchorPoint);
 
-		void PreSolve(const real dt) override;
-		void Solve(void) override;
-		void PostSolve(void) override;
+		virtual void PreSolve(real dt) override;
+		virtual void Solve() override;
+		virtual void PostSolve() override;
 	};
 
 	class PenetrationConstraint : public Constraint2D {
@@ -65,14 +65,14 @@ namespace Aerolite {
 	public:
 		PenetrationConstraint() = default;
 		PenetrationConstraint(
-			AeroBody2D& a,
-			AeroBody2D& b,
+			std::shared_ptr<AeroBody2D> a,
+			std::shared_ptr<AeroBody2D> b,
 			const AeroVec2& aCollisionPoint,
 			const AeroVec2& bCollisionPoint, 
 			const AeroVec2& collisionNormal);
-		void PreSolve(const real dt) override;
-		void Solve(void) override;
-		void PostSolve(void) override;
+		virtual void PreSolve(real dt) override;
+		virtual void Solve() override;
+		virtual void PostSolve() override;
 	};
 }
 

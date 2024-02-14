@@ -4,6 +4,7 @@
 #include <chrono>
 #include <vector>
 #include "AeroBody2D.h"
+#include "AeroBodyManager.h"
 #include "AeroBroadPhase.h"
 #include "AeroShg.h"
 #include "Contact2D.h"
@@ -13,7 +14,6 @@
 namespace Aerolite {
     class AeroWorld2D {
     private:
-        std::vector<std::unique_ptr<AeroBody2D>> m_bodies;
         std::vector<std::unique_ptr<Particle2D>> m_particles;
         std::vector<std::unique_ptr<Constraint2D>> m_constraints;
         std::vector<AeroVec2> m_globalForces;
@@ -23,6 +23,7 @@ namespace Aerolite {
         std::vector<Contact2D> m_contactsList;
         AeroBroadPhase m_broadPhasePipeline;
         AeroShg m_shg;
+        BodyManager m_bodyManager;
 
         // Benchmarking 
         std::chrono::high_resolution_clock::time_point m_lastLogTime;
@@ -38,12 +39,15 @@ namespace Aerolite {
 		void operator=(AeroWorld2D&&) = delete;
         ~AeroWorld2D() = default;
 
-        void AddBody2D(std::unique_ptr<AeroBody2D> body);
-        std::vector<std::unique_ptr<AeroBody2D>>& GetBodies();
+        void ClearWorld();
+
+        std::shared_ptr<AeroBody2D> CreateBody2D(const std::shared_ptr<Shape>& shape, const real x, const real y, const real mass);
+    	const std::vector<std::shared_ptr<AeroBody2D>>& GetBodies() const;
+        std::vector<std::shared_ptr<AeroBody2D>>& GetBodies();
         void RemoveBody2D(int index);
         void RemoveBody2D(AeroBody2D* bodyToRemove);
 
-        void AddConstraint(std::unique_ptr<Constraint2D> constraint);
+        void AddJointConstraint(const std::shared_ptr<AeroBody2D>& a, const std::shared_ptr<AeroBody2D>& b, const AeroVec2& anchorPoint);
         std::vector<std::unique_ptr<Constraint2D>>& GetConstraints(void);
 
         void SetBroadPhaseAlgorithm(BroadPhaseAlg alg);
@@ -64,7 +68,7 @@ namespace Aerolite {
 
         void Update(real dt);
 
-        [[nodiscard]] const std::vector<Contact2D> GetContacts(void) const;
+        [[nodiscard]] std::vector<Contact2D> GetContacts(void) const;
     };
 }
 

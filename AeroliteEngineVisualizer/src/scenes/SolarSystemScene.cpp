@@ -10,12 +10,12 @@
 // Generates a solar system layout with planets in orbit around a central sun.
 void SolarSystemScene::GenerateSolarSystem(
     std::vector<std::unique_ptr<Particle2D>>& planets,
-    std::shared_ptr<Particle2D>& sun,
+    const std::shared_ptr<Particle2D>& sun,
     int numPlanets,
-    real gravitationalConstant,
-    real minOrbitRadius,
-    real maxOrbitRadius,
-    real sunMass) {
+    const real gravitationalConstant,
+    const real minOrbitRadius,
+    const real maxOrbitRadius,
+    const real sunMass) {
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_real_distribution<float> distAngle(0, 2 * M_PI);
@@ -33,7 +33,7 @@ void SolarSystemScene::GenerateSolarSystem(
         planetRadii.push_back(radius);
         // Calculate velocity for a circular orbit. 
         // The velocity direction should be perpendicular to the radial vector (x, y).
-        real velocityMagnitude = sqrtf(gravitationalConstant * sunMass / radius);
+        const real velocityMagnitude = sqrtf(gravitationalConstant * sunMass / radius);
         // Velocity direction is perpendicular to radial direction
         Vec2 velocity(-y, x); // Rotate position vector by 90 degrees to get tangent direction
 
@@ -194,11 +194,4 @@ void SolarSystemScene::Render() {
         Graphics::DrawFillCircle(planet->position.x, planet->position.y, planet->radius, planetColors[i++]);
     }
     Graphics::RenderFrame();
-}
-
-///////////////////////////////////////////////////////////////////////////////
-// Destroy function to delete objects and close the window
-///////////////////////////////////////////////////////////////////////////////
-void SolarSystemScene::Destroy() {
-    running = false;
 }

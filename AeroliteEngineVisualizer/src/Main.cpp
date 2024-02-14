@@ -6,6 +6,10 @@
 #include "Scene.h"
 #include "Graphics.h"
 
+real globalFriction = 0.5f; // Default friction value
+real globalRestitution = 0.1f; // Default restitution value
+float frameRate = 0.0f;
+
 int main(int argc, char* args[]) {
 
     // Initializes SDL2 and the SDL Window/Renderer
@@ -15,11 +19,12 @@ int main(int argc, char* args[]) {
     std::string currentSceneKey = "$5 flappy bird.";
     std::map<std::string, std::shared_ptr<Scene>> scenes;
     scenes["Contacts...contacts everywhere."] = std::make_shared<ContactPointGenerationDemoScene>();
-    scenes["$5 flappy bird."] = std::make_shared<RigidBodiesAndJointsDemoScene>();
+    scenes["$5 flappy bird."] = std::make_shared<FiveDollarFlappyBirdScene>();
     scenes["Well...Its a rag doll alright."] = std::make_shared<RagdollJointScene>();
-    scenes["Destroy the castle!"] = std::make_shared<ProjectileExplosionDemoScene>();
+    scenes["Destroy the castle!"] = std::make_shared<TheGreatPyramidScene>();
     scenes["PARTICLES!!!!"] = std::make_shared<LargeParticleTestScene>();
     scenes["Solar System Cyclone"] = std::make_shared<SolarSystemScene>();
+    scenes["The Great Pyramid"] = std::make_shared<TheGreatPyramidScene>();
 
     // Initialize the current scene based on currentSceneKey
     currentScene = scenes[currentSceneKey];
@@ -30,11 +35,15 @@ int main(int argc, char* args[]) {
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
             ImGui_ImplSDL2_ProcessEvent(&event);
+
+            // Check if ImGui wants to capture the mouse
+            const bool imguiCapturesMouse = ImGui::GetIO().WantCaptureMouse;
+
             if (event.type == SDL_QUIT) done = true;
             else if (event.key.keysym.sym == SDLK_ESCAPE) done = true;
 
-            if(currentScene && currentScene->IsRunning())
-            {
+            // Modify your condition to check if ImGui is not using the mouse
+            if (!imguiCapturesMouse && currentScene && currentScene->IsRunning()) {
                 currentScene->Input(event);
             }
         }
@@ -43,6 +52,7 @@ int main(int argc, char* args[]) {
         ImGui_ImplSDL2_NewFrame();
         ImGui::NewFrame();
 
+        frameRate = ImGui::GetIO().Framerate;
         // ImGui window for scene selection
         ImGui::Begin("Scene Selector");
 
@@ -83,10 +93,20 @@ int main(int argc, char* args[]) {
             }
         }
 
+        if(ImGui::CollapsingHeader("Global Physics Options")) {
+            ImGui::SliderFloat("Friction", &globalFriction, 0.0f, 1.0f, "Friction = %.3f");
+            ImGui::SliderFloat("Restitution", &globalRestitution, 0.0f, 1.0f, "Restitution = %.3f");
+        }
+
+        // Display the FPS
+        ImGui::Text("FPS: %.1f", frameRate);
+
+
         ImGui::End();
 
         // Check if a scene is currently selected and running
         if (currentScene && currentScene->IsRunning()) {
+            currentScene->UpdatePhysicsProperties(globalFriction, globalRestitution);
             currentScene->Update();
             currentScene->Render();
             ImGui::Render();

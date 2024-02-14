@@ -1,9 +1,6 @@
 #ifndef PFGEN_H
 #define PFGEN_H
 
-#include <vector>
-#include <memory>
-#include <algorithm>
 #include "Particle2D.h"
 #include "Precision.h"
 #include "AeroVec2.h"

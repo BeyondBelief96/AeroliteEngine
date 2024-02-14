@@ -7,7 +7,7 @@ namespace Aerolite {
 
     // Constructor for AeroBody2D.
     // Takes a pointer to a Shape, position coordinates (x, y), and mass.
-    AeroBody2D::AeroBody2D(Shape* shape, const real x, const real y, const real mass)
+    AeroBody2D::AeroBody2D(const std::shared_ptr<Shape>& shape, const real x, const real y, const real mass)
 	    : position({x, y}), mass(mass), shape(shape)
     {
         this->id = current_id++;
@@ -47,7 +47,7 @@ namespace Aerolite {
         AeroAABB2D aabb;
         if (shape->GetType() == Circle)
         {
-	        const CircleShape* circleShape = dynamic_cast<CircleShape*>(shape);
+	        const auto circleShape = std::dynamic_pointer_cast<CircleShape>(shape);
 	        const real radius = circleShape->radius;
             aabb.min = position - AeroVec2(radius, radius);
             aabb.max = position + AeroVec2(radius, radius);
@@ -55,7 +55,7 @@ namespace Aerolite {
         }
         else if (shape->GetType() == Box || shape->GetType() == Polygon)
         {
-	        const PolygonShape* polygon = dynamic_cast<PolygonShape*>(shape);
+	        const auto polygon = std::dynamic_pointer_cast<PolygonShape>(shape);
             aabb.min = AeroVec2(std::numeric_limits<real>::max(), std::numeric_limits<real>::max());
             aabb.max = AeroVec2(std::numeric_limits<real>::lowest(), std::numeric_limits<real>::lowest());
 
@@ -108,13 +108,6 @@ namespace Aerolite {
         shape->UpdateVertices(rotation, position);
     }
 
-    // Destructor for AeroBody2D.
-    AeroBody2D::~AeroBody2D()
-    {
-        delete(shape);
-        shape = nullptr;
-    }
-
     bool AeroBody2D::IsStatic(void) const
     {
         return AreEqual(mass, 0.0, EPSILON);
@@ -150,6 +143,16 @@ namespace Aerolite {
 
         linear_velocity += j * inv_mass;
         angular_velocity += r.Cross(j) * inv_inertia;
+    }
+
+    void AeroBody2D::SetFriction(const real f)
+    {
+	    this->friction = f;
+    }
+
+    void AeroBody2D::SetRestitution(const real r)
+    {
+        this->restitution = r;
     }
 
     void AeroBody2D::Sleep()

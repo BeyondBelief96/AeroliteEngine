@@ -65,17 +65,17 @@ namespace Aerolite
 
 		for(size_t i = 0; i < world.GetBodies().size(); i++)
 		{
-			const std::unique_ptr<AeroBody2D>& bodyA = world.GetBodies()[i];
+			const std::shared_ptr<AeroBody2D>& bodyA = world.GetBodies()[i];
 			auto aBox = bodyA->GetAABB();
 			for(size_t j = 0; j < world.GetBodies().size(); j++)
 			{
-				const std::unique_ptr<AeroBody2D>& bodyB = world.GetBodies()[j];
+				const std::shared_ptr<AeroBody2D>& bodyB = world.GetBodies()[j];
 				if (EarlyOut(world, *bodyA, *bodyB)) continue;
 
 				const auto bBox = bodyB->GetAABB();
 				if (aBox.Intersects(bBox))
 				{
-					BroadPhasePair pair = { bodyA.get(), bodyB.get(), ComputeIdPair(bodyA->id, bodyB->id)};
+					BroadPhasePair pair = { bodyA, bodyB, ComputeIdPair(bodyA->id, bodyB->id)};
 					world.AddBroadPhasePair(pair);
 				}
 			}
@@ -85,9 +85,9 @@ namespace Aerolite
 	void AeroBroadPhase::Shg(AeroWorld2D& world)
 	{
 		world.ClearBroadPhasePairs();
-		std::vector<AeroBody2D*> bodies;
-		for (const auto& uniquePtrBody : world.GetBodies()) {
-			bodies.push_back(uniquePtrBody.get()); 
+		std::vector<std::shared_ptr<AeroBody2D>> bodies;
+		for (const auto& sharedPtrBody : world.GetBodies()) {
+			bodies.push_back(sharedPtrBody);
 		}
 
 		auto shg = world.GetShg();

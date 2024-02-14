@@ -3,7 +3,6 @@
 #include "Collision2D.h"
 #include "Precision.h"
 #include "Shape.h"
-#include "Config.h"
 
 namespace Aerolite
 {
@@ -15,13 +14,13 @@ namespace Aerolite
     // Description: This function first checks the shape types of the bodies (circle or polygon).
     //              It then delegates the collision detection to the appropriate function based
     //              on the shape types.
-    bool CollisionDetection2D::IsColliding(AeroBody2D& a, AeroBody2D& b, std::vector<Contact2D>& contacts)
+    bool CollisionDetection2D::IsColliding(const std::shared_ptr<AeroBody2D>& a, const std::shared_ptr<AeroBody2D>& b, std::vector<Contact2D>& contacts)
     {
 #ifndef CHECK_STATIC_COLLISIONS
-        if (a.IsStatic() && b.IsStatic()) return false;
+        if (a->IsStatic() && b->IsStatic()) return false;
 #endif
-        const bool aIsCircle = a.shape->GetType() == Circle;
-        const bool bIsCircle = b.shape->GetType() == Circle;
+        const bool aIsCircle = a->shape->GetType() == Circle;
+        const bool bIsCircle = b->shape->GetType() == Circle;
 
         if (aIsCircle && bIsCircle)
         {
@@ -44,7 +43,7 @@ namespace Aerolite
     }
 
 
-    bool CollisionDetection2D::IntersectAABBs(AeroAABB2D& a, AeroAABB2D& b)
+    bool CollisionDetection2D::IntersectAABBs(const AeroAABB2D& a, const AeroAABB2D& b)
     {
         if (a.max.x <= b.min.x || b.max.x <= a.min.x ||
             a.max.y <= b.min.y || b.max.y <= a.min.y) return false;
@@ -59,12 +58,12 @@ namespace Aerolite
     //   - contact: A reference to a Contact2D object to store collision details.
     // Description: This function calculates if two circles are colliding by comparing
     //              the distance between their centers to the sum of their radii.
-    bool CollisionDetection2D::IsCollidingCircleCircle(AeroBody2D& a, AeroBody2D& b, std::vector<Contact2D>& contacts)
+    bool CollisionDetection2D::IsCollidingCircleCircle(const std::shared_ptr<AeroBody2D>& a, const std::shared_ptr<AeroBody2D>& b, std::vector<Contact2D>& contacts)
     {
-	    const auto aCircleShape = dynamic_cast<CircleShape*>(a.shape);
-	    const auto bCircleShape = dynamic_cast<CircleShape*>(b.shape);
+	    const auto aCircleShape = std::dynamic_pointer_cast<CircleShape>(a->shape);
+	    const auto bCircleShape =  std::dynamic_pointer_cast<CircleShape>(b->shape);
 
-        const AeroVec2 distanceBetweenCenters = b.position - a.position;
+        const AeroVec2 distanceBetweenCenters = b->position - a->position;
         const real sumRadius = aCircleShape->radius + bCircleShape->radius;
 	    const bool isColliding = distanceBetweenCenters.MagnitudeSquared() <= (sumRadius * sumRadius);
 
@@ -73,11 +72,11 @@ namespace Aerolite
         }
         Contact2D contact;
 
-        contact.a = &a;
-        contact.b = &b;
+        contact.a = a;
+        contact.b = b;
         contact.normal = distanceBetweenCenters.UnitVector();
-        contact.start = b.position - (contact.normal * bCircleShape->radius);
-        contact.end = a.position + (contact.normal * aCircleShape->radius);
+        contact.start = b->position - (contact.normal * bCircleShape->radius);
+        contact.end = a->position + (contact.normal * aCircleShape->radius);
         contact.depth = (contact.end - contact.start).Magnitude();
 
         contacts.push_back(contact);
@@ -91,20 +90,20 @@ namespace Aerolite
     //   - contact: A reference to a Contact2D object, not used in this function as SAT does not provide contact points.
     // Description: This function checks for overlap along all possible axes formed by the edges of the polygons.
     //              If a separating axis is found (no overlap on an axis), the polygons are not colliding.
-    bool CollisionDetection2D::IsCollidingPolygonPolygon(AeroBody2D& a, AeroBody2D& b, std::vector<Contact2D>& contacts)
+    bool CollisionDetection2D::IsCollidingPolygonPolygon(const std::shared_ptr<AeroBody2D>& a, const std::shared_ptr<AeroBody2D>& b, std::vector<Contact2D>& contacts)
     {
         return IsCollidingSATOptimized(a, b, contacts);
     }
 
-    bool CollisionDetection2D::IsCollidingSATBruteForce(AeroBody2D& a, AeroBody2D& b, Contact2D& contact)
+    bool CollisionDetection2D::IsCollidingSATBruteForce(std::shared_ptr<AeroBody2D> a, std::shared_ptr<AeroBody2D> b, Contact2D& contact)
     {
         // Casting the shape of each body to a PolygonShape to access polygon-specific properties.
-        const auto aPolygonShape = dynamic_cast<PolygonShape*>(a.shape);
-        const auto bPolygonShape = dynamic_cast<PolygonShape*>(b.shape);
+        const auto aPolygonShape =  std::dynamic_pointer_cast<PolygonShape>(a->shape);
+        const auto bPolygonShape =  std::dynamic_pointer_cast<PolygonShape>(b->shape);
         auto contactDepth = std::numeric_limits<real>::max();
         auto contactNormal = AeroVec2();
 
-        // Checking for overlap along all axes formed by the edges of polygon a.
+        // Checking for overlap along all axes formed by the edges of polygon a->
         for (int i = 0; i < aPolygonShape->worldVertices.size(); i++)
         {
             // Compute the normal to the edge.
@@ -132,7 +131,7 @@ namespace Aerolite
             }
         }
 
-        // Repeat the process for all axes formed by the edges of polygon b.
+        // Repeat the process for all axes formed by the edges of polygon b->
         for (int i = 0; i < bPolygonShape->worldVertices.size(); i++)
         {
 	        AeroVec2 normal = bPolygonShape->EdgeAt(i).Normal().UnitVector();
@@ -167,8 +166,8 @@ namespace Aerolite
         contactDepth /= contactNormal.Magnitude();
         contactNormal = contactNormal;
 
-        contact.a = &a;
-        contact.b = &b;
+        contact.a = a;
+        contact.b = b;
         contact.depth = contactDepth;
         contact.normal = contactNormal;
 
@@ -179,11 +178,11 @@ namespace Aerolite
     }
 
     // Check for collision between two polygon shapes using the Separating Axis Theorem (SAT).
-    bool CollisionDetection2D::IsCollidingSATOptimized(AeroBody2D& a, AeroBody2D& b, std::vector<Contact2D>& contacts)
+    bool CollisionDetection2D::IsCollidingSATOptimized(std::shared_ptr<AeroBody2D> a, std::shared_ptr<AeroBody2D> b, std::vector<Contact2D>& contacts)
     {
         // Cast the shapes of the bodies to polygon shapes
-        const auto polygonShapeA = dynamic_cast<PolygonShape*>(a.shape);
-        const auto polygonShapeB = dynamic_cast<PolygonShape*>(b.shape);
+        const auto polygonShapeA =  std::dynamic_pointer_cast<PolygonShape>(a->shape);
+        const auto polygonShapeB =  std::dynamic_pointer_cast<PolygonShape>(b->shape);
 
         // Variables to store the axis of minimum separation and the corresponding points
         int aIndexReferenceEdge, bIndexReferenceEdge;
@@ -198,8 +197,8 @@ namespace Aerolite
         if (abSeparation >= 0) return false;
         if (baSeparation >= 0) return false;
 
-        PolygonShape* referenceShape;
-        PolygonShape* incidentShape;
+        std::shared_ptr<PolygonShape> referenceShape;
+        std::shared_ptr<PolygonShape> incidentShape;
         int indexReferenceEdge;
         if (abSeparation > baSeparation) {
             // Set "A" as our reference shape and "B" as incident shape.
@@ -242,8 +241,8 @@ namespace Aerolite
 	        const real separation = (vclip - vref).Dot(referenceEdge.Normal());
             if (separation <= 0) {
                 Contact2D contact;
-                contact.a = &a;
-                contact.b = &b;
+                contact.a = a;
+                contact.b = b;
                 contact.normal = referenceEdge.Normal();
                 contact.start = vclip;
                 contact.end = vclip + contact.normal * -separation;
@@ -260,11 +259,12 @@ namespace Aerolite
     }
 
     // Check for collision between a circle and a polygon.
-    bool CollisionDetection2D::IsCollidingCirclePolygon(AeroBody2D& polygon, AeroBody2D& circle, std::vector<Contact2D>& contacts)
+    bool CollisionDetection2D::IsCollidingCirclePolygon(const std::shared_ptr<AeroBody2D>& polygon, const std::shared_ptr<AeroBody2D>
+                                                        & circle, std::vector<Contact2D>& contacts)
     {
         // Cast the shapes to their respective types
-        const PolygonShape* polygonShape = dynamic_cast<PolygonShape*>(polygon.shape);
-        const CircleShape* circleShape = dynamic_cast<CircleShape*>(circle.shape);
+        const auto polygonShape =  std::dynamic_pointer_cast<PolygonShape>(polygon->shape);
+        const auto circleShape =  std::dynamic_pointer_cast<CircleShape>(circle->shape);
 
         // Initialization of variables to track the closest edge and if the circle is outside the polygon
         bool isOutside = false;
@@ -281,7 +281,7 @@ namespace Aerolite
             AeroVec2 normal = edge.Normal();
 
             // Compute vector from the current vertex to the circle's center
-            AeroVec2 vertexToCircleCenter = circle.position - polygonShape->worldVertices[currVertex];
+            AeroVec2 vertexToCircleCenter = circle->position - polygonShape->worldVertices[currVertex];
 
             // Project the vertex-to-center vector onto the edge's normal
 	        const real projection = vertexToCircleCenter.Dot(normal);
@@ -308,7 +308,7 @@ namespace Aerolite
         if (isOutside)
         {
             // Handle collision detection for region A
-            AeroVec2 v1 = circle.position - minCurrVertex;
+            AeroVec2 v1 = circle->position - minCurrVertex;
             AeroVec2 v2 = minNextVertex - minCurrVertex;
             if (v1.Dot(v2) < 0) {
                 if (v1.Magnitude() > circleShape->radius) {
@@ -320,7 +320,7 @@ namespace Aerolite
             }
             else {
                 // Handle collision detection for region B
-                v1 = circle.position - minNextVertex;
+                v1 = circle->position - minNextVertex;
                 v2 = minCurrVertex - minNextVertex;
                 if (v1.Dot(v2) < 0) {
                     if (v1.Magnitude() > circleShape->radius) {
@@ -353,35 +353,36 @@ namespace Aerolite
     }
 
     // Helper functions for setting contact details (to avoid code repetition)
-    void CollisionDetection2D::SetContactDetails(Contact2D& contact, AeroBody2D& polygon, AeroBody2D& circle, const AeroVec2& v1,
+    void CollisionDetection2D::SetContactDetails(Contact2D& contact, const std::shared_ptr<AeroBody2D>& polygon,
+                                                 const std::shared_ptr<AeroBody2D>& circle, const AeroVec2& v1,
                                                  const real radius) {
-        contact.a = &polygon;
-        contact.b = &circle;
+        contact.a = polygon;
+        contact.b = circle;
         contact.depth = radius - v1.Magnitude();
         contact.normal = v1.UnitVector();
-        contact.start = circle.position + (contact.normal * -radius);
+        contact.start = circle->position + (contact.normal * -radius);
         contact.end = contact.start + (contact.normal * contact.depth);
     }
 
-    void CollisionDetection2D::SetContactDetailsForRegionC(Contact2D& contact, AeroBody2D& polygon, AeroBody2D& circle,
+    void CollisionDetection2D::SetContactDetailsForRegionC(Contact2D& contact, const std::shared_ptr<AeroBody2D>& polygon, const std::shared_ptr<AeroBody2D>& circle,
                                                            const AeroVec2& minCurrVertex, const AeroVec2& minNextVertex, const real radius,
                                                            const real distanceToCircleEdge) {
-        contact.a = &polygon;
-        contact.b = &circle;
+        contact.a = polygon;
+        contact.b = circle;
         contact.depth = radius - distanceToCircleEdge;
         contact.normal = (minNextVertex - minCurrVertex).Normal();
-        contact.start = circle.position - (contact.normal * radius);
+        contact.start = circle->position - (contact.normal * radius);
         contact.end = contact.start + (contact.normal * contact.depth);
     }
 
-    void CollisionDetection2D::SetContactDetailsForInsideCollision(Contact2D& contact, AeroBody2D& polygon, AeroBody2D& circle,
+    void CollisionDetection2D::SetContactDetailsForInsideCollision(Contact2D& contact, const std::shared_ptr<AeroBody2D>& polygon, const std::shared_ptr<AeroBody2D>& circle,
                                                                    const AeroVec2& minCurrVertex, const AeroVec2& minNextVertex,
                                                                    const real radius, const real distanceToCircleEdge) {
-        contact.a = &polygon;
-        contact.b = &circle;
+        contact.a = polygon;
+        contact.b = circle;
         contact.depth = radius - distanceToCircleEdge;
         contact.normal = (minNextVertex - minCurrVertex).Normal();
-        contact.start = circle.position - (contact.normal * radius);
+        contact.start = circle->position - (contact.normal * radius);
         contact.end = contact.start + (contact.start * contact.depth);
     }
 
@@ -413,7 +414,7 @@ namespace Aerolite
         }
     }
 
-    void CollisionDetection2D::FindContactPointsPolygons(PolygonShape& shapeA, PolygonShape& shapeB, Contact2D& contact)
+    void CollisionDetection2D::FindContactPointsPolygons(const PolygonShape& shapeA, const PolygonShape& shapeB, Contact2D& contact)
     {
 	    AeroVec2 c1;
 	    AeroVec2 c2;
@@ -450,7 +451,7 @@ namespace Aerolite
 
         for (const auto p : shapeB.worldVertices)
         {
-	        for (int j = 0; j < shapeA.worldVertices.size(); j++)
+	        for (size_t j = 0; j < shapeA.worldVertices.size(); j++)
             {
 	            AeroVec2 edgePoint1 = shapeA.worldVertices[j];
 	            AeroVec2 edgePoint2 = shapeA.worldVertices[(j + 1) % shapeA.worldVertices.size()];
@@ -476,7 +477,7 @@ namespace Aerolite
         }
     }
 
-    void CollisionDetection2D::PointLineSegmentDistance(AeroVec2 p, const AeroVec2& linePointA, const AeroVec2& linePointB, real& distance,
+    void CollisionDetection2D::PointLineSegmentDistance(const AeroVec2& p, const AeroVec2& linePointA, const AeroVec2& linePointB, real& distance,
                                                         AeroVec2& closestPoint)
     {
 	    const AeroVec2 ab = linePointB - linePointA;

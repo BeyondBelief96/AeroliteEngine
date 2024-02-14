@@ -15,18 +15,14 @@ void LargeParticleTestScene::CreateRandomCircles(const int numberOfCircles, cons
 
     for (int i = 0; i < numberOfCircles; ++i) {
         // Random position within the window
-        AeroVec2 position(xDist(gen), yDist(gen));
+        const AeroVec2 position(xDist(gen), yDist(gen));
 
         // Random linear_velocity within the given range
-        const AeroVec2 linear_velocity(velDist(gen), velDist(gen));
-
-        // Create the circle shape
-        auto shape = std::make_unique<CircleShape>(radius);
+        const AeroVec2 linearVelocity(velDist(gen), velDist(gen));
 
         // Create the body with the shape and add it to the world
-        auto body = std::make_unique<AeroBody2D>(shape.release(), position.x, position.y, /* Mass */ 1.0);
-        body->linear_velocity = linear_velocity;
-        world->AddBody2D(std::move(body));
+        const auto body = world->CreateBody2D(std::make_shared<CircleShape>(radius), position.x, position.y, /* Mass */ 1.0);
+        body->linear_velocity = linearVelocity;
     }
 }
 
@@ -37,7 +33,7 @@ void LargeParticleTestScene::Setup() {
     running = true;
     world = std::make_unique<AeroWorld2D>(0);
     world->SetBroadPhaseAlgorithm(BroadPhaseAlg::SHG);
-    world->ShgSetBounds({ 0, 0 }, { (real)Graphics::Width(), (real)Graphics::Height() });
+    world->ShgSetBounds({ 0, 0 }, { static_cast<real>(Graphics::Width()), static_cast<real>(Graphics::Height()) });
     world->ShgSetCellWidth(10);
     world->ShgSetCellHeight(10);
     CreateRandomCircles(3000, 1500, 2);
@@ -46,7 +42,7 @@ void LargeParticleTestScene::Setup() {
 ///////////////////////////////////////////////////////////////////////////////
 // Input processing
 ///////////////////////////////////////////////////////////////////////////////
-void LargeParticleTestScene::Input(SDL_Event event) {
+void LargeParticleTestScene::Input(const SDL_Event event) {
      switch (event.type) {
      case SDL_QUIT:
          running = false;
@@ -85,7 +81,7 @@ void LargeParticleTestScene::Update() {
     {
 	    if(body->shape->GetType() == Circle)
 	    {
-		    const auto circleShape = dynamic_cast<CircleShape*>(body->shape);
+		    const auto circleShape =  std::dynamic_pointer_cast<CircleShape>(body->shape);
 		    const real radius = circleShape->radius;
 
             // Check collision with left and right boundaries
@@ -106,24 +102,17 @@ void LargeParticleTestScene::Update() {
 ///////////////////////////////////////////////////////////////////////////////
 void LargeParticleTestScene::Render() {
     Graphics::ClearScreen(0xFF000000);
-	const std::vector<std::unique_ptr<AeroBody2D>>& bodies = world->GetBodies();
+	const auto bodies = world->GetBodies();
     for (const auto& body : bodies) {
         if (body->shape->GetType() == Circle) {
-	        const auto circleShape = dynamic_cast<CircleShape*>(body->shape);
+	        const auto circleShape =  std::dynamic_pointer_cast<CircleShape>(body->shape);
             Graphics::DrawCircle(body->position.x, body->position.y, circleShape->radius, body->rotation, 0xFFFFFFFF);
         }
         else  if (body->shape->GetType() == Box) {
-	        const auto boxShape = dynamic_cast<BoxShape*>(body->shape);
+	        const auto boxShape =  std::dynamic_pointer_cast<BoxShape>(body->shape);
             Graphics::DrawPolygon(body->position.x, body->position.y, boxShape->worldVertices, 0xFFFFFFFF);
         }
     }
 
     Graphics::RenderFrame();
-}
-
-///////////////////////////////////////////////////////////////////////////////
-// Destroy function to delete objects and close the window
-///////////////////////////////////////////////////////////////////////////////
-void LargeParticleTestScene::Destroy() {
-    running = false;
 }

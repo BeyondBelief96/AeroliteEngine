@@ -4,7 +4,6 @@
 #include "Collision2D.h"
 #include "Contact2D.h"
 #include "Constants.h"
-#include "pfgen.h"
 #include "Scene.h"
 
 // GLOBAL VARIABLES
@@ -15,21 +14,19 @@
 void JointConstraintScene::Setup() {
     running = Graphics::OpenWindow();
 
-    world = std::make_unique<Aerolite::AeroWorld2D>(-9.8);
+    world = std::make_unique<AeroWorld2D>(-9.8);
 
-    const int NUM_BODIES = 10;
-    for (int i = 0; i < NUM_BODIES; i++) {
-        real mass = (i == 0) ? 0.0f : 1.0f;
-        auto body = std::make_unique<AeroBody2D>(new BoxShape(30, 30), Graphics::Width() / make_real<real>(2.0) - (i * 40), 100, mass);
-        world->AddBody2D(std::move(body));
+    const int numBodies = 10;
+    for (int i = 0; i < numBodies; i++) {
+	    const real mass = (i == 0) ? 0.0f : 1.0f;
+        auto body = world->CreateBody2D(std::make_shared<BoxShape>(30, 30), Graphics::Width() / make_real<real>(2.0) - (i * 40), 100, mass);
     }
 
-    for (int i = 0; i < NUM_BODIES - 1; i++) {
-        std::vector<std::unique_ptr<AeroBody2D>>& bodies = world->GetBodies();
-        auto a = bodies[i].get();
-        auto b = bodies[i + 1].get();
-        auto joint = std::make_unique<JointConstraint>(*a, *b, a->position);
-        world->AddConstraint(std::move(joint));
+    for (int i = 0; i < numBodies - 1; i++) {
+        std::vector<std::shared_ptr<AeroBody2D>>& bodies = world->GetBodies();
+        const auto a = bodies[i];
+        const auto b = bodies[i + 1];
+        world->AddJointConstraint(a, b, a->position);
     }
     
 }
@@ -37,7 +34,7 @@ void JointConstraintScene::Setup() {
 ///////////////////////////////////////////////////////////////////////////////
 // Input processing
 ///////////////////////////////////////////////////////////////////////////////
-void JointConstraintScene::Input(SDL_Event event) {
+void JointConstraintScene::Input(const SDL_Event event) {
      switch (event.type) {
      case SDL_QUIT:
          running = false;
@@ -53,20 +50,18 @@ void JointConstraintScene::Input(SDL_Event event) {
          if (event.button.button == SDL_BUTTON_LEFT) {
              int x, y;
              SDL_GetMouseState(&x, &y);
-             // Create and add a new BoxShape at the mouse location
-             auto circle = std::make_unique<AeroBody2D>(new CircleShape(50), x, y, make_real<real>(2.0));
+             // Create and add a std::make_shared< BoxShape at the mouse location
+             const auto circle = world->CreateBody2D(std::make_shared<CircleShape>(50), x, y, make_real<real>(2.0));
              circle->restitution = make_real<real>(1.0);
              circle->friction = make_real<real>(0.4);
-             world->AddBody2D(std::move(circle));
          }
          else if (event.button.button == SDL_BUTTON_RIGHT) {
              int x, y;
              SDL_GetMouseState(&x, &y);
-             // Create and add a new CircleShape at the mouse location
-             auto circle = std::make_unique<AeroBody2D>(PolygonShape::CreateRegularPolygon(5, 50), x, y, make_real<real>(1.0)); // Assuming radius 25 for the circle
+             // Create and add a std::make_shared< CircleShape at the mouse location
+             const auto circle = world->CreateBody2D(PolygonShape::CreateRegularPolygon(5, 50), x, y, make_real<real>(1.0)); // Assuming radius 25 for the circle
              circle->restitution = make_real<real>(1.0);
              circle->friction = make_real<real>(0.4);
-             world->AddBody2D(std::move(circle));
          }
          break;
      }
@@ -79,7 +74,7 @@ void JointConstraintScene::Input(SDL_Event event) {
 void JointConstraintScene::Update() {
     // Check if we are too fast, and if so, waste some milliseconds until we reach
     // MILLISECONDS_PER_FRAME.
-    int timeToWait = MILLISECS_PER_FRAME - (SDL_GetTicks() - timePreviousFrame);
+    const int timeToWait = MILLISECS_PER_FRAME - (SDL_GetTicks() - timePreviousFrame);
     if (timeToWait > 0) {
         SDL_Delay(timeToWait);
     }
@@ -101,30 +96,23 @@ void JointConstraintScene::Update() {
 ///////////////////////////////////////////////////////////////////////////////
 void JointConstraintScene::Render() {
     Graphics::ClearScreen(0xFF000000);
-
-    //for (auto& joint : world->GetConstraints()) {
-    //    const AeroVec2 pa = joint->a.LocalSpaceToWorldSpace(joint->aPoint);
-    //    const AeroVec2 pb = joint->b.LocalSpaceToWorldSpace(joint->bPoint);
-    //    Graphics::DrawLine(pa.x, pa.y, pb.x, pb.y, 0xFFFFFFFF);
-    //}
-
-    for (auto& body : world->GetBodies()) {
+    for (const auto& body : world->GetBodies()) {
         if (body->shape->GetType() == Circle) {
-            auto circleShape = dynamic_cast<CircleShape*>(body->shape);
+	        const auto circleShape =  std::dynamic_pointer_cast<CircleShape>(body->shape);
             Graphics::DrawCircle(body->position.x, body->position.y, circleShape->radius, body->rotation, 0xFFFFFFFF);
         }
         else  if (body->shape->GetType() == Box) {
-            auto boxShape = dynamic_cast<BoxShape*>(body->shape);
+	        const auto boxShape =  std::dynamic_pointer_cast<BoxShape>(body->shape);
             Graphics::DrawFillPolygon(body->position.x, body->position.y, boxShape->worldVertices, 0xFFFFFFFF);
         }
         else  if (body->shape->GetType() == Polygon) {
-            auto boxShape = dynamic_cast<PolygonShape*>(body->shape);
+	        const auto boxShape =  std::dynamic_pointer_cast<PolygonShape>(body->shape);
             Graphics::DrawFillPolygon(body->position.x, body->position.y, boxShape->worldVertices, 0xFFFF0000);
         }
     }
 
     if (debug) {
-        for (auto& contact : world->GetContacts())
+        for (const auto& contact : world->GetContacts())
         {
             Graphics::DrawFillCircle(contact.start.x, contact.start.y, 4, 0xFFFF00FF);
             Graphics::DrawFillCircle(contact.end.x, contact.end.y, 4, 0xFFFF00FF);
@@ -134,11 +122,4 @@ void JointConstraintScene::Render() {
     }
 
     Graphics::RenderFrame();
-}
-
-///////////////////////////////////////////////////////////////////////////////
-// Destroy function to delete objects and close the window
-///////////////////////////////////////////////////////////////////////////////
-void JointConstraintScene::Destroy() {
-    Graphics::CloseWindow();
 }
