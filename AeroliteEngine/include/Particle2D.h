@@ -4,8 +4,6 @@
 #include "AeroVec2.h"
 #include "Precision.h"
 
-using namespace Aerolite;
-
 namespace Aerolite {
     // The Particle2D struct represents a simple physical particle in a 2D space.
     // It is designed to simulate basic physics properties like position, linear_velocity, 
@@ -28,21 +26,19 @@ namespace Aerolite {
         // The linear_velocity and linear_acceleration are initialized to zero by default.
         Particle2D(real x, real y, real mass);
 
+        ~Particle2D() = default;
+
         // Copy constructor
-        Particle2D(const Particle2D& other);
+        Particle2D(const Particle2D& other) = default;
 
         // Move constructor
-        Particle2D(Particle2D&& other) noexcept;
+        Particle2D(Particle2D&& other) noexcept = default;
 
         // Copy assignment operator
         Particle2D& operator=(const Particle2D& other);
 
         // Move assignment operator
-        Particle2D& operator=(Particle2D&& other) noexcept;
-
-        // Destructor for the Particle2D. Currently, it does not need to perform any specific actions
-        // as the struct does not manage any resources directly.
-        ~Particle2D();
+        Particle2D& operator=(Particle2D&& other) noexcept = default;
 
         /// <summary>
         /// Function used to apply forces to this particle to change its linear_acceleration.
@@ -55,7 +51,7 @@ namespace Aerolite {
 
         // Check to see if the mass of the object is extremely large. It does this by checking if
         // the inverse mass is zero.
-        bool HasFiniteMass(void);
+        bool HasFiniteMass(void) const;
 
         // Integrate function updates the physics state of the particle. This includes updating 
         // the position based on linear_velocity and linear_acceleration over a given time step (dt).
