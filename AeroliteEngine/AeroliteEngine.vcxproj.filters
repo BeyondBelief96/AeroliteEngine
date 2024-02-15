@@ -92,7 +92,7 @@
     <ClCompile Include="src\AeroVec3.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Particle.cpp">
+    <ClCompile Include="src\Particle2D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\AeroBody2D.cpp">

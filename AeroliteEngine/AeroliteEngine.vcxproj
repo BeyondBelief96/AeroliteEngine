@@ -178,7 +178,7 @@
     <ClCompile Include="src\Contact2D.cpp" />
     <ClCompile Include="src\Matrix3x3.cpp" />
     <ClCompile Include="src\Matrix3x4.cpp" />
-    <ClCompile Include="src\Particle.cpp" />
+    <ClCompile Include="src\Particle2D.cpp" />
     <ClCompile Include="src\Shape.cpp" />
     <ClCompile Include="src\AeroVec2.cpp" />
     <ClCompile Include="src\AeroVec3.cpp" />
