@@ -1,3 +1,4 @@
+#include <iostream>
 #include <map>
 #include <string>
 
@@ -24,7 +25,6 @@ int main(int argc, char* args[]) {
     scenes["PARTICLES!!!!"] = std::make_shared<LargeParticleTestScene>();
     scenes["Solar System Cyclone"] = std::make_shared<SolarSystemScene>();
     scenes["The Great Pyramid"] = std::make_shared<TheGreatPyramidScene>();
-    scenes["FLIGHT SIM 2D!"] = std::make_shared<AirplaneShootingScene>();
 
     // Initialize the current scene based on currentSceneKey
     currentScene = scenes[currentSceneKey];
@@ -109,15 +109,21 @@ int main(int argc, char* args[]) {
 
 
         ImGui::End();
-
-        // Check if a scene is currently selected and running
-        if (currentScene && currentScene->IsRunning()) {
-            currentScene->UpdatePhysicsProperties(globalFriction, globalRestitution);
-            currentScene->Update();
-            currentScene->Render();
-            ImGui::Render();
-            ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData());
-            Graphics::RenderFrame();
+        try
+        {
+            // Check if a scene is currently selected and running
+            if (currentScene && currentScene->IsRunning()) {
+                currentScene->UpdatePhysicsProperties(globalFriction, globalRestitution);
+                currentScene->Update();
+                currentScene->Render();
+                ImGui::Render();
+                ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData());
+                Graphics::RenderFrame();
+            }
+        }
+        catch(std::exception& e)
+        {
+            std::cout << e.what() << '\n';
         }
 
         ImGui::EndFrame();

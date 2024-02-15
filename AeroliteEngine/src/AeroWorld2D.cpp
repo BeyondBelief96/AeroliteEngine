@@ -98,17 +98,23 @@ namespace Aerolite {
         m_shg.SetCellHeight(cellHeight);
     }
 
-    void AeroWorld2D::AddParticle2D(std::unique_ptr<Particle2D> particle)
+    void AeroWorld2D::CreateParticle2D(const real x, const real y, const real mass)
+    {
+        auto particle = std::make_shared<Particle2D>(x, y, mass);
+        m_particles.push_back(std::move(particle));
+    }
+
+    void AeroWorld2D::AddParticle2D(std::shared_ptr<Particle2D> particle)
     {
         if (particle != nullptr) {
-            m_particles.push_back(std::move(particle)); // Use std::move to transfer ownership
+            m_particles.push_back(std::move(particle));
         }
     }
 
     void AeroWorld2D::AddParticle2Ds(std::vector<std::unique_ptr<Particle2D>> particles)
     {
         for (auto& particle : particles) {
-            AddParticle2D(std::move(particle)); // Use std::move to transfer ownership
+            AddParticle2D(std::move(particle));
         }
     }
 
@@ -185,7 +191,7 @@ namespace Aerolite {
         // Broad phase detection
         m_broadPhasePipeline.Execute(*this);
 
-        std::cout << "Number of broadphase pairs: " << m_broadphasePairs.size() << std::endl;
+        /*std::cout << "Number of broadphase pairs: " << m_broadphasePairs.size() << std::endl;*/
         // Narrow phase detection
         for(const auto& pair : m_broadphasePairs)
         {

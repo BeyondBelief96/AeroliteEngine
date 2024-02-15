@@ -14,10 +14,10 @@
 void RagdollJointScene::Setup() {
     running = true;
 
-    world = std::make_unique<AeroWorld2D>();
+    world = std::make_unique<AeroWorld2D>(-9.8);
 
     // Add rag doll parts (rigid bodies)
-    const auto bob = world->CreateBody2D(std::make_shared< CircleShape>(5), Graphics::Width() / make_real<real>(2.0), Graphics::Height() / make_real<real>(2.0) - 200, make_real<real>(0.0));
+    const auto bob = world->CreateBody2D(std::make_shared< CircleShape>(5), Graphics::Width() / make_real<real>(2.0), Graphics::Height() / make_real<real>(2.0), make_real<real>(0.0));
     const auto head = world->CreateBody2D(std::make_shared< CircleShape>(25), bob->position.x, bob->position.y + 70, make_real<real>(5.0));
     const auto torso = world->CreateBody2D(std::make_shared< BoxShape>(50, 100), head->position.x, head->position.y + 80, make_real<real>(3.0));
     const auto leftArm = world->CreateBody2D(std::make_shared<BoxShape>(15, 70), torso->position.x - 32, torso->position.y -10, make_real<real>(1.0));
@@ -118,8 +118,8 @@ void RagdollJointScene::Update() {
 void RagdollJointScene::Render() {
     Graphics::ClearScreen(0xFF000000);
 
-    const AeroBody2D* bob = world->GetBodies()[0].get();
-    const AeroBody2D* head = world->GetBodies()[1].get();
+    const auto bob = world->GetBodies()[0];
+    const auto head = world->GetBodies()[1];
     Graphics::DrawLine(bob->position.x, bob->position.y, head->position.x, head->position.y, 0xFFFFFFFF);
 
     for (const auto& joint : world->GetConstraints()) {
