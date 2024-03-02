@@ -22,12 +22,11 @@ Aerolite Physics Engine is a comprehensive, efficient 2D physics library with pl
 - **Particle Dynamics**: Manages large numbers of particles effectively for simulations like smoke or liquid.
 
 ## Video Demos
-![](https://media.giphy.com/media/SjMKPCeDbF7v8hfMD9/giphy-downsized.gif)
-![](https://media.giphy.com/media/0yMefjgNv3bT1rpKgJ/giphy.gif)
-![](https://media.giphy.com/media/f32PIb3eAezzNjVlL9/giphy.gif)
-![](https://media.giphy.com/media/hXcrdktMv16XPBxdgM/giphy.gif)
-![](https://media.giphy.com/media/2kfcJxGm1gajUlvVeU/giphy.gif)
-![](https://media.giphy.com/media/YqBF9Lsdx7SrsP6Ckr/giphy.gif)
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/d3omJyYH2XY/0.jpg)](https://www.youtube.com/watch?v=d3omJyYH2XY)
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/tLI2a0-xQ4A/0.jpg)](https://www.youtube.com/watch?v=tLI2a0-xQ4A)
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/eIRz2iymQRk/0.jpg)](https://www.youtube.com/watch?v=eIRz2iymQRk)
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/kGb2qkqdmco/0.jpg)](https://www.youtube.com/watch?v=kGb2qkqdmco)
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/dsc4N9qv8ek/0.jpg)](https://www.youtube.com/watch?v=dsc4N9qv8ek)
 
 ## Usage and Examples
 - Creating and Configuring a 2D Body
