@@ -35,7 +35,7 @@ namespace Aerolite {
     /// </summary>
     /// <param name="a">The value to take on the value of b.</param>
     /// <param name="b">The value to take on the value of a.</param>
-    inline void Swap(real a, real b)
+    inline void Swap(real& a, real& b)
     {
         const real t = a;
         a = b;

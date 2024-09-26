@@ -10,18 +10,11 @@ namespace Aerolite {
 	    real x = 0.0f;  // The x-coordinate of the vector.
 	    real y = 0.0f;  // The y-coordinate of the vector.
 
-        // Default constructor initializes vector to (0, 0).
-        AeroVec2() noexcept = default;
-
+        AeroVec2() = default;
         AeroVec2(const AeroVec2& v) = default;
-
         AeroVec2(AeroVec2&& v) noexcept : x(v.x), y(v.y){}
-
-        // Parameterized constructor for initializing vector with specific x and y values.
         AeroVec2(real x, real y) noexcept;
-
-        // Default destructor. No dynamic memory allocation, so trivial.
-        ~AeroVec2() noexcept = default;
+        ~AeroVec2() = default;
 
         // Adds another AeroVec2 to this vector (component-wise addition).
         constexpr void Add(const AeroVec2& v) noexcept

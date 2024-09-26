@@ -213,7 +213,7 @@ namespace Aerolite {
             constraint.PreSolve(dt);
         }
 
-        for (int i = 0; i < 12; i++) {
+        for (int i = 0; i < 3; i++) {
             for (const auto& constraint : m_constraints) {
                 constraint->Solve();
             }

@@ -130,7 +130,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>C:\Users\brand\source\repos\AeroliteEngine\AeroliteEngineVisualizer\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\SDL2\include;$(SolutionDir)AeroliteEngine\include;C:\Users\brand\source\repos\AeroliteEngine\AeroliteEngineVisualizer\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -151,7 +151,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>C:\Users\brand\source\repos\AeroliteEngine\AeroliteEngineVisualizer\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\SDL2\include;$(SolutionDir)AeroliteEngine\include;C:\Users\brand\source\repos\AeroliteEngine\AeroliteEngineVisualizer\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -166,11 +166,7 @@
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\Downloads\imgui-master\imgui-master\imgui.cpp" />
-    <ClCompile Include="..\..\..\..\Downloads\imgui-master\imgui-master\imgui_demo.cpp" />
-    <ClCompile Include="..\..\..\..\Downloads\imgui-master\imgui-master\imgui_draw.cpp" />
-    <ClCompile Include="..\..\..\..\Downloads\imgui-master\imgui-master\imgui_tables.cpp" />
-    <ClCompile Include="..\..\..\..\Downloads\imgui-master\imgui-master\imgui_widgets.cpp" />
+    <ClCompile Include="imgui.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
     <ClCompile Include="imgui\imgui_draw.cpp" />
@@ -178,6 +174,12 @@
     <ClCompile Include="imgui\imgui_impl_sdlrenderer2.cpp" />
     <ClCompile Include="imgui\imgui_tables.cpp" />
     <ClCompile Include="imgui\imgui_widgets.cpp" />
+    <ClCompile Include="imgui_demo.cpp" />
+    <ClCompile Include="imgui_draw.cpp" />
+    <ClCompile Include="imgui_impl_sdl2.cpp" />
+    <ClCompile Include="imgui_impl_sdlrenderer2.cpp" />
+    <ClCompile Include="imgui_tables.cpp" />
+    <ClCompile Include="imgui_widgets.cpp" />
     <ClCompile Include="src\scenes\AirplaneShootingScene.cpp" />
     <ClCompile Include="src\scenes\Scene.cpp" />
     <ClCompile Include="src\scenes\TheGreatPyramidScene.cpp" />
@@ -191,12 +193,6 @@
     <ClCompile Include="src\Main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\Downloads\imgui-master\imgui-master\imconfig.h" />
-    <ClInclude Include="..\..\..\..\Downloads\imgui-master\imgui-master\imgui.h" />
-    <ClInclude Include="..\..\..\..\Downloads\imgui-master\imgui-master\imgui_internal.h" />
-    <ClInclude Include="..\..\..\..\Downloads\imgui-master\imgui-master\imstb_rectpack.h" />
-    <ClInclude Include="..\..\..\..\Downloads\imgui-master\imgui-master\imstb_textedit.h" />
-    <ClInclude Include="..\..\..\..\Downloads\imgui-master\imgui-master\imstb_truetype.h" />
     <ClInclude Include="include\imconfig.h" />
     <ClInclude Include="include\imgui.h" />
     <ClInclude Include="include\imgui_impl_sdl2.h" />
@@ -209,6 +205,7 @@
     <ClInclude Include="include\Graphics.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="imgui.ini" />
     <None Include="libavif-16.dll" />
     <None Include="libtiff-5.dll" />
     <None Include="libwebp-7.dll" />

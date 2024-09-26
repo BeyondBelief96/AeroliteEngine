@@ -5,8 +5,6 @@ namespace Aerolite
 {
 	AeroShg::AeroShg()
 	{
-		// Default values, however, I recommend setting these values to something
-		// that makes sense for your simulation.
 		m_bounds = AeroAABB2D({0, 0}, {1920, 1080});
 		m_cellWidth = 10;
 		m_cellHeight = 10;

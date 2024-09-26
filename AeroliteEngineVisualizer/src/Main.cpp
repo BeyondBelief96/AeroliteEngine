@@ -7,10 +7,11 @@
 #include "Scene.h"
 #include "Graphics.h"
 
+using namespace Aerolite;
+
 float globalFriction = 0.5f; // Default friction value
 float globalRestitution = 0.1f; // Default restitution value
 float frameRate = 0.0f;
-
 int main(int argc, char* args[]) {
 
     // Initializes SDL2 and the SDL Window/Renderer
@@ -67,7 +68,7 @@ int main(int argc, char* args[]) {
             }
         }
 
-        if(ImGui::Button("Reset Scene", { 100, 30 }))
+        if (ImGui::Button("Reset Scene", { 100, 30 }))
         {
             currentScene->Destroy();
             currentScene->Setup();
@@ -99,7 +100,7 @@ int main(int argc, char* args[]) {
             }
         }
 
-        if(ImGui::CollapsingHeader("Global Physics Options")) {
+        if (ImGui::CollapsingHeader("Global Physics Options")) {
             ImGui::SliderFloat("Friction", &globalFriction, 0.0f, 1.0f, "Friction = %.3f");
             ImGui::SliderFloat("Restitution", &globalRestitution, 0.0f, 1.0f, "Restitution = %.3f");
         }
@@ -117,11 +118,11 @@ int main(int argc, char* args[]) {
                 currentScene->Update();
                 currentScene->Render();
                 ImGui::Render();
-                ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData());
+                ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(), Graphics::renderer);
                 Graphics::RenderFrame();
             }
         }
-        catch(std::exception& e)
+        catch (std::exception& e)
         {
             std::cout << e.what() << '\n';
         }
@@ -135,3 +136,6 @@ int main(int argc, char* args[]) {
     ImGui::DestroyContext();
     Graphics::CloseWindow();
 }
+
+
+
